@@ -20,7 +20,7 @@ def create_app():
     :return: Flask application instance.
     :rtype: Flask
     """
-    app = Flask(__name__, template_folder="templates")
+    app = Flask(__name__, template_folder="templates", static_folder="static")
 
     init_db(app)
 

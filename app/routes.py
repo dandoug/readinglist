@@ -1,6 +1,6 @@
 from flask import render_template
 
-from app.categories import get_category_list
+from app.categories import get_category_bs_tree
 
 
 def register_routes(app):
@@ -17,5 +17,5 @@ def register_routes(app):
     """
     @app.route('/')
     def hello_world():  # put application's code here
-        return render_template('index.html', categories= get_category_list())
-
+        category_bs_tree = get_category_bs_tree()
+        return render_template('index.html', category_bs_tree=category_bs_tree)

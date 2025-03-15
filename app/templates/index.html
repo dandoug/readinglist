@@ -3,19 +3,25 @@
 {% block title %} Home {% endblock %}
 
 {% block body %}
-<div class="container">
-    <table class="table table-info table-striped table-hover">
-        <thead>
-            <tr>
-                <th>Category</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for category in categories %}
-            <tr>
-                <td>{{ category }}</td>
-            </tr>
-            {% endfor %}
-    </table>
-</div>
+<div id="tree"></div>
+<script>
+    const treedata = {{ category_bs_tree | tojson }};
+    // Switch to use bootstrap 4 and Gijgo treeview
+    // https://www.npmjs.com/package/bootstrap-treeview
+    // https://www.npmjs.com/package/gijgo
+    // https://github.com/atatanasov/gijgo-asp-net-examples
+
+    $('#tree').treeview({
+        data: treedata,
+        showCheckbox: true,
+        showIcon: true,
+        checkedIcon: 'glyphicon glyphicon-check',
+        hierarchicalCheck: true,
+        propagateCheckEvent: true,
+        multiSelect: true,
+        partiallyCheckedIcon: 'glyphicon glyphicon-unchecked',
+        levels: 1
+    });
+</script>
+
 {% endblock %}
