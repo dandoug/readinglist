@@ -1,5 +1,6 @@
 from flask import render_template
-from sqlalchemy import text
+
+from app.categories import get_category_list
 
 
 def register_routes(app):
@@ -16,15 +17,5 @@ def register_routes(app):
     """
     @app.route('/')
     def hello_world():  # put application's code here
-        categories = get_category_list()
-        return render_template('index.html', categories=categories)
+        return render_template('index.html', categories= get_category_list())
 
-    def get_category_list():
-        from app import db
-        with db.engine.connect() as conn:
-            result = conn.execute(
-                text("SELECT distinct categories_flat FROM readinglist.books order by categories_flat;"))
-        categories = []
-        for row in result:
-            categories.append(row.categories_flat)
-        return categories
