@@ -1,4 +1,7 @@
 from sqlalchemy import text
+import base64
+
+SEPARATOR = ' > '   # separator for full category strings
 
 
 def get_category_list():
@@ -56,7 +59,7 @@ def get_category_tree():
     categories = get_category_list()
     category_tree = {}
     for category in categories:
-        categories = category.split(' > ')
+        categories = category.split(SEPARATOR)
         top_level_category = categories.pop(0)
         _add_categories(top_level_category, category_tree, categories)
     return category_tree
@@ -73,22 +76,65 @@ def get_category_bs_tree():
         where each element is a dictionary with keys "text" for the category name
         and "nodes" containing any child categories in the same format.
     """
-    def _add_categories(cat, tree, children):
+    def _add_categories(cat, context, tree, children):
+        fullpath = context+SEPARATOR+cat if context else cat
         node = {
             "text": cat,
-            "state": {"checked": False}
+            "state": {"checked": False},
+            "fullpath": fullpath,
+            "id": fullpath_to_id(fullpath)
         }
         tree.append(node)
         if children:
             node["nodes"] = []
             for child in children:
-                _add_categories(child, node["nodes"], children[child])
+                _add_categories(child, fullpath, node["nodes"], children[child])
 
     categories = get_category_tree()
     bs_tree = []
     for category in categories:
-        _add_categories(category, bs_tree, categories[category])
+        _add_categories(category, '', bs_tree, categories[category])
     return bs_tree
 
 
-__all__ = ['get_category_list', 'get_category_tree', 'get_category_bs_tree']
+def fullpath_to_id(fullpath):
+    """
+    Converts a fullpath string into a URL-safe HTML id by encoding it using Base64.
+
+    The transformation encodes the input as a Base64 string, replaces URL-sensitive
+    characters, and ensures that the resulting id strings are unique and reversible.
+
+    :param fullpath: The original fullpath string to be converted.
+    :type fullpath: str
+    :return: A URL-safe Base64-encoded HTML id string.
+    :rtype: str
+    """
+    encoded = base64.b64encode(fullpath.encode('utf-8')).decode('utf-8')
+    safe_encoded = (encoded
+                    .replace('+', '-')
+                    .replace('/', '_')
+                    .replace('=', '*'))
+    return safe_encoded
+
+
+def id_to_fullpath(encoded_id):
+    """
+    Decodes a URL-safe HTML id string back into the original fullpath using Base64.
+
+    The function reverses the transformations applied in `fullpath_to_id`, ensuring
+    that the output matches the original input string.
+
+    :param encoded_id: The Base64-encoded URL-safe HTML id string to be decoded.
+    :type encoded_id: str
+    :return: The original fullpath string.
+    :rtype: str
+    """
+    safe_decoded = (encoded_id
+                    .replace('-', '+')
+                    .replace('_', '/')
+                    .replace('*', '='))
+    decoded = base64.b64decode(safe_decoded).decode('utf-8')
+    return decoded
+
+
+__all__ = ['get_category_list', 'get_category_tree', 'get_category_bs_tree', 'fullpath_to_id', 'id_to_fullpath']
