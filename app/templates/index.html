@@ -28,7 +28,7 @@
         <!-- Buttons -->
         <div class="col-auto text-end">
             <button id="reset-btn" type="button" class="btn btn-sm btn-secondary mr-2">Reset Filter</button>
-            <button type="button" class="btn btn-sm btn-primary">Search</button>
+            <button id="cat-search-btn" type="button" class="btn btn-sm btn-primary">Search</button>
         </div>
     </div>
 
@@ -72,6 +72,20 @@
         tree.uncheckAll();
         // Collapse all nodes to show only the first level
         tree.collapseAll();
+    });
+
+    document.getElementById('cat-search-btn').addEventListener('click', function() {
+        var tree = $('#tree').treeview(true);
+        // Get checked nodes
+        var checkedNodes = tree.getChecked();
+        // Get checked nodes' ids
+        var checkedNodesIds = checkedNodes.map(function (node) {
+            return node.id;
+        });
+        if (checkedNodesIds.length !== 0) {
+            // Send checked nodes' ids to search page
+            window.location.href = '/search?' + checkedNodesIds.map(id => 'cat=' + encodeURIComponent(id)).join('&');
+        }
     });
 
 </script>
