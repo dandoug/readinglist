@@ -1,27 +1,58 @@
 {% extends 'base.html' %}
 
-{% block title %} Home {% endblock %}
+<!-- Title -->
+{% block title %} Search Books {% endblock %}
 
+<!-- Body -->
 {% block body %}
-<div id="tree"></div>
+<div class="container mt-5">
+    <h1>Search by category</h1>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <span>Select categories to include in the search results.</span>
+        <div>
+            <button id="reset-btn" type="button" class="btn btn-sm btn-secondary mr-2">Reset Filter</button>
+            <button type="button" class="btn btn-sm btn-primary">Search</button>
+        </div>
+    </div>
+
+    <!-- Treeview Container -->
+    <div id="tree"></div>
+</div>
+{% endblock %}
+
+<!-- Scripts -->
+{% block scripts %}
 <script>
-    const treedata = {{ category_bs_tree | tojson }};
-    // Switch to use bootstrap 4 and Gijgo treeview
-    // https://www.npmjs.com/package/bootstrap-treeview
-    // https://www.npmjs.com/package/gijgo
-    // https://github.com/atatanasov/gijgo-asp-net-examples
+    $(document).ready(function() {
+        // convert tree data to json for use by treeview plugin
+        const treedata = {{ category_bs_tree | tojson }};
 
-    $('#tree').treeview({
-        data: treedata,
-        showCheckbox: true,
-        showIcon: true,
-        checkedIcon: 'glyphicon glyphicon-check',
-        hierarchicalCheck: true,
-        propagateCheckEvent: true,
-        multiSelect: true,
-        partiallyCheckedIcon: 'glyphicon glyphicon-unchecked',
-        levels: 1
+        $('#tree').treeview({
+            data: treedata,
+            showIcon: false,
+            showCheckbox: true,
+            checkboxFirst: false,
+            expandIcon: 'fa fa-plus',
+            collapseIcon: 'fa fa-minus',
+            checkedIcon: 'fa fa-check-square-o',
+            uncheckedIcon: 'fa fa-square-o',
+            partiallyCheckedIcon: 'fa fa-minus-square-o',
+            highlightSelected: true,
+            hierarchicalCheck: true,
+            propagateCheckEvent: true,
+            multiSelect: true,
+            levels: 1
+        });
     });
-</script>
 
+    document.getElementById('reset-btn').addEventListener('click', function() {
+        var tree = $('#tree').treeview(true);
+        // Uncheck all checkboxes
+        tree.uncheckAll();
+        // Collapse all nodes to show only the first level
+        tree.collapseAll();
+    });
+
+</script>
 {% endblock %}

@@ -1,10 +1,28 @@
 # Sources for libs
 
-## Bootstrap 5 treeview
+## Including libs from these directories
 
-* [Deali-Axy/bootstrap5-treeview](https://github.com/Deali-Axy/bootstrap5-treeview/tree/master/dist)
+In templates, use something like
+```html
+<link href="{{ url_for('static', filename='css/bootstrap-treeview.min.css') }}" rel="stylesheet"/>
+```
+or
+```html
+<script src="{{ url_for('static', filename='js/bootstrap-treeview.min.js') }}"></script>
+```
+for files located in the [css](css) or [js](js) directories, as appropriate.
 
-## Move to Bootstrap 4
+## Sources for libs imported via CDN
 
-After trying to get checkboxes to show up for Bootstrap 5, I'm giving up and moving to Bootstrap 4 and the Gijgo TreeView Plugin.  There seem to be lots of examples for that.
-https://gijgo.com/tree/demos/bootstrap-treeview-checkbox
+### PatternFly Treeview
+* [patternfly/patternfly-bootstrap-treeview](https://github.com/patternfly/patternfly-bootstrap-treeview/tree/master) - includes hierarchical check functions
+
+### Bootstrap 4
+* [Bootstrap 4.6](https://getbootstrap.com/docs/4.6/getting-started/introduction/) - to be compatible with PatternFly Treeview
+
+### JQuery
+* [JQuery 3.7](https://api.jquery.com/)
+
+### Font Awesome
+
+* [Font Awesome 4.7](https://fontawesome.com/v4/icons/) - includes hollow box and hollow box with check and minus

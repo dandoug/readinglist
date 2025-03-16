@@ -75,7 +75,8 @@ def get_category_bs_tree():
     """
     def _add_categories(cat, tree, children):
         node = {
-            "text": cat
+            "text": cat,
+            "state": {"checked": False}
         }
         tree.append(node)
         if children:
