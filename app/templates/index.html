@@ -5,19 +5,39 @@
 
 <!-- Body -->
 {% block body %}
-<div class="container mt-5">
-    <h1>Search by category</h1>
+<div class="container mt-3">
+    <!-- Row 1: Logo and Heading -->
+    <div class="row align-items-center">
+        <!-- Logo -->
+        <div class="col-auto">
+            <img src="{{ url_for('static', filename='images/booksearch.png') }}"
+                 alt="Book Search Logo" class="img-fluid" style="width: 100px;">
+        </div>
+        <!-- Heading -->
+        <div class="col">
+            <h1>Search by category</h1>
+        </div>
+    </div>
 
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <span>Select categories to include in the search results.</span>
-        <div>
+    <!-- Row 2: Text (span) and Action Buttons -->
+    <div class="row align-items-center mt-3">
+        <!-- Text -->
+        <div class="col">
+            <span>Select categories to include in the search results.</span>
+        </div>
+        <!-- Buttons -->
+        <div class="col-auto text-end">
             <button id="reset-btn" type="button" class="btn btn-sm btn-secondary mr-2">Reset Filter</button>
             <button type="button" class="btn btn-sm btn-primary">Search</button>
         </div>
     </div>
 
-    <!-- Treeview Container -->
-    <div id="tree"></div>
+    <!-- Row 3: Treeview Container -->
+    <div class="row mt-3">
+        <div class="col">
+            <div id="tree"></div>
+        </div>
+    </div>
 </div>
 {% endblock %}
 
