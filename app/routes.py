@@ -22,20 +22,12 @@ def register_routes(app):
 
     @app.route('/search', methods=['GET'])
     def search():
-        """
-        Handle the /search route, extracting 'cat' query parameters.
-
-        :return: JSON response with the list of 'cat' parameter values.
-        """
-        # Use `getlist` to capture 'cat' parameters (one, none, or many)
-        categories = request.args.getlist('cat')
-
-        # Convert category IDs to their full path representation
-        categories_fullpath = [id_to_fullpath(category) for category in categories]
+        # Extract category parms and decode to full path strings
+        categories_fullpath = [
+            id_to_fullpath(category) for category in request.args.getlist('cat')
+        ]
 
         # Example response, for testing and development
         return jsonify({
-            'categories': categories,
-            'categories_fullpath': categories_fullpath,
-            'message': 'Search successful!',
+            'categories_fullpath': categories_fullpath
         })
