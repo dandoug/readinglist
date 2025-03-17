@@ -38,10 +38,10 @@
                 <table class="table table-striped table-bordered table-hover">
                     <thead class="bg-warning text-dark">
                         <tr>
-                            <th scope="col">Title</th>
-                            <th scope="col">Author</th>
-                            <th scope="col">Rating</th>
-                            <th scope="col">Pages</th>
+                            <th class="align-middle" scope="col" data-column="title" data-order="asc">Title &#9651;</th>
+                            <th class="align-middle" scope="col" data-column="author" data-order="asc">Author &#9651;</th>
+                            <th class="align-middle" scope="col" data-column="rating" data-order="asc">Rating &#9651;</th>
+                            <th class="align-middle" scope="col" data-column="pages">Pages</th> <!-- Excluded from sorting -->
                         </tr>
                     </thead>
                     <tbody>
@@ -57,10 +57,10 @@
                                     <span>{{ book.title }}</span>
                                 </div>
                             </td>
-                            <td class="align-middle">{{ book.author }}</td>
-                            <td class="align-middle">{{ book.rating }}</td>
-                            <td class="align-middle">{{ book.hardcover if book.hardcover else ''
- }}</td>
+                            <td class="align-middle"><span>{{ book.author }}</span></td>
+                            <td class="align-middle"><span>{{ book.rating }}</span></td>
+                            <td class="align-middle"><span>{{ book.hardcover if book.hardcover else ''
+ }}</span></td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -77,6 +77,61 @@
 
     document.getElementById('new-search-btn').addEventListener('click', function() {
         history.back();
+    });
+
+    // Function to sort table
+    function sortTable(table, columnIndex, order) {
+        const tbody = table.querySelector("tbody");
+        const rows = Array.from(tbody.querySelectorAll("tr"));
+
+        // Determine sort logic based on text inside <span> elements
+        const isNumeric = (value) => !isNaN(parseFloat(value)) && isFinite(value);
+
+        rows.sort((rowA, rowB) => {
+            // Get content of <span> inside the relevant cell
+            const cellA = rowA.children[columnIndex].querySelector("span")?.innerText.trim() || "";
+            const cellB = rowB.children[columnIndex].querySelector("span")?.innerText.trim() || "";
+
+            // Check if sorting numeric or string data
+            const valueA = isNumeric(cellA) ? parseFloat(cellA) : cellA.toLowerCase();
+            const valueB = isNumeric(cellB) ? parseFloat(cellB) : cellB.toLowerCase();
+
+            if (order === "asc") {
+                return valueA > valueB ? 1 : -1;
+            } else {
+                return valueA < valueB ? 1 : -1;
+            }
+        });
+
+        // Append sorted rows back to the tbody
+        rows.forEach(row => tbody.appendChild(row));
+    }
+
+    // Add sorting event listeners to each table header, except for 'Pages'
+    document.querySelectorAll("th[data-column]").forEach((header, index) => {
+        // Skip adding sorting to the 'Pages' column
+        if (header.dataset.column === "pages") {
+            return;
+        }
+
+        header.addEventListener("click", () => {
+            // Get the current sort order
+            const currentOrder = header.dataset.order;
+
+            // Determine the new sort order (toggle between asc and desc)
+            const newOrder = currentOrder === "asc" ? "desc" : "asc";
+            header.dataset.order = newOrder;
+
+            // Change the sort arrow direction
+            header.innerHTML = header.innerHTML.replace(
+                currentOrder === "asc" ? "&#9651;" : "&#9661;",
+                newOrder === "asc" ? "&#9651;" : "&#9661;"
+            );
+
+            // Perform sorting
+            const table = header.closest("table");
+            sortTable(table, index, newOrder);
+        });
     });
 
 </script>
