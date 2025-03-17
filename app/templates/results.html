@@ -41,27 +41,24 @@
             <table class="table table-striped table-bordered table-hover">
                 <thead class="bg-warning text-dark">
                     <tr>
-                        <th style="width: 40%;" class="align-middle sortable-header" scope="col" data-column="title" data-order="asc">
+                        <th style="width: 60%;" class="align-middle sortable-header" scope="col" data-column="title" data-order="asc">
                             <div class="sortable-header-content">
                             <span class="header-text">Title</span>
-                            <span class="sort-arrow">&#9651;</span>
+                            <span class="sort-arrow">-</span>
                             </div>
                         </th>
-                        <th style="width: 20%;" class="align-middle sortable-header" scope="col" data-column="author" data-order="asc">
+                        <th style="width: 30%;" class="align-middle sortable-header" scope="col" data-column="author" data-order="asc">
                             <div class="sortable-header-content">
                             <span class="header-text">Author</span>
-                            <span class="sort-arrow">&#9651;</span>
+                            <span class="sort-arrow">-</span>
                             </div>
                         </th>
                         <th style="width: 10%;"  class="align-middle sortable-header" scope="col" data-column="rating" data-order="asc">
                             <div class="sortable-header-content">
                             <span class="header-text">Rating</span>
-                            <span class="sort-arrow">&#9651;</span>
+                            <span class="sort-arrow">-</span>
                             </div>
                         </th>
-                        <th style="width: 10%;"  class="align-middle" scope="col" data-column="pages">
-                            <span class="header-text">Pages</span>
-                        </th> <!-- Excluded from sorting -->
                     </tr>
                 </thead>
                 <tbody>
@@ -79,8 +76,6 @@
                         </td>
                         <td class="align-middle"><span>{{ book.author }}</span></td>
                         <td class="align-middle"><span>{{ book.rating }}</span></td>
-                        <td class="align-middle"><span>{{ book.hardcover if book.hardcover else ''
-}}</span></td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -90,14 +85,14 @@
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="bookDetailsModal" tabindex="-1" role="dialog" aria-labelledby="bookDetailsModalLabel" aria-hidden="true">
+<div class="modal fade" id="bookDetailsModal" tabindex="-1" role="dialog" aria-labelledby="bookDetailsModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <!-- Modal Header -->
             <div class="modal-header">
                 <h5 class="modal-title" id="bookDetailsModalLabel">Book Details</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                    <span>&times;</span>
                 </button>
             </div>
             <!-- Modal Body -->
@@ -115,7 +110,9 @@
                 <p><strong>ASIN:</strong> <span id="modal-asin"></span></p>
                 <p><strong>Bestsellers Rank:</strong> <span id="modal-bestsellers-rank-flat"></span></p>
                 <p><strong>Specifications:</strong> <span id="modal-specifications-flat"></span></p>
-                <p><strong>Buy on Amazon:</strong> <a id="modal-link" href="#" target="_blank">View Book</a></p>
+                <p class="mt-2"><strong>Library Searches:</strong></p><ul id="modal-library-searches"></ul>
+                <p class="mt-2"><a id="modal-buy-on-amazon-btn" class="btn btn-success" href="#" target="_blank"
+                                   onclick="window.open(this.href, '_blank')">Buy on Amazon</a></p>
             </div>
         </div>
     </div>
@@ -158,6 +155,9 @@
         rows.forEach(row => tbody.appendChild(row));
     }
 
+    const UP_ARROW = "&#9650;";
+    const DOWN_ARROW = "&#9660;";
+
     document.querySelectorAll(".sortable-header").forEach((header, index) => {
         header.addEventListener("click", () => {
             const currentOrder = header.getAttribute("data-order");
@@ -165,13 +165,13 @@
 
             // Update the arrow direction for the sorting header
             const arrow = header.querySelector(".sort-arrow");
-            arrow.innerHTML = newOrder === "asc" ? "&#9650;" : "&#9660;";
+            arrow.innerHTML = newOrder === "asc" ? UP_ARROW : DOWN_ARROW;
 
             // Reset the arrows for all other columns except the clicked one
             document.querySelectorAll(".sortable-header").forEach((otherHeader, otherIndex) => {
                 if (otherIndex !== index) {
                     const otherArrow = otherHeader.querySelector(".sort-arrow");
-                    otherArrow.innerHTML = "&#9651;"; // Reset to ascending arrow
+                    otherArrow.innerHTML = "-";
                     otherHeader.setAttribute("data-order", "asc"); // Reset order as ascending
                 }
             });
@@ -201,29 +201,53 @@
                             alert(`Error: ${data.error}`);
                             return;
                         }
+                        fetch(`/library_searches?id=${bookId}`)
+                            .then(response => response.json())
+                            .then(search_data => {
+                                if (search_data.error) {
+                                    alert(`Error: ${search_data.error}`);
+                                    return;
+                                }
 
-                        // Populate the modal fields using data
-                        document.getElementById('modal-id').textContent = data.id || 'N/A';
-                        document.getElementById('modal-title').textContent = data.title || 'N/A';
-                        document.getElementById('modal-author').textContent = data.author || 'N/A';
-                        document.getElementById('modal-description').textContent = data.book_description || 'N/A';
-                        document.getElementById('modal-rating').textContent = data.rating || 'N/A';
-                        document.getElementById('modal-image').setAttribute('src', data.image || '');
-                        document.getElementById('modal-categories-flat').textContent = data.categories_flat || 'N/A';
-                        document.getElementById('modal-pages').textContent = data.hardcover || 'N/A';
-                        document.getElementById('modal-isbn10').textContent = data.isbn_10 || 'N/A';
-                        document.getElementById('modal-isbn13').textContent = data.isbn_13 || 'N/A';
-                        document.getElementById('modal-asin').textContent = data.asin || 'N/A';
-                        document.getElementById('modal-bestsellers-rank-flat').textContent = data.bestsellers_rank_flat || 'N/A';
-                        document.getElementById('modal-specifications-flat').textContent = data.specifications_flat || 'N/A';
-                        document.getElementById('modal-link').setAttribute('href', data.link || '#');
+                                // Populate the modal fields using data
+                                document.getElementById('modal-id').textContent = data.id || 'N/A';
+                                document.getElementById('modal-title').textContent = data.title || 'N/A';
+                                document.getElementById('modal-author').textContent = data.author || 'N/A';
+                                document.getElementById('modal-description').textContent = data.book_description || 'N/A';
+                                document.getElementById('modal-rating').textContent = data.rating || 'N/A';
+                                document.getElementById('modal-image').setAttribute('src', data.image || '');
+                                document.getElementById('modal-categories-flat').textContent = data.categories_flat || 'N/A';
+                                document.getElementById('modal-pages').textContent = data.hardcover || 'N/A';
+                                document.getElementById('modal-isbn10').textContent = data.isbn_10 || 'N/A';
+                                document.getElementById('modal-isbn13').textContent = data.isbn_13 || 'N/A';
+                                document.getElementById('modal-asin').textContent = data.asin || 'N/A';
+                                document.getElementById('modal-bestsellers-rank-flat').textContent = data.bestsellers_rank_flat || 'N/A';
+                                document.getElementById('modal-specifications-flat').textContent = data.specifications_flat || 'N/A';
+                                document.getElementById('modal-buy-on-amazon-btn').setAttribute('href', data.link || '#');
 
-                        // Trigger the Bootstrap modal
-                        $('#bookDetailsModal').modal('show');
+                                const librarySearchesList = document.getElementById('modal-library-searches');
+                                librarySearchesList.innerHTML = ''; // Clear existing items
+                                Object.entries(search_data).forEach(([key, value]) => {
+                                    const listItem = document.createElement('li');
+                                    const link = document.createElement('a');
+                                    link.href = value;
+                                    link.textContent = key;
+                                    link.target = '_blank';
+                                    listItem.appendChild(link);
+                                    librarySearchesList.appendChild(listItem);
+                                });
+                                
+                                // Trigger the Bootstrap modal
+                                $('#bookDetailsModal').modal('show');
+                            })
+                            .catch(error => {
+                                console.error('Error fetching book details:', error);
+                            });
                     })
                     .catch(error => {
                         console.error('Error fetching book details:', error);
                     });
+
             });
         });
     });

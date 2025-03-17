@@ -67,7 +67,7 @@
     });
 
     document.getElementById('reset-btn').addEventListener('click', function() {
-        var tree = $('#tree').treeview(true);
+        const tree = $('#tree').treeview(true);
         // Uncheck all checkboxes
         tree.uncheckAll();
         // Collapse all nodes to show only the first level
@@ -75,11 +75,11 @@
     });
 
     document.getElementById('cat-search-btn').addEventListener('click', function() {
-        var tree = $('#tree').treeview(true);
+        const tree = $('#tree').treeview(true);
         // Get checked nodes
-        var checkedNodes = tree.getChecked();
+        const checkedNodes = tree.getChecked();
         // Get checked nodes' ids
-        var checkedNodesIds = checkedNodes.map(function (node) {
+        const checkedNodesIds = checkedNodes.map(function (node) {
             return node.id;
         });
         if (checkedNodesIds.length !== 0) {

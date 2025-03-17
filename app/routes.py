@@ -81,6 +81,9 @@ def register_routes(app):
         error, status, book = _check_for_required_book(request)
         if error:
             return error, status
+        # some descriptions have &nbsp; and these need to be rendered as just space... no markup allowed here
+        book.book_description = book.book_description.replace('\u00A0', '\u0020')
+
         return jsonify(book.to_dict())
 
     @app.route("/library_searches", methods=['GET'])
@@ -88,5 +91,4 @@ def register_routes(app):
         error, status, book = _check_for_required_book(request)
         if error:
             return error, status
-
         return jsonify(build_library_search_urls(book))
