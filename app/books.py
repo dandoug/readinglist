@@ -1,5 +1,7 @@
 from sqlalchemy import asc, Column, Integer, String, Text, DECIMAL, MetaData
 from sqlalchemy.orm import declarative_base
+from urllib.parse import quote_plus
+
 
 Base = declarative_base(metadata=MetaData())
 
@@ -75,3 +77,35 @@ def get_book_by_id(book_id):
     """
     from app import db
     return db.session.query(Book).filter_by(id=book_id).first()
+
+
+SEARCH_TEMPLATES = {
+    "Los Gatos Library": "https://losgatos.aspendiscovery.org/Search/Results?join=AND&bool0[]=AND&lookfor0[]={title}&type0[]=Title&lookfor0[]={author}&type0[]=Author&submit=Find",
+    "Santa Clara Country Library": "https://sccl.bibliocommons.com/v2/search?custom_edit=false&query=(title%3A({title})%20AND%20contributor%3A({author}))&searchType=bl&suppress=true",
+    "San Diego Library": "https://sandiego.bibliocommons.com/v2/search?custom_edit=false&query=(title%3A({title})%20AND%20contributor%3A({author})%20)&searchType=bl&suppress=true",
+    "San Diego County Library": "https://sdcl.bibliocommons.com/v2/search?custom_edit=false&query=(anywhere%3A({title})%20AND%20anywhere%3A({author})%20)&searchType=bl&suppress=true",
+    "Placer County Library": "https://placer.polarislibrary.com/polaris/search/searchresults.aspx?type=Advanced&term={title}&relation=ALL&by=TI&term2={author}&relation2=ALL&by2=AU&bool1=AND&limit=TOM=*&sort=RELEVANCE&page=0",
+    "Nevada County Library": "https://library.nevadacountyca.gov/polaris/search/searchresults.aspx?ctx=1.1033.0.0.1&type=Advanced&term={title}&relation=ALL&by=TI&term2={author}&relation2=ALL&by2=AU&bool1=AND&bool4=AND&limit=(TOM=*%20AND%20OWN=1)&sort=RELEVANCE&page=0&searchid=1"
+}
+
+
+def build_library_search_urls(book):
+    """
+    Generates search URLs for a library system based on a given book's title and author.
+    The function uses predefined templates to construct the URLs by encoding the book's
+    title and author and replacing placeholders in the template strings.
+
+    :param book: An object representing a book with properties `title` and `author`.
+    :type book: Book
+    :return: A dictionary of search URLs where keys are search provider identifiers
+             and values are the constructed URLs with the book title and author
+             information encoded.
+    :rtype: dict
+    """
+    escaped_title = quote_plus(book.title, safe="")
+    escaped_author = quote_plus(book.author, safe="")
+    search_urls = {
+        key: value.replace("{title}", escaped_title).replace("{author}", escaped_author)
+        for key, value in SEARCH_TEMPLATES.items()
+    }
+    return search_urls

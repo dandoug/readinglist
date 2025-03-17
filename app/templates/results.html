@@ -66,7 +66,7 @@
                 </thead>
                 <tbody>
                     {% for book in books %}
-                    <tr class="align-middle">
+                    <tr class="align-middle" data-id="{{ book.id }}">
                         <td>
                             <div style="display: flex; align-items: center;">
                                 <!-- Display the book cover image -->
@@ -85,6 +85,38 @@
                     {% endfor %}
                 </tbody>
             </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="bookDetailsModal" tabindex="-1" role="dialog" aria-labelledby="bookDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h5 class="modal-title" id="bookDetailsModalLabel">Book Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!-- Modal Body -->
+            <div class="modal-body">
+                <p><strong>ID:</strong> <span id="modal-id"></span></p>
+                <p><strong>Title:</strong> <span id="modal-title"></span></p>
+                <p><strong>Author:</strong> <span id="modal-author"></span></p>
+                <p><strong>Description:</strong> <span id="modal-description"></span></p>
+                <p><strong>Rating:</strong> <span id="modal-rating"></span></p>
+                <p><strong>Book Cover:</strong> <br><img id="modal-image" src="" alt="Book Cover" style="max-width: 100%; height: auto;"/></p>
+                <p><strong>Categories:</strong> <span id="modal-categories-flat"></span></p>
+                <p><strong>Pages:</strong> <span id="modal-pages"></span></p>
+                <p><strong>ISBN (10):</strong> <span id="modal-isbn10"></span></p>
+                <p><strong>ISBN (13):</strong> <span id="modal-isbn13"></span></p>
+                <p><strong>ASIN:</strong> <span id="modal-asin"></span></p>
+                <p><strong>Bestsellers Rank:</strong> <span id="modal-bestsellers-rank-flat"></span></p>
+                <p><strong>Specifications:</strong> <span id="modal-specifications-flat"></span></p>
+                <p><strong>Buy on Amazon:</strong> <a id="modal-link" href="#" target="_blank">View Book</a></p>
+            </div>
         </div>
     </div>
 </div>
@@ -153,5 +185,47 @@
         });
     });
 
+    document.addEventListener('DOMContentLoaded', function () {
+        // Add click listeners to all rows
+        const rows = document.querySelectorAll('tbody tr');
+        rows.forEach(row => {
+            row.addEventListener('click', function () {
+                const bookId = row.getAttribute('data-id');
+                if (!bookId) return;
+
+                // Fetch book details from the API
+                fetch(`/details?id=${bookId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            alert(`Error: ${data.error}`);
+                            return;
+                        }
+
+                        // Populate the modal fields using data
+                        document.getElementById('modal-id').textContent = data.id || 'N/A';
+                        document.getElementById('modal-title').textContent = data.title || 'N/A';
+                        document.getElementById('modal-author').textContent = data.author || 'N/A';
+                        document.getElementById('modal-description').textContent = data.book_description || 'N/A';
+                        document.getElementById('modal-rating').textContent = data.rating || 'N/A';
+                        document.getElementById('modal-image').setAttribute('src', data.image || '');
+                        document.getElementById('modal-categories-flat').textContent = data.categories_flat || 'N/A';
+                        document.getElementById('modal-pages').textContent = data.hardcover || 'N/A';
+                        document.getElementById('modal-isbn10').textContent = data.isbn_10 || 'N/A';
+                        document.getElementById('modal-isbn13').textContent = data.isbn_13 || 'N/A';
+                        document.getElementById('modal-asin').textContent = data.asin || 'N/A';
+                        document.getElementById('modal-bestsellers-rank-flat').textContent = data.bestsellers_rank_flat || 'N/A';
+                        document.getElementById('modal-specifications-flat').textContent = data.specifications_flat || 'N/A';
+                        document.getElementById('modal-link').setAttribute('href', data.link || '#');
+
+                        // Trigger the Bootstrap modal
+                        $('#bookDetailsModal').modal('show');
+                    })
+                    .catch(error => {
+                        console.error('Error fetching book details:', error);
+                    });
+            });
+        });
+    });
 </script>
 {% endblock %}

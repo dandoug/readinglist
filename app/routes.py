@@ -1,7 +1,32 @@
 from flask import render_template, request, jsonify
 
 from app.categories import get_category_bs_tree, id_to_fullpath
-from app.books import search_by_categories, get_book_by_id
+from app.books import search_by_categories, get_book_by_id, build_library_search_urls
+
+
+def _check_for_required_book(req):
+    """
+    Checks for the required book based on the 'id' parameter provided in the request and returns appropriate
+    responses in cases of an invalid or missing ID, or if the book with the given ID does not exist.
+
+    :param req: Flask request object containing request arguments.
+    :type req: flask.request.Request
+    :return:
+        A tuple containing three values:
+            - A JSON response object with an error message or None.
+            - HTTP status code (400 or 404 in case of errors, None if successful).
+            - The book object if it exists, otherwise None.
+    :rtype: tuple
+    """
+    book_id = req.args.get('id')
+    if not book_id or not book_id.isdigit():
+        return jsonify({"error": "Invalid or missing 'id' parameter"}), 400, None
+
+    book = get_book_by_id(book_id)
+    if not book:
+        return jsonify({"error": f"Book {book_id} not found"}), 404, None
+
+    return None, 200, book
 
 
 def register_routes(app):
@@ -53,12 +78,15 @@ def register_routes(app):
         information in JSON format by providing the book ID via the query
         parameter `id`.
         """
-        book_id = request.args.get('id')
-        if not book_id or not book_id.isdigit():
-            return jsonify({"error": "Invalid or missing 'id' parameter"}), 400
-
-        book = get_book_by_id(book_id)
-        if not book:
-            return jsonify({"error": f"Book {book_id} not found"}), 404
-
+        error, status, book = _check_for_required_book(request)
+        if error:
+            return error, status
         return jsonify(book.to_dict())
+
+    @app.route("/library_searches", methods=['GET'])
+    def library_searches():
+        error, status, book = _check_for_required_book(request)
+        if error:
+            return error, status
+
+        return jsonify(build_library_search_urls(book))
