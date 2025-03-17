@@ -1,6 +1,8 @@
 import os
 from urllib.parse import quote
 
+from app.books import Book
+
 
 def init_db(app):
     """
@@ -27,4 +29,7 @@ def init_db(app):
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
     from app import db
-    db.init_app(app)
+    with app.app_context():
+        db.init_app(app)
+
+        Book.bind(db)

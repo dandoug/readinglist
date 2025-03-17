@@ -5,11 +5,10 @@ from flask_sqlalchemy import SQLAlchemy
 from app.routes import register_routes
 from app.database import init_db
 
+
 load_dotenv()  # Loads variables from .env into the environment if file exists
 
 db = SQLAlchemy()
-
-
 
 def create_app():
     """
@@ -20,6 +19,7 @@ def create_app():
     :return: Flask application instance.
     :rtype: Flask
     """
+
     app = Flask(__name__, template_folder="templates", static_folder="static")
 
     init_db(app)

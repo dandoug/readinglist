@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+<!-- Title -->
+{% block title %} Search Results {% endblock %}
+
+<!-- Body -->
+{% block body %}
+<div class="container mt-3">
+    <!-- Row 1: Logo and Heading -->
+    <div class="row align-items-center">
+        <!-- Logo -->
+        <div class="col-auto">
+            <img src="{{ url_for('static', filename='images/booksearch.png') }}"
+                 alt="Book Search Logo" class="img-fluid" style="width: 100px;">
+        </div>
+        <!-- Heading -->
+        <div class="col">
+            <h1>Search Results</h1>
+        </div>
+    </div>
+
+    <!-- Row 2: Text (span) and Action Buttons -->
+    <div class="row align-items-center mt-1">
+        <!-- Text -->
+        <div class="col">
+            <span>These are the results of your search:</span>
+        </div>
+        <!-- Buttons -->
+        <div class="col-auto text-end">
+            <button id="new-search-btn" type="button" class="btn btn-sm btn-primary">New Search</button>
+        </div>
+    </div>
+
+    <!-- Row 3: Search result table -->
+    <div class="row mt-1">
+        <div class="col">
+            <div id="results-container" class="container mt-1">
+                <table class="table table-striped table-bordered table-hover">
+                    <thead class="bg-warning text-dark">
+                        <tr>
+                            <th scope="col">Title</th>
+                            <th scope="col">Author</th>
+                            <th scope="col">Rating</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for book in books %}
+                        <tr class="align-middle">
+                            <td>
+                                <div style="display: flex; align-items: center;">
+                                    <!-- Display the book cover image -->
+                                    <a href="{{ book.link }}" target="_blank">
+                                    <img src="{{ book.image }}" alt="Book Cover" style="height: 50px; margin-right: 10px;">
+                                    </a>
+                                    <!-- Display the title -->
+                                    <span>{{ book.title }}</span>
+                                </div>
+                            </td>
+                            <td class="align-middle">{{ book.author }}</td>
+                            <td class="align-middle">{{ book.rating }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+<!-- Scripts -->
+{% block scripts %}
+<script>
+
+    document.getElementById('new-search-btn').addEventListener('click', function() {
+        history.back();
+    });
+
+</script>
+{% endblock %}

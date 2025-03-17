@@ -1,6 +1,7 @@
 from flask import render_template, request, jsonify
 
 from app.categories import get_category_bs_tree, id_to_fullpath
+from app.books import search_by_categories
 
 
 def register_routes(app):
@@ -22,12 +23,15 @@ def register_routes(app):
 
     @app.route('/search', methods=['GET'])
     def search():
-        # Extract category parms and decode to full path strings
+        # Extract category params and decode to full path strings
         categories_fullpath = [
             id_to_fullpath(category) for category in request.args.getlist('cat')
         ]
 
-        # Example response, for testing and development
-        return jsonify({
-            'categories_fullpath': categories_fullpath
-        })
+        if categories_fullpath:
+            bks = search_by_categories(categories_fullpath)
+            return render_template('results.html', books=bks)
+        else:
+            return jsonify({
+                'categories_fullpath': categories_fullpath
+            })
