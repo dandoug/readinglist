@@ -26,6 +26,9 @@ class Book(Base):
     bestsellers_rank_flat = Column(Text)
     specifications_flat = Column(Text)
 
+    def to_dict(self):
+        return {column.name: getattr(self, column.name) for column in self.__table__.columns}
+
     def __repr__(self):
         return f"<Book(id={self.id}, title={self.title}, author={self.author})>"
 
@@ -58,3 +61,17 @@ def search_by_categories(categories):
     )
 
     return results
+
+
+def get_book_by_id(book_id):
+    """
+    Query the database and retrieve a book by its primary key (`book_id`).
+
+    Args:
+        book_id (int): The primary key of the book.
+
+    Returns:
+        Book: The book matching the provided `book_id`, or None if no match is found.
+    """
+    from app import db
+    return db.session.query(Book).filter_by(id=book_id).first()
