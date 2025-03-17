@@ -41,6 +41,7 @@
                             <th scope="col">Title</th>
                             <th scope="col">Author</th>
                             <th scope="col">Rating</th>
+                            <th scope="col">Pages</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -58,6 +59,8 @@
                             </td>
                             <td class="align-middle">{{ book.author }}</td>
                             <td class="align-middle">{{ book.rating }}</td>
+                            <td class="align-middle">{{ book.hardcover if book.hardcover else ''
+ }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
