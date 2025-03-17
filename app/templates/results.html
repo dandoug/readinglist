@@ -3,9 +3,13 @@
 <!-- Title -->
 {% block title %} Search Results {% endblock %}
 
+{% block head %}
+<link href="{{ url_for('static', filename='css/sortedTables.css') }}" rel="stylesheet"/>
+{% endblock %}
+
 <!-- Body -->
 {% block body %}
-<div class="container mt-3">
+<div class="container table-responsive mt-3">
     <!-- Row 1: Logo and Heading -->
     <div class="row align-items-center">
         <!-- Logo -->
@@ -32,40 +36,55 @@
     </div>
 
     <!-- Row 3: Search result table -->
-    <div class="row mt-1">
+    <div class="row align-items-center mt-1">
         <div class="col">
-            <div id="results-container" class="container mt-1">
-                <table class="table table-striped table-bordered table-hover">
-                    <thead class="bg-warning text-dark">
-                        <tr>
-                            <th class="align-middle" scope="col" data-column="title" data-order="asc">Title &#9651;</th>
-                            <th class="align-middle" scope="col" data-column="author" data-order="asc">Author &#9651;</th>
-                            <th class="align-middle" scope="col" data-column="rating" data-order="asc">Rating &#9651;</th>
-                            <th class="align-middle" scope="col" data-column="pages">Pages</th> <!-- Excluded from sorting -->
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for book in books %}
-                        <tr class="align-middle">
-                            <td>
-                                <div style="display: flex; align-items: center;">
-                                    <!-- Display the book cover image -->
-                                    <a href="{{ book.link }}" target="_blank">
-                                    <img src="{{ book.image }}" alt="Book Cover" style="height: 50px; margin-right: 10px;">
-                                    </a>
-                                    <!-- Display the title -->
-                                    <span>{{ book.title }}</span>
-                                </div>
-                            </td>
-                            <td class="align-middle"><span>{{ book.author }}</span></td>
-                            <td class="align-middle"><span>{{ book.rating }}</span></td>
-                            <td class="align-middle"><span>{{ book.hardcover if book.hardcover else ''
- }}</span></td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+            <table class="table table-striped table-bordered table-hover">
+                <thead class="bg-warning text-dark">
+                    <tr>
+                        <th style="width: 40%;" class="align-middle sortable-header" scope="col" data-column="title" data-order="asc">
+                            <div class="sortable-header-content">
+                            <span class="header-text">Title</span>
+                            <span class="sort-arrow">&#9651;</span>
+                            </div>
+                        </th>
+                        <th style="width: 20%;" class="align-middle sortable-header" scope="col" data-column="author" data-order="asc">
+                            <div class="sortable-header-content">
+                            <span class="header-text">Author</span>
+                            <span class="sort-arrow">&#9651;</span>
+                            </div>
+                        </th>
+                        <th style="width: 10%;"  class="align-middle sortable-header" scope="col" data-column="rating" data-order="asc">
+                            <div class="sortable-header-content">
+                            <span class="header-text">Rating</span>
+                            <span class="sort-arrow">&#9651;</span>
+                            </div>
+                        </th>
+                        <th style="width: 10%;"  class="align-middle" scope="col" data-column="pages">
+                            <span class="header-text">Pages</span>
+                        </th> <!-- Excluded from sorting -->
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for book in books %}
+                    <tr class="align-middle">
+                        <td>
+                            <div style="display: flex; align-items: center;">
+                                <!-- Display the book cover image -->
+                                <a href="{{ book.link }}" target="_blank">
+                                <img src="{{ book.image }}" alt="Book Cover" style="height: 50px; margin-right: 10px;">
+                                </a>
+                                <!-- Display the title -->
+                                <span>{{ book.title }}</span>
+                            </div>
+                        </td>
+                        <td class="align-middle"><span>{{ book.author }}</span></td>
+                        <td class="align-middle"><span>{{ book.rating }}</span></td>
+                        <td class="align-middle"><span>{{ book.hardcover if book.hardcover else ''
+}}</span></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
@@ -107,26 +126,26 @@
         rows.forEach(row => tbody.appendChild(row));
     }
 
-    // Add sorting event listeners to each table header, except for 'Pages'
-    document.querySelectorAll("th[data-column]").forEach((header, index) => {
-        // Skip adding sorting to the 'Pages' column
-        if (header.dataset.column === "pages") {
-            return;
-        }
-
+    document.querySelectorAll(".sortable-header").forEach((header, index) => {
         header.addEventListener("click", () => {
-            // Get the current sort order
-            const currentOrder = header.dataset.order;
-
-            // Determine the new sort order (toggle between asc and desc)
+            const currentOrder = header.getAttribute("data-order");
             const newOrder = currentOrder === "asc" ? "desc" : "asc";
-            header.dataset.order = newOrder;
 
-            // Change the sort arrow direction
-            header.innerHTML = header.innerHTML.replace(
-                currentOrder === "asc" ? "&#9651;" : "&#9661;",
-                newOrder === "asc" ? "&#9651;" : "&#9661;"
-            );
+            // Update the arrow direction for the sorting header
+            const arrow = header.querySelector(".sort-arrow");
+            arrow.innerHTML = newOrder === "asc" ? "&#9650;" : "&#9660;";
+
+            // Reset the arrows for all other columns except the clicked one
+            document.querySelectorAll(".sortable-header").forEach((otherHeader, otherIndex) => {
+                if (otherIndex !== index) {
+                    const otherArrow = otherHeader.querySelector(".sort-arrow");
+                    otherArrow.innerHTML = "&#9651;"; // Reset to ascending arrow
+                    otherHeader.setAttribute("data-order", "asc"); // Reset order as ascending
+                }
+            });
+
+            // Update the data attribute
+            header.setAttribute("data-order", newOrder);
 
             // Perform sorting
             const table = header.closest("table");

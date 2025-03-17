@@ -1,0 +1,17 @@
+.sortable-header {
+    align-items: center; /* Vertically aligns text and arrow */
+}
+
+.sortable-header-content {
+    display: flex;
+    justify-content: space-between; /* Ensures items are spaced left and right */
+}
+
+.header-text {
+    text-align: left; /* Keeps the text left-aligned */
+}
+
+.sort-arrow {
+    text-align: right; /* Aligns the arrow to the right */
+    font-size: 0.8rem; /* Optional: Adjust size of the arrow */
+}
