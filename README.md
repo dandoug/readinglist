@@ -23,6 +23,23 @@ $ pip install -r requirements.txt
 
 There a file called [.env.sample](.env.sample) in the project root.  You should copy this and rename it to [.env]()   Edit the renamed file and set the environment variables in it to match your environment (read the comments in the file for more hints).  This file should never be checked into source control.  In a production environment, the environment variables set this way would typically be set externally and so this file probably wouldn't even exist.  It's intended for local development and testing.
 
+### Database schema
+
+The DDL to create the database table is in [books.sql](model/books.sql).
+
+### Running locally
+
+Once the environment is installed, configured, and activated, the application can be run locally with
+
+```bash
+$ python run.py
+```
+
+The application will be available on [http://127.0.0.1:8000](http://127.0.0.1:8000).
+
+## Deployment to AWS Elastic Beanstalk
+
+The files in [.ebextensions](.ebextensions) are for deploying to AWS Elastic Beanstalk and include certificate generation and installation by [certbot](https://eff-certbot.readthedocs.io/en/stable/using.html#certbot-command-line-options).  The deployed application runs at [https://readinglist.media/](https://readinglist.media/).
 
 
 
