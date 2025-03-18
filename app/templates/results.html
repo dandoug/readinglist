@@ -27,7 +27,11 @@
     <div class="row align-items-center mt-1">
         <!-- Text -->
         <div class="col">
-            <span>These are the results of your search:</span>
+            <span>{{
+                "Found " ~ (books|length|string) ~ " matching books." if books|length > 1 else
+                "Found a matching book." if books|length == 1 else
+                "No matching books were found."
+            }}</span>
         </div>
         <!-- Buttons -->
         <div class="col-auto text-end">
@@ -210,19 +214,19 @@
                                 }
 
                                 // Populate the modal fields using data
-                                document.getElementById('modal-id').textContent = data.id || 'N/A';
-                                document.getElementById('modal-title').textContent = data.title || 'N/A';
-                                document.getElementById('modal-author').textContent = data.author || 'N/A';
-                                document.getElementById('modal-description').textContent = data.book_description || 'N/A';
-                                document.getElementById('modal-rating').textContent = data.rating || 'N/A';
+                                document.getElementById('modal-id').textContent = data.id;
+                                document.getElementById('modal-title').textContent = data.title;
+                                document.getElementById('modal-author').textContent = data.author;
+                                document.getElementById('modal-description').textContent = data.book_description || '';
+                                document.getElementById('modal-rating').textContent = data.rating || '';
                                 document.getElementById('modal-image').setAttribute('src', data.image || '');
-                                document.getElementById('modal-categories-flat').textContent = data.categories_flat || 'N/A';
-                                document.getElementById('modal-pages').textContent = data.hardcover || 'N/A';
-                                document.getElementById('modal-isbn10').textContent = data.isbn_10 || 'N/A';
-                                document.getElementById('modal-isbn13').textContent = data.isbn_13 || 'N/A';
-                                document.getElementById('modal-asin').textContent = data.asin || 'N/A';
-                                document.getElementById('modal-bestsellers-rank-flat').textContent = data.bestsellers_rank_flat || 'N/A';
-                                document.getElementById('modal-specifications-flat').textContent = data.specifications_flat || 'N/A';
+                                document.getElementById('modal-categories-flat').textContent = data.categories_flat || '';
+                                document.getElementById('modal-pages').textContent = data.hardcover || '';
+                                document.getElementById('modal-isbn10').textContent = data.isbn_10 || '';
+                                document.getElementById('modal-isbn13').textContent = data.isbn_13 || '';
+                                document.getElementById('modal-asin').textContent = data.asin || '';
+                                document.getElementById('modal-bestsellers-rank-flat').textContent = data.bestsellers_rank_flat || '';
+                                document.getElementById('modal-specifications-flat').textContent = data.specifications_flat || '';
                                 document.getElementById('modal-buy-on-amazon-btn').setAttribute('href', data.link || '#');
 
                                 const librarySearchesList = document.getElementById('modal-library-searches');

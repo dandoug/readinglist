@@ -1,0 +1,24 @@
+/* Remove border between tabs and card */
+.nav-tabs .nav-link.active {
+    border-bottom-color: transparent !important;
+}
+
+/* If needed, remove card border-top to blend better */
+.card {
+    border-top: none;
+}
+
+.card-body {
+    padding-top: 0.5rem;
+}
+
+label {
+    margin-bottom: 0;
+}
+
+.form-control {
+    padding-top: 0;
+    padding-right: .75rem;
+    padding-left: .75rem;
+    padding-bottom: 0;
+}

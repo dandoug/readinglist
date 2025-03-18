@@ -65,6 +65,74 @@ def search_by_categories(categories):
     return results
 
 
+def search_by_author(author):
+    """
+    Search for books by their author's name.
+
+    This function queries a database to find all books with an author's name that
+    partially matches the given input. The search is case-insensitive and supports
+    partial matching. Results are sorted in ascending order by
+    author names before returning.
+
+    :param author: Partial or full name of the author to search for.
+    :type author: str
+    :return: A list of Book objects matching the specified author criteria.
+    :rtype: list
+    """
+    if not author:
+        return []
+
+    from app import db
+    if author == "*":
+        # shorthand to get all books
+        return db.session.query(Book).order_by(asc(Book.author)).all()
+    # otherwise do actual search
+    results = (
+        db.session.query(Book)
+        .filter(Book.author.ilike(f"%{author}%"))
+        .order_by(
+            asc(Book.author)
+        )
+        .all()
+    )
+    return results
+
+
+def search_by_title(title):
+    """
+    Search for books by their title in the database.
+
+    This function performs a case-insensitive search for books based on the
+    given title. It uses the LIKE operator to find matches containing the
+    specified title as a substring. The results are ordered alphabetically
+    by the book title.
+
+    :param title: The title or partial title of the book to search for. Must
+        be a string.
+    :return: A list of Book objects that match the given title, sorted
+        alphabetically by their titles. Returns an empty list if no
+        matches are found.
+    """
+    if not title:
+        return []
+
+    from app import db
+    if title == "*":
+        # shorthand to get all books
+        return db.session.query(Book).order_by(asc(Book.title)).all()
+
+    # otherwise do actual search
+    results = (
+        db.session.query(Book)
+        .filter(Book.title.ilike(f"%{title}%"))
+        .order_by(
+            asc(Book.title)
+        )
+        .all()
+    )
+    return results
+
+
 def get_book_by_id(book_id):
     """
     Query the database and retrieve a book by its primary key (`book_id`).

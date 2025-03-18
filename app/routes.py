@@ -1,7 +1,7 @@
 from flask import render_template, request, jsonify
 
 from app.categories import get_category_bs_tree, id_to_fullpath
-from app.books import search_by_categories, get_book_by_id, build_library_search_urls
+from app.books import search_by_categories, get_book_by_id, build_library_search_urls, search_by_author, search_by_title
 
 
 def _check_for_required_book(req):
@@ -49,26 +49,26 @@ def register_routes(app):
     @app.route('/search', methods=['GET'])
     def search():
         """
-        Registers application routes including the `/search` endpoint functionality.
+        Search for books.  One of author, title or cat must be specified.
 
-        The `/search` route is designed to handle GET requests that include category
-        parameters. These parameters are processed to obtain full path strings and
-        are used to perform a book search. Depending on the presence of valid input
-        categories, results are rendered in an HTML template or returned as JSON
-        response.
+        :return:
         """
-        # Extract category params and decode to full path strings
-        categories_fullpath = [
-            id_to_fullpath(category) for category in request.args.getlist('cat')
-        ]
+        author = request.args.get('author')
+        title = request.args.get('title')
+        categories = request.args.getlist('cat')
 
-        if categories_fullpath:
-            bks = search_by_categories(categories_fullpath)
-            return render_template('results.html', books=bks)
+        if author:
+            bks = search_by_author(author)
+        elif title:
+            bks = search_by_title(title)
+        elif categories:
+            # Decode encoded categories to full path strings before searching
+            bks = search_by_categories([id_to_fullpath(category) for category in categories])
         else:
-            return jsonify({
-                'categories_fullpath': categories_fullpath
-            })
+            # one of author, title or cat must be specified
+            return jsonify({"error": "Missing author, title, or cat search parameter"}), 400, None
+
+        return render_template('results.html', books=bks)
 
     @app.route('/details', methods=['GET'])
     def details():
