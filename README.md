@@ -39,7 +39,7 @@ The application will be available on [http://127.0.0.1:8000](http://127.0.0.1:80
 
 ## Deployment to AWS Elastic Beanstalk
 
-The files in [.ebextensions](.ebextensions) are for deploying to AWS Elastic Beanstalk and include certificate generation and installation by [certbot](https://eff-certbot.readthedocs.io/en/stable/using.html#certbot-command-line-options).  The deployed application runs at [https://readinglist.media/](https://readinglist.media/).
+The files in [.ebextensions](.ebextensions) are for deploying to AWS Elastic Beanstalk and include certificate generation and installation by [certbot](https://eff-certbot.readthedocs.io/en/stable/using.html#certbot-command-line-options).  The deployed application runs at [https://booklist.media/](https://booklist.media/).
 
 
 
