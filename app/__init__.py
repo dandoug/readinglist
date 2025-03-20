@@ -1,3 +1,4 @@
+import os
 from dotenv import load_dotenv
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
@@ -10,6 +11,7 @@ load_dotenv()  # Loads variables from .env into the environment if file exists
 
 db = SQLAlchemy()
 
+
 def create_app():
     """
     Creates and configures the Flask application instance. This function is
@@ -21,6 +23,9 @@ def create_app():
     """
 
     app = Flask(__name__, template_folder="templates", static_folder="static")
+    # Load config by environment
+    env = os.getenv("FLASK_ENV", "development")  # Default to "development"
+    app.config.from_object(f"app.config.{env.capitalize()}Config")
 
     init_db(app)
 
