@@ -1,0 +1,44 @@
+{% extends 'admin/model/list.html' %}
+
+{% block model_menu_bar %}
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+        <a href="javascript:void(0)" class="nav-link active">{{ _gettext('List') }}{% if count %} ({{ count }}){% endif %}</a>
+    </li>
+
+    <li class="nav-item">
+        <a href="/register" title="{{ _gettext('Register New User') }}" class="nav-link">{{ _gettext('Register') }}</a>
+    </li>
+
+    {% if admin_view.can_export %}
+        {{ model_layout.export_options() }}
+    {% endif %}
+
+    {% block model_menu_bar_before_filters %}{% endblock %}
+
+    {% if filters %}
+    <li class="nav-item dropdown">
+        {{ model_layout.filter_options() }}
+    </li>
+    {% endif %}
+
+    {% if can_set_page_size %}
+    <li class="nav-item dropdown">
+        {{ model_layout.page_size_form(page_size_url) }}
+    </li>
+    {% endif %}
+
+    {% if actions %}
+    <li class="nav-item dropdown">
+        {{ actionlib.dropdown(actions) }}
+    </li>
+    {% endif %}
+
+    {% if search_supported %}
+    <li class="nav-item ml-2">
+        {{ model_layout.search_form() }}
+    </li>
+    {% endif %}
+    {% block model_menu_bar_after_filters %}{% endblock %}
+</ul>
+{% endblock %}

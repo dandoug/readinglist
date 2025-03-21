@@ -20,6 +20,9 @@ for files located in the [css](css) or [js](js) directories, as appropriate.
 ### Bootstrap 4
 * [Bootstrap 4.6](https://getbootstrap.com/docs/4.6/getting-started/introduction/) - to be compatible with PatternFly Treeview
 
+### Bootswatch
+* [Sandstone](https://bootswatch.com/4/sandstone/) - override default Bootstrap4 styling... other choices available at Bootswatch.  Sandstone installed as [bootstrap.min.css](css/bootstrap.min.css).
+
 ### JQuery
 * [JQuery 3.7](https://api.jquery.com/)
 

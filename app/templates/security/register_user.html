@@ -1,0 +1,50 @@
+{% set title = title|default(_fsdomain('Register')) %}
+{% extends "base.html" %}
+{% from "security/_macros.html" import render_field_with_errors, render_field, render_form_errors, render_field_errors %}
+
+{% block content %}
+<div class="container mt-3">
+    {% include "security/_messages.html" %}
+
+    {% set form_title_heading="Register new user" %}
+    {% include "security/_form_title_include.html" %}
+
+    <div class="mt-2">
+        <form action="{{ url_for('custom_register') }}" method="post" name="register_user_form">
+            {{ register_user_form.hidden_tag() }}
+
+            <!-- Form errors (if any) -->
+            <div class="form-group">
+                {{ render_form_errors(register_user_form) }}
+            </div>
+
+            <!-- Email -->
+            <div class="form-group">
+                {{ render_field_with_errors(register_user_form.email, class_="form-control") }}
+            </div>
+
+            <!-- Password -->
+            <div class="form-group">
+                {{ render_field_with_errors(register_user_form.password, class_="form-control") }}
+            </div>
+
+            <!-- Password Confirm -->
+            <div class="form-group">
+                {{ render_field_with_errors(register_user_form.password_confirm, class_="form-control") }}
+            </div>
+
+            <!-- CSRF Token errors (if any) -->
+            <div class="form-group">
+                {{ render_field_errors(register_user_form.csrf_token) }}
+            </div>
+
+            <!-- Submit -->
+            <div class="form-group">
+                {{ render_field(register_user_form.submit, class_="btn btn-primary") }}
+            </div>
+        </form>
+
+        {% include "security/_menu.html" %}
+    </div>
+</div>
+{% endblock content %}

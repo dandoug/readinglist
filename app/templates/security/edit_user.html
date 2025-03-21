@@ -1,0 +1,20 @@
+{% extends 'admin/model/edit.html' %}
+
+  {% block navlinks %}
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+        <a href="{{ return_url }}" class="nav-link">{{ _gettext('List') }}</a>
+    </li>
+    <li class="nav-item">
+        <a href="/register" title="{{ _gettext('Register New User') }}" class="nav-link">{{ _gettext('Register') }}</a>
+    </li>
+    <li class="nav-item">
+        <a href="javascript:void(0)" class="nav-link active">{{ _gettext('Edit') }}</a>
+    </li>
+    {%- if admin_view.can_view_details -%}
+    <li class="nav-item">
+        <a class="nav-link" href="{{ get_url('.details_view', id=request.args.get('id'), url=return_url) }}">{{ _gettext('Details') }}</a>
+    </li>
+    {%- endif -%}
+  </ul>
+  {% endblock %}

@@ -3,25 +3,43 @@
 <!-- Title -->
 {% block title %} Search Books {% endblock %}
 
-{% block head %}
+{% block styles %}
+{{ super() }}
 <link href="{{ url_for('static', filename='css/navtabs.css') }}" rel="stylesheet"/>
 {% endblock %}
 
 <!-- Body -->
-{% block body %}
+{% block content %}
 <div class="container mt-3">
-    <!-- Row 1: Logo and Heading -->
-    <div class="row align-items-center">
-        <!-- Logo -->
-        <div class="col-auto">
-            <img src="{{ url_for('static', filename='images/booksearch.png') }}"
-                 alt="Book Search Logo" class="img-fluid" style="width: 100px;">
-        </div>
-        <!-- Heading -->
-        <div class="col">
-            <h1>Book Search</h1>
-        </div>
+<!-- Row 1: Logo, Heading, and Login/Logout Button -->
+<div class="row align-items-center">
+    <!-- Logo -->
+    <div class="col-auto">
+        <img src="{{ url_for('static', filename='images/booksearch.png') }}"
+             alt="Book Search Logo" class="img-fluid" style="width: 100px;">
     </div>
+    <!-- Heading -->
+    <div class="col d-flex align-items-center" style="transform: translateY(-20%);">
+        <h1 class="mb-0" style="line-height: 1;">Book Search</h1>
+    </div>
+    <!-- Login/Logout Button -->
+    <div class="col-auto text-end d-flex flex-column align-items-end" style="transform: translateY(-20%);">
+        {% if current_user.is_authenticated %}
+            <p class="mb-1 text-muted small" style="line-height: 1;">{{ current_user.email }}</p>
+            <div class="d-flex">
+                {% if 'admin' in current_user.roles %}
+                    <a href="/admin" class="btn btn-sm btn-primary mr-2">Admin</a>
+                {% endif %}
+                <a href="/logout" class="btn btn-sm btn-secondary">Logout</a>
+            </div>
+        {% else %}
+            <p class="mb-1 text-muted small" style="line-height: 1;">&nbsp;</p>
+            <a href="/login" class="btn btn-sm btn-info">Login</a>
+        {% endif %}
+    </div>
+</div>
+
+
 
     <!-- Tabs Section -->
     <div class="mt-2">
@@ -116,6 +134,7 @@
 
 <!-- Scripts -->
 {% block scripts %}
+{{ super() }}
 <script>
     $(document).ready(function() {
         // Initialize treeview for categories

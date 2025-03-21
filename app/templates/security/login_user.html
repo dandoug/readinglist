@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% from "security/_macros.html" import render_field_with_errors, render_field, render_field_errors, render_form_errors, prop_next %}
+
+{% block content %}
+<div class="container mt-3">
+  {% include "security/_messages.html" %}
+
+  {% set form_title_heading="Login" %}
+  {% include "security/_form_title_include.html" %}
+
+  <div class="mt-2">
+  <form action="{{ url_for_security('login') }}{{ prop_next() }}" method="post" name="login_user_form" class="needs-validation">
+    {{ login_user_form.hidden_tag() }}
+
+    <!-- Render form errors in Bootstrap style -->
+    <div class="text-danger">
+      {{ render_form_errors(login_user_form) }}
+    </div>
+
+    <!-- Email field with Bootstrap classes -->
+    {% if login_user_form.email and "email" in identity_attributes %}
+      <div class="form-group">
+        {{ render_field_with_errors(login_user_form.email, class_="form-control") }}
+      </div>
+    {% endif %}
+
+    <!-- Password field -->
+    <div class="form-group">
+      {{ render_field_with_errors(login_user_form.password, class_="form-control") }}
+    </div>
+
+    <!-- CSRF Token Field -->
+    <div class="text-danger">
+      {{ render_field_errors(login_user_form.csrf_token) }}
+    </div>
+
+    <!-- Submit Button -->
+    <div class="form-group">
+      {{ render_field(login_user_form.submit, class_="btn btn-primary") }}
+    </div>
+  </form>
+  </div>
+  {% set skip_login_menu='True' %}
+  {% include "security/_menu.html" %}
+</div>
+{% endblock content %}

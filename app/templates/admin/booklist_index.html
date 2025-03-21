@@ -1,0 +1,13 @@
+{% extends 'admin/master.html' %}
+
+{% block body %}
+    <div class="container">
+        <p>You are logged in as <span class="text-muted">{{ current_user.email }}</span>.</p>
+        <p>From here you can</p>
+        <ul>
+            <li><a href="/register">Register a new user</a></li>
+            <li><a href="/admin/user">Manage users</a></li>
+            <li><a href="/admin/role">Manage roles</a></li>
+        </ul>
+    </div>
+{% endblock %}
