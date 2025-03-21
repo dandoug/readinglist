@@ -3,12 +3,13 @@
 <!-- Title -->
 {% block title %} Search Results {% endblock %}
 
-{% block head %}
+{% block styles %}
+{{ super() }}
 <link href="{{ url_for('static', filename='css/sortedTables.css') }}" rel="stylesheet"/>
 {% endblock %}
 
 <!-- Body -->
-{% block body %}
+{% block content %}
 <div class="container table-responsive mt-3">
     <!-- Row 1: Logo and Heading -->
     <div class="row align-items-center">
@@ -125,6 +126,7 @@
 
 <!-- Scripts -->
 {% block scripts %}
+{{ super() }}
 <script>
 
     document.getElementById('new-search-btn').addEventListener('click', function() {

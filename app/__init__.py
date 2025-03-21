@@ -1,12 +1,14 @@
 import os
 from dotenv import load_dotenv
 from flask import Flask
+from flask_mailman import Mail
+from flask_security import SQLAlchemyUserDatastore, Security, hash_password
 from flask_sqlalchemy import SQLAlchemy
-
 
 load_dotenv()  # Loads variables from .env into the environment if file exists
 
 db = SQLAlchemy()
+user_datastore = None
 
 
 def create_app():
@@ -24,10 +26,32 @@ def create_app():
     env = os.getenv("FLASK_ENV", "development")  # Default to "development"
     app.config.from_object(f"app.config.{env.capitalize()}Config")
 
+    # Set up email handling using Flask-Mailman
+    mail = Mail(app)  # Initialize Flask-Mailman
+
+    # Setup Flask-Security
+    from app.security.models import User, Role
+    global user_datastore
+    user_datastore = SQLAlchemyUserDatastore(db, User, Role)
+    security = Security(app, user_datastore) # overridden below
+
     db.init_app(app)
+    mail.init_app(app)
+
+    # test setup... remove some of this later
+    with app.app_context():
+        security.datastore.find_or_create_role(name='admin', description='Administrator')
+        security.datastore.find_or_create_role(name='editor', description='Editor')
+        # Create User to test with  # test setup.
+        if not security.datastore.find_user(email="test@me.com"):
+            security.datastore.create_user(email="test@me.com", password=hash_password("password"), roles=["admin"])
+            db.session.commit()
+
+        db.session.commit()
 
     # Import routes
     with app.app_context():
         from . import routes
+        from .security import routes
 
     return app

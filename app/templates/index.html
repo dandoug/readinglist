@@ -3,12 +3,13 @@
 <!-- Title -->
 {% block title %} Search Books {% endblock %}
 
-{% block head %}
+{% block styles %}
+{{ super() }}
 <link href="{{ url_for('static', filename='css/navtabs.css') }}" rel="stylesheet"/>
 {% endblock %}
 
 <!-- Body -->
-{% block body %}
+{% block content %}
 <div class="container mt-3">
     <!-- Row 1: Logo and Heading -->
     <div class="row align-items-center">
@@ -116,6 +117,7 @@
 
 <!-- Scripts -->
 {% block scripts %}
+{{ super() }}
 <script>
     $(document).ready(function() {
         // Initialize treeview for categories
