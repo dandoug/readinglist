@@ -90,7 +90,6 @@ def search_by_categories(categories):
         return []  # Return an empty list if no categories are provided
 
     # Query to search and sort books based on the provided requirements
-    from app import db
     results = (
         db.session.query(Book)
         .filter(Book.categories_flat.in_(categories))  # Match one of the categories
@@ -105,72 +104,50 @@ def search_by_categories(categories):
     return results
 
 
-def search_by_author(author):
-    """
-    Search for books by their author's name.
+VALID_SEARCH_BY_ATTRIBUTES = {"author", "title"}
 
-    This function queries a database to find all books with an author's name that
-    partially matches the given input. The search is case-insensitive and supports
-    partial matching. Results are sorted in ascending order by
-    author names before returning.
 
-    :param author: Partial or full name of the author to search for.
-    :type author: str
-    :return: A list of Book objects matching the specified author criteria.
-    :rtype: list
+def _search_by_attribute(attribute: str, value: str):
     """
-    if not author:
+    Common helper to search books by a specific attribute.
+
+    Args:
+        attribute (str): The name of the book attribute to search (e.g., 'author', 'title').
+        value (str): The search value.
+
+    Returns:
+        list: List of `Book` objects matching the search criteria.
+
+    Raises:
+        ValueError: If the attribute is not valid.
+    """
+    if attribute not in VALID_SEARCH_BY_ATTRIBUTES:
+        raise ValueError(f"Invalid attribute '{attribute}'. Must be one of {VALID_SEARCH_BY_ATTRIBUTES}.")
+
+    if not value:
         return []
 
-    from app import db
-    if author == "*":
-        # shorthand to get all books
-        return db.session.query(Book).order_by(asc(Book.author)).all()
-    # otherwise do actual search
-    results = (
+    # Handle the special case for "*" to return all books sorted by the attribute
+    if value == "*":
+        return db.session.query(Book).order_by(asc(getattr(Book, attribute))).all()
+
+    # Perform a case-insensitive partial match (using ilike)
+    return (
         db.session.query(Book)
-        .filter(Book.author.ilike(f"%{author}%"))
-        .order_by(
-            asc(Book.author)
-        )
+        .filter(getattr(Book, attribute).ilike(f"%{value}%"))
+        .order_by(asc(getattr(Book, attribute)))
         .all()
     )
-    return results
+
+
+def search_by_author(author):
+    """Search for books by author's name."""
+    return _search_by_attribute("author", author)
 
 
 def search_by_title(title):
-    """
-    Search for books by their title in the database.
-
-    This function performs a case-insensitive search for books based on the
-    given title. It uses the LIKE operator to find matches containing the
-    specified title as a substring. The results are ordered alphabetically
-    by the book title.
-
-    :param title: The title or partial title of the book to search for. Must
-        be a string.
-    :return: A list of Book objects that match the given title, sorted
-        alphabetically by their titles. Returns an empty list if no
-        matches are found.
-    """
-    if not title:
-        return []
-
-    from app import db
-    if title == "*":
-        # shorthand to get all books
-        return db.session.query(Book).order_by(asc(Book.title)).all()
-
-    # otherwise do actual search
-    results = (
-        db.session.query(Book)
-        .filter(Book.title.ilike(f"%{title}%"))
-        .order_by(
-            asc(Book.title)
-        )
-        .all()
-    )
-    return results
+    """Search for books by title."""
+    return _search_by_attribute("title", title)
 
 
 def get_book_by_id(book_id):
@@ -183,7 +160,6 @@ def get_book_by_id(book_id):
     Returns:
         Book: The book matching the provided `book_id`, or None if no match is found.
     """
-    from app import db
     return db.session.query(Book).filter_by(id=book_id).first()
 
 

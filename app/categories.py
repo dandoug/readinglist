@@ -1,6 +1,8 @@
 from sqlalchemy import text
 import base64
 
+from . import db
+
 SEPARATOR = ' > '   # separator for full category strings
 
 
@@ -21,7 +23,6 @@ def get_category_list():
         alphabetically.
     :rtype: list[str]
     """
-    from app import db
     with db.engine.connect() as conn:
         result = conn.execute(
             text("SELECT distinct categories_flat FROM readinglist.books order by categories_flat;"))
