@@ -1,4 +1,4 @@
-from flask import render_template, request, jsonify
+from flask import current_app as app, render_template, request, jsonify
 
 from app.categories import get_category_bs_tree, id_to_fullpath
 from app.books import search_by_categories, get_book_by_id, build_library_search_urls, search_by_author, search_by_title
@@ -29,66 +29,57 @@ def _check_for_required_book(req):
     return None, 200, book
 
 
-def register_routes(app):
+@app.route('/')
+def index():  # put application's code here
+    category_bs_tree = get_category_bs_tree()
+    return render_template('index.html', category_bs_tree=category_bs_tree)
+
+
+@app.route('/search', methods=['GET'])
+def search():
     """
-    Register application routes to the given Flask app instance.
+    Search for books.  One of author, title or cat must be specified.
 
-    This function sets up the necessary routes for the Flask application,
-    allowing the app to handle HTTP requests properly. It connects specific
-    URL routes to their corresponding view functions.
-
-    :param app: The Flask application instance to register routes to.
-    :type app: Flask
-    :return: None
+    :return:
     """
-    @app.route('/')
-    def index():  # put application's code here
-        category_bs_tree = get_category_bs_tree()
-        return render_template('index.html', category_bs_tree=category_bs_tree)
+    author = request.args.get('author')
+    title = request.args.get('title')
+    categories = request.args.getlist('cat')
 
-    @app.route('/search', methods=['GET'])
-    def search():
-        """
-        Search for books.  One of author, title or cat must be specified.
+    if author:
+        bks = search_by_author(author)
+    elif title:
+        bks = search_by_title(title)
+    elif categories:
+        # Decode encoded categories to full path strings before searching
+        bks = search_by_categories([id_to_fullpath(category) for category in categories])
+    else:
+        # one of author, title or cat must be specified
+        return jsonify({"error": "Missing author, title, or cat search parameter"}), 400, None
 
-        :return:
-        """
-        author = request.args.get('author')
-        title = request.args.get('title')
-        categories = request.args.getlist('cat')
+    return render_template('results.html', books=bks)
 
-        if author:
-            bks = search_by_author(author)
-        elif title:
-            bks = search_by_title(title)
-        elif categories:
-            # Decode encoded categories to full path strings before searching
-            bks = search_by_categories([id_to_fullpath(category) for category in categories])
-        else:
-            # one of author, title or cat must be specified
-            return jsonify({"error": "Missing author, title, or cat search parameter"}), 400, None
 
-        return render_template('results.html', books=bks)
+@app.route('/details', methods=['GET'])
+def details():
+    """
+    Registers API routes for the application and defines a single endpoint
+    to fetch book details by ID. The route '/details' allows fetching book
+    information in JSON format by providing the book ID via the query
+    parameter `id`.
+    """
+    error, status, book = _check_for_required_book(request)
+    if error:
+        return error, status
+    # some descriptions have &nbsp; and these need to be rendered as just space... no markup allowed here
+    book.book_description = book.book_description.replace('\u00A0', '\u0020')
 
-    @app.route('/details', methods=['GET'])
-    def details():
-        """
-        Registers API routes for the application and defines a single endpoint
-        to fetch book details by ID. The route '/details' allows fetching book
-        information in JSON format by providing the book ID via the query
-        parameter `id`.
-        """
-        error, status, book = _check_for_required_book(request)
-        if error:
-            return error, status
-        # some descriptions have &nbsp; and these need to be rendered as just space... no markup allowed here
-        book.book_description = book.book_description.replace('\u00A0', '\u0020')
+    return jsonify(book.to_dict())
 
-        return jsonify(book.to_dict())
 
-    @app.route("/library_searches", methods=['GET'])
-    def library_searches():
-        error, status, book = _check_for_required_book(request)
-        if error:
-            return error, status
-        return jsonify(build_library_search_urls(book))
+@app.route("/library_searches", methods=['GET'])
+def library_searches():
+    error, status, book = _check_for_required_book(request)
+    if error:
+        return error, status
+    return jsonify(build_library_search_urls(book))

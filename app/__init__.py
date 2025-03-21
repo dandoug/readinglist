@@ -3,9 +3,6 @@ from dotenv import load_dotenv
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
-from app.routes import register_routes
-from app.database import init_db
-
 
 load_dotenv()  # Loads variables from .env into the environment if file exists
 
@@ -27,10 +24,10 @@ def create_app():
     env = os.getenv("FLASK_ENV", "development")  # Default to "development"
     app.config.from_object(f"app.config.{env.capitalize()}Config")
 
-    init_db(app)
+    db.init_app(app)
 
-    # Register the routes
-    register_routes(app)
+    # Import routes
+    with app.app_context():
+        from . import routes
+
     return app
-
-

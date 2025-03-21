@@ -1,38 +1,78 @@
-from sqlalchemy import asc, Column, Integer, String, Text, DECIMAL, MetaData
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import mapped_column, Mapped
+from sqlalchemy import asc
 from urllib.parse import quote_plus
 
+from . import db
 
-Base = declarative_base(metadata=MetaData())
 
+class Book(db.Model):
+    """
+    Represents a book entity in the database.
 
-class Book(Base):
+    This class is mapped to the `books` table in the database and is used to store
+    and manage information about books such as title, author, description, and related attributes.
+    The class provides methods to convert its instance to a dictionary and to return a string
+    representation of the object.
+
+    :ivar id: Unique identifier for the book.
+    :type id: int
+    :ivar author: Name of the author of the book.
+    :type author: str
+    :ivar title: Title of the book.
+    :type title: str
+    :ivar asin: Amazon Standard Identification Number (ASIN) of the book,
+        if available.
+    :type asin: Optional[str]
+    :ivar link: URL linking to the book's details, if available.
+    :type link: Optional[str]
+    :ivar image: URL linking to the book's image, if available.
+    :type image: Optional[str]
+    :ivar categories_flat: Flattened string representation of the
+        book's categories, if available.
+    :type categories_flat: Optional[str]
+    :ivar book_description: Description of the book, if available.
+    :type book_description: Optional[str]
+    :ivar rating: Rating of the book, defaults to 0.0.
+    :type rating: float
+    :ivar isbn_13: International Standard Book Number (13-digit),
+        if available.
+    :type isbn_13: Optional[str]
+    :ivar isbn_10: International Standard Book Number (10-digit),
+        if available.
+    :type isbn_10: Optional[str]
+    :ivar hardcover: Indicates hardcover details of the book, if available.
+    :type hardcover: Optional[str]
+    :ivar bestsellers_rank_flat: Flattened string representation of the book's
+        bestsellers rank, if available.
+    :type bestsellers_rank_flat: Optional[str]
+    :ivar specifications_flat: Flattened string representation of the book's
+        specifications, if available.
+    :type specifications_flat: Optional[str]
+    """
     __tablename__ = 'books'
 
-    @staticmethod
-    def bind(db):
-        Book.__bases__[0].metadata.bind = db.engine
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    author: Mapped[str] = mapped_column(db.String(255), nullable=False, index=True)
+    title: Mapped[str] = mapped_column(db.String(255), nullable=False, index=True)
+    asin: Mapped[str | None] = mapped_column(db.String(20), index=True, nullable=True)
+    link: Mapped[str | None] = mapped_column(db.Text, nullable=True)
+    image: Mapped[str | None] = mapped_column(db.Text, nullable=True)
+    categories_flat: Mapped[str | None] = mapped_column(db.String(255), index=True, nullable=True)
+    book_description: Mapped[str | None] = mapped_column(db.Text, nullable=True)
+    rating: Mapped[float] = mapped_column(db.Float, default=0.0, index=True, nullable=False)
+    isbn_13: Mapped[str | None] = mapped_column(db.String(17), index=True, nullable=True)
+    isbn_10: Mapped[str | None] = mapped_column(db.String(13), index=True, nullable=True)
+    hardcover: Mapped[str | None] = mapped_column(db.String(64), nullable=True)
+    bestsellers_rank_flat: Mapped[str | None] = mapped_column(db.Text, nullable=True)
+    specifications_flat: Mapped[str | None] = mapped_column(db.Text, nullable=True)
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    author = Column(String(255), nullable=False, index=True)
-    title = Column(String(255), nullable=False, index=True)
-    asin = Column(String(20), index=True)
-    link = Column(Text)
-    image = Column(Text)
-    categories_flat = Column(String(255), index=True)
-    book_description = Column(Text)
-    rating = Column(DECIMAL(3, 2), index=True)
-    isbn_13 = Column(String(17), index=True)
-    isbn_10 = Column(String(13), index=True)
-    hardcover = Column(String(64))
-    bestsellers_rank_flat = Column(Text)
-    specifications_flat = Column(Text)
-
-    def to_dict(self):
+    def to_dict(self) -> dict:
+        """Converts the model instance into a dictionary."""
         return {column.name: getattr(self, column.name) for column in self.__table__.columns}
 
-    def __repr__(self):
-        return f"<Book(id={self.id}, title={self.title}, author={self.author})>"
+    def __repr__(self) -> str:
+        """Provides a clean string representation of the object."""
+        return f"<Book(id={self.id}, title='{self.title}', author='{self.author}')>"
 
 
 def search_by_categories(categories):
