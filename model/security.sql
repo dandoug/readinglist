@@ -1,5 +1,5 @@
 -- Table for roles
-CREATE TABLE Role (
+CREATE TABLE role (
     id INT AUTO_INCREMENT PRIMARY KEY,                    -- Primary Key for Role
     name VARCHAR(255) NOT NULL UNIQUE,                    -- Unique name for the role
     description VARCHAR(255),                             -- Description of the role
@@ -8,7 +8,7 @@ CREATE TABLE Role (
 );
 
 -- Table for users
-CREATE TABLE User (
+CREATE TABLE user (
     id INT AUTO_INCREMENT PRIMARY KEY,                    -- Primary Key for User
     email VARCHAR(255) UNIQUE NOT NULL,                   -- User email, must be unique
     username VARCHAR(255) UNIQUE,                         -- Optional username for the user
@@ -33,16 +33,16 @@ CREATE TABLE User (
 );
 
 -- Many-to-Many relationship table for users and roles
-CREATE TABLE Roles_Users (
+CREATE TABLE roles_users (
     user_id INT NOT NULL,                                 -- User ID (foreign key)
     role_id INT NOT NULL,                                 -- Role ID (foreign key)
     PRIMARY KEY (user_id, role_id),                       -- Composite primary key
-    FOREIGN KEY (user_id) REFERENCES User(id) ON DELETE CASCADE, -- Foreign key to User
-    FOREIGN KEY (role_id) REFERENCES Role(id) ON DELETE CASCADE  -- Foreign key to Role
+    FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE, -- Foreign key to user
+    FOREIGN KEY (role_id) REFERENCES role(id) ON DELETE CASCADE  -- Foreign key to role
 );
 
 -- Table for WebAuthn
-CREATE TABLE WebAuthn (
+CREATE TABLE webauthn (
     id INT AUTO_INCREMENT PRIMARY KEY,                    -- Primary Key for WebAuthn
     credential_id BLOB NOT NULL,                          -- Credential ID (binary, index a portion)
     UNIQUE KEY (credential_id(255)),                      -- Table-level UNIQUE key with length
@@ -57,5 +57,5 @@ CREATE TABLE WebAuthn (
     name VARCHAR(64) NOT NULL,                            -- Name of the credential (must be unique per user)
     `usage` VARCHAR(64) NOT NULL,                           -- Usage type (e.g., "first factor", "second factor")
     user_id INT NOT NULL,                                 -- Foreign key to User
-    FOREIGN KEY (user_id) REFERENCES User(id) ON DELETE CASCADE  -- Foreign key with cascade
+    FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE  -- Foreign key with cascade
 );
