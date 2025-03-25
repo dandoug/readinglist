@@ -14,8 +14,10 @@
 <div class="row align-items-center">
     <!-- Logo -->
     <div class="col-auto">
+        <a href="{{ url_for('index') }}">
         <img src="{{ url_for('static', filename='images/booksearch.png') }}"
              alt="Book Search Logo" class="img-fluid" style="width: 100px;">
+        </a>
     </div>
     <!-- Heading -->
     <div class="col d-flex align-items-center" style="transform: translateY(-20%);">
@@ -51,7 +53,11 @@
         </div>
         <!-- Buttons -->
         <div class="col-auto text-end">
-            <button id="new-search-btn" type="button" class="btn btn-sm btn-primary">New Search</button>
+            {% if current_user.is_authenticated and 'editor' in current_user.roles %}
+            <button id="add-book-btn" type="button" class="btn btn-sm btn-info" style="cursor: pointer;"
+>Add a book</button>
+            {% endif %}
+            <button id="new-search-btn" type="button" class="btn btn-sm btn-primary">New search</button>
         </div>
     </div>
 
@@ -143,6 +149,20 @@
 {% block scripts %}
 {{ super() }}
 <script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get the "Add a book" button element by its ID
+        const addBookBtn = document.getElementById('add-book-btn');
+
+        // Check if the button exists (to avoid errors when the user does not have the "editor" role)
+        if (addBookBtn) {
+            // Attach a click event listener to the button
+            addBookBtn.addEventListener('click', function () {
+                // Redirect the user to the '/add_book' route
+                window.location.href = '/add_book';
+            });
+        }
+    });
 
     document.getElementById('new-search-btn').addEventListener('click', function() {
         history.back();

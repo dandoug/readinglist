@@ -54,6 +54,13 @@
             <li class="nav-item">
                 <a class="nav-link" id="category-tab" data-toggle="tab" href="#category" role="tab" aria-controls="category" aria-selected="true">Category</a>
             </li>
+
+            <!-- Tab at the far right -->
+            {% if current_user.is_authenticated and 'editor' in current_user.roles %}
+            <li class="nav-item ml-auto" id="add-book-tab" style="cursor: pointer;">
+                <a class="nav-link" id="add-book-tab-link" data-toggle="tab" role="tab" aria-controls="add-book" aria-selected="false">Add a book</a>
+            </li>
+            {% endif %}
         </ul>
 
         <!-- Tab Content -->
@@ -136,6 +143,20 @@
 {% block scripts %}
 {{ super() }}
 <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get the "Add a book" button element by its ID
+        const addBookTab = document.getElementById('add-book-tab');
+
+        // Check if the tab exists (to avoid errors when the user does not have the "editor" role)
+        if (addBookTab) {
+            // Attach a click event listener to the tab
+            addBookTab.addEventListener('click', function () {
+                // Redirect the user to the '/add_book' route
+                window.location.href = '/add_book';
+            });
+        }
+    });
+
     $(document).ready(function() {
         // Initialize treeview for categories
         const treedata = {{ category_bs_tree | tojson }};

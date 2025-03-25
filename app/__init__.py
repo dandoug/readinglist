@@ -31,6 +31,7 @@ def create_app():
     """
 
     app = Flask(__name__, template_folder="templates", static_folder="static")
+
     # Load config by environment
     env = os.getenv("FLASK_ENV", "development")  # Default to "development"
     app.config.from_object(f"app.config.{env.capitalize()}Config")

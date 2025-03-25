@@ -1,0 +1,128 @@
+from flask_wtf import FlaskForm
+from wtforms import StringField, IntegerField, TextAreaField, SelectField, URLField
+from wtforms.fields.numeric import DecimalField
+from wtforms.validators import DataRequired, Optional, Length, NumberRange, URL
+
+
+class BookForm(FlaskForm):
+    # ID field (Optional)
+    id = IntegerField("ID", validators=[Optional()])
+
+    # Author (Required)
+    author = StringField(
+        "Author",
+        validators=[
+            DataRequired(message="The author is required."),
+            Length(max=255, message="The author name cannot exceed 255 characters.")
+        ]
+    )
+
+    # Title (Required)
+    title = StringField(
+        "Title",
+        validators=[
+            DataRequired(message="The title is required."),
+            Length(max=255, message="The title cannot exceed 255 characters.")
+        ]
+    )
+
+    # ASIN (Optional)
+    asin = StringField(
+        "ASIN",
+        validators=[
+            Optional(),
+            Length(max=20, message="ASIN must not exceed 20 characters.")
+        ]
+    )
+
+    # Description (Optional)
+    book_description = TextAreaField(
+        "Description",
+        validators=[
+            Optional(),
+            Length(max=4096, message="The description cannot exceed 4096 characters.")
+        ]
+    )
+
+    # Rating (Optional but must be between 1 and 5 if provided)
+    rating = DecimalField(
+        "Rating",
+        places=1,
+        validators=[
+            Optional(),
+            NumberRange(min=0, max=5, message="Rating must be between 1 and 5.")
+        ],
+        filters = [lambda x: float(x) if x else None]  # Converts valid strings to float
+    )
+
+    # Book Cover Image URL (Optional but must be a valid URL if provided)
+    image = URLField(
+        "Cover Image URL",
+        validators=[
+            Optional(),
+            URL(message="Must be a valid URL.")
+        ]
+    )
+
+    # Amazon Purchase URL (Optional but must be a valid URL if provided)
+    link = URLField(
+        "Amazon URL",
+        validators=[
+            Optional(),
+            URL(message="Must be a valid URL.")
+        ]
+    )
+
+    # Categories, required)
+    categories_flat = StringField(
+        "Categories",
+        validators=[
+            DataRequired(message="The category string is required."),
+            Length(max=255, message="The category string is ' > ' separated and cannot exceed 255 characters.")
+        ]
+    )
+
+    # Pages (Optional but must be positive)
+    hardcover = StringField(
+        "Pages",
+        validators=[
+            Optional(),
+            Length(max=64, message="Pages string must not exceed 64 characters.")
+        ]
+    )
+
+    # ISBN-10 (Optional)
+    isbn_10 = StringField(
+        "ISBN-10",
+        validators=[
+            Optional(),
+            Length(max=13, message="ISBN-10 must not exceed 13 characters.")
+        ]
+    )
+
+    # ISBN-13 (Optional, 13 characters)
+    isbn_13 = StringField(
+        "ISBN-13",
+        validators=[
+            Optional(),
+            Length(max=17, message="ISBN-13 must not exceed 13 characters.")
+        ]
+    )
+
+    # Bestsellers Rank (Optional)
+    bestsellers_rank_flat = TextAreaField(
+        "Bestsellers Rank",
+        validators=[
+            Optional(),
+            Length(max=4096, message="Bestsellers Rank cannot exceed 4096 characters.")
+        ]
+    )
+
+    # Specifications (Optional)
+    specifications_flat = TextAreaField(
+        "Specifications",
+        validators=[
+            Optional(),
+            Length(max=4096, message="Specifications cannot exceed 4096 characters.")
+        ]
+    )

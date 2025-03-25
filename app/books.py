@@ -1,8 +1,10 @@
+from sqlalchemy.exc import IntegrityError, InvalidRequestError
 from sqlalchemy.orm import mapped_column, Mapped
 from sqlalchemy import asc
 from urllib.parse import quote_plus
 
 from . import db
+from .forms import BookForm
 
 
 class Book(db.Model):
@@ -193,3 +195,52 @@ def build_library_search_urls(book):
         for key, value in SEARCH_TEMPLATES.items()
     }
     return search_urls
+
+
+def add_new_book(book_form: BookForm) -> Book:
+    """
+    Adds a new book to the database based on the provided book form. This function
+    processes the data from the book form, creates a new Book object, and saves
+    it to the database. If any duplicate or invalid data causes issues, it will
+    handle the exceptions accordingly.
+
+    :param book_form: The form containing information about the book to be added.
+
+    :type book_form: BookForm
+
+    :return: The newly added Book object.
+
+    :rtype: Book
+
+    :raises ValueError: If a book with the same unique constraint already exists.
+    :raises RuntimeError: If a database request error or any unexpected error occurs.
+    """
+    try:
+        # Create and add the new book
+        new_book = Book(
+            author=book_form.author.data,
+            title=book_form.title.data,
+            asin=book_form.asin.data,
+            link=book_form.link.data,
+            image=book_form.image.data,
+            categories_flat=book_form.categories_flat.data,
+            book_description=book_form.book_description.data,
+            rating=book_form.rating.data or 0.0,
+            isbn_13=book_form.isbn_13.data,
+            isbn_10=book_form.isbn_10.data,
+            hardcover=book_form.hardcover.data,
+            bestsellers_rank_flat=book_form.bestsellers_rank_flat.data,
+            specifications_flat=book_form.specifications_flat.data,
+        )
+        db.session.add(new_book)
+        db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
+        raise ValueError("A book with the same unique constraint already exists.")
+    except InvalidRequestError as e:
+        db.session.rollback()
+        raise RuntimeError(f"Database request error: {e}")
+    except Exception as e:
+        db.session.rollback()
+        raise RuntimeError(f"An unexpected error occurred: {e}")
+    return new_book

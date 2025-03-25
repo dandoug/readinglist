@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% from "_macros.html" import render_field_with_errors %}
+
+
+<!-- Title -->
+{% block title %} Add Book {% endblock %}
+
+
+<!-- Body -->
+{% block content %}
+<div class="container table-responsive mt-3">
+    <div class="row align-items-center">
+        <!-- Logo -->
+        <div class="col-auto">
+            <a href="{{ url_for('index') }}">
+            <img src="{{ url_for('static', filename='images/booksearch.png') }}"
+                 alt="Book Search Logo" class="img-fluid" style="width: 100px;">
+            </a>
+        </div>
+        <!-- Heading -->
+        <div class="col d-flex align-items-center" style="transform: translateY(-20%);">
+            <h1 class="mb-0" style="line-height: 1;">Add Book</h1>
+        </div>
+        <!-- Login/Logout Button -->
+        <div class="col-auto text-end d-flex flex-column align-items-end" style="transform: translateY(-20%);">
+            {% if current_user.is_authenticated %}
+                <p class="mb-1 text-muted small" style="line-height: 1;">{{ current_user.email }}</p>
+                <div class="d-flex">
+                    {% if 'admin' in current_user.roles %}
+                        <a href="/admin" class="btn btn-sm btn-primary mr-2">Admin</a>
+                    {% endif %}
+                    <a href="/logout" class="btn btn-sm btn-secondary">Logout</a>
+                </div>
+            {% else %}
+                <p class="mb-1 text-muted small" style="line-height: 1;">&nbsp;</p>
+                <a href="/login" class="btn btn-sm btn-info">Login</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Row 2: Text (span) and Action Buttons -->
+    <div class="row align-items-center mt-1">
+        <!-- Text -->
+        <div class="col">
+            <span>Add data for a new book</span>
+        </div>
+    </div>
+
+    <div class="mt-2 mb-3">
+        <div class="col">
+         <form id="add-book-form" method="POST" action="/add_book" enctype="multipart/form-data">
+            {{ book_form.hidden_tag() }} <!-- CSRF hidden field -->
+
+            {{ render_field_with_errors(book_form.title) }}
+            {{ render_field_with_errors(book_form.author) }}
+            {{ render_field_with_errors(book_form.book_description) }}
+            {% call render_field_with_errors(book_form.asin) %}
+                <div id="spinner-fill-button" class="col-md-1">
+                    <button id="fill-by-asin" type="button" class="btn btn-xs btn-info">Fill</button>
+                </div>
+            {% endcall %}
+            {{ render_field_with_errors(book_form.rating) }}
+            {{ render_field_with_errors(book_form.image) }}
+            {{ render_field_with_errors(book_form.link) }}
+            {{ render_field_with_errors(book_form.categories_flat) }}
+            {{ render_field_with_errors(book_form.hardcover) }}
+            {{ render_field_with_errors(book_form.isbn_10) }}
+            {{ render_field_with_errors(book_form.isbn_13) }}
+            {{ render_field_with_errors(book_form.bestsellers_rank_flat) }}
+            {{ render_field_with_errors(book_form.specifications_flat) }}
+
+            <!-- Submit and Cancel Buttons -->
+            <button id="cancel-btn" type="button" class="btn btn-secondary">Cancel</button>
+            <button id="add-book-btn" type="submit" class="btn btn-primary">Add Book</button>
+        </form>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+<!-- Scripts -->
+{% block scripts %}
+{{ super() }}
+<script>
+
+    document.getElementById('cancel-btn').addEventListener('click', function () {
+        window.location.href = '/'; // Redirect to the index page
+    });
+
+    document.getElementById('fill-by-asin').addEventListener('click', async function () {
+        // Get the value of the ASIN input field
+        const asinInput = document.getElementsByName('asin')[0];
+        const asinValue = asinInput ? asinInput.value.trim() : '';
+
+        // Ensure the ASIN value is not empty
+        if (!asinValue) {
+            alert('Please enter a valid ASIN.');
+            return;
+        }
+
+        const fillByAsinButton = this;
+        const spinnerContainer = document.getElementById('spinner-fill-button');
+
+        // Create spinner element
+        const spinner = document.createElement('span');
+        spinner.className = 'spinner-border spinner-border-sm me-2'; // Add Bootstrap spinner classes
+        spinner.setAttribute('role', 'status');
+        spinner.setAttribute('aria-hidden', 'true');
+
+        // Add spinner as a sibling (before the button)
+        spinnerContainer.insertBefore(spinner, fillByAsinButton);
+
+        // Disable button
+        fillByAsinButton.disabled = true;
+
+        try {
+            // Make an asynchronous GET request to fetch data
+            const response = await fetch(`/fill_by_asin?asin=${encodeURIComponent(asinValue)}`);
+
+            // Check if the response is OK
+            if (!response.ok) {
+                throw new Error(`Failed to fetch data: ${response.statusText}`);
+            }
+
+            // Parse JSON response
+            const data = await response.json();
+
+            // Populate form fields with matching keys from the JSON response
+            for (const [key, value] of Object.entries(data)) {
+                const field = document.getElementsByName(key)[0];
+                if (field) {
+                    field.value = value; // Set the field value
+                }
+            }
+
+        } catch (error) {
+            // Handle any errors during the fetch or JSON parsing
+            console.error('Error while fetching ASIN data:', error);
+            alert('An error occurred while fetching ASIN data. Please try again.');
+        } finally {
+            // Remove spinner and enable the button
+            spinner.remove();
+            fillByAsinButton.disabled = false;
+        }
+    });
+
+
+</script>
+{% endblock %}

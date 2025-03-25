@@ -1,0 +1,29 @@
+
+{% macro render_field_with_errors(field) %}
+  <div class="row form-group">
+    <div class="col-md-2 text-end d-flex flex-column align-items-end bl-label">
+        {{ field.label }}
+    </div>
+    <div class="col-md">
+        {{ field(class_="w-100", **kwargs)|safe }}
+        {% if field.errors %}
+          <ul>
+            {% for error in field.errors %}<li class="fs-error-msg">{{ error }}</li>{% endfor %}
+          </ul>
+        {% endif %}
+    </div>
+    {% if caller %}{{ caller() }}{% endif %}
+  </div>
+{% endmacro %}
+
+{% macro show_flashed_messages() %}
+    {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} mt-2" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+{% endmacro %}
