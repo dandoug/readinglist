@@ -29,13 +29,13 @@
             <p class="mb-1 text-muted small" style="line-height: 1;">{{ current_user.email }}</p>
             <div class="d-flex">
                 {% if 'admin' in current_user.roles %}
-                    <a href="/admin" class="btn btn-sm btn-primary mr-2">Admin</a>
+                    <a href="{{ url_for('admin.index') }}" class="btn btn-sm btn-primary mr-2">Admin</a>
                 {% endif %}
-                <a href="/logout" class="btn btn-sm btn-secondary">Logout</a>
+                <a href="{{ url_for('security.logout') }}?next={{ request.url|urlencode }}" class="btn btn-sm btn-secondary">Logout</a>
             </div>
         {% else %}
             <p class="mb-1 text-muted small" style="line-height: 1;">&nbsp;</p>
-            <a href="/login" class="btn btn-sm btn-info">Login</a>
+            <a href="{{ url_for('security.login') }}" class="btn btn-sm btn-info">Login</a>
         {% endif %}
     </div>
 </div>
@@ -101,7 +101,30 @@
                             </div>
                         </td>
                         <td class="align-middle"><span>{{ book.author }}</span></td>
-                        <td class="align-middle"><span>{{ book.rating }}</span></td>
+                        <td class="align-middle">
+                            <div class="row align-items-md-start">
+                                <div class="col-auto">
+                                    <span>{{ book.rating }}</span>
+                                </div>
+                            </div>
+                            <div class="row align-items-md-start">
+                                <div class="col-auto">
+                                    {% set rst = book.reading_statuses[0].status.value if book.reading_statuses else None %}
+                                    {% set span_id = 'status-span-' ~ book.id %}
+                                    {{ rst | render_icon({
+                                        'up_next': 'fa-bookmark',
+                                        'read': 'fa-check'
+                                    }, span_id) }}
+
+                                    {% set fb = book.feedbacks[0].feedback.value if book.feedbacks else None %}
+                                    {% set span_id = 'fb-span-' ~ book.id %}
+                                    {{ fb | render_icon({
+                                        'like': 'fa-thumbs-up',
+                                        'dislike': 'fa-thumbs-down'
+                                    }, span_id) }}
+                                </div>
+                            </div>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -123,7 +146,48 @@
             </div>
             <!-- Modal Body -->
             <div class="modal-body">
-                <p><strong>ID:</strong> <span id="modal-id"></span></p>
+                <div class="row align-items-center mb-3">
+                    <div class="col-auto">
+                        <strong>ID:</strong> <span id="modal-id"></span>
+                    </div>
+                    {% set user_id = current_user.id if current_user.is_authenticated else None %}
+                    {% if user_id  %}
+                        <div class="col-auto">
+                            <label><strong>Reading Status</strong></label>
+                            <div class="form-group d-flex align-items-center justify-content-between">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="status" id="modal-statusRead" value="read">
+                                    <label class="form-check-label" for="modal-statusRead"><i class="fa fa-check" aria-hidden="true"></i></label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="status" id="modal-upNext" value="up_next">
+                                    <label class="form-check-label" for="modal-upNext"><i class="fa fa-bookmark" aria-hidden="true"></i></label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="status" id="modal-noStatus" value="none">
+                                    <label class="form-check-label" for="modal-noStatus">(None)</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <label><strong>Feedback</strong></label>
+                            <div class="form-group d-flex align-items-center justify-content-between">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="feedback" id="modal-fbLiked" value="like">
+                                    <label class="form-check-label" for="modal-fbLiked"><i class="fa fa-thumbs-up" aria-hidden="true"></i></label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="feedback" id="modal-fbDisliked" value="dislike">
+                                    <label class="form-check-label" for="modal-fbDisliked"><i class="fa fa-thumbs-down" aria-hidden="true"></i></label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="feedback" id="modal-noFeedback" value="none">
+                                    <label class="form-check-label" for="modal-noFeedback">(None)</label>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
                 <p><strong>Title:</strong> <span id="modal-title"></span></p>
                 <p><strong>Author:</strong> <span id="modal-author"></span></p>
                 <p><strong>Description:</strong> <span id="modal-description"></span></p>
@@ -159,13 +223,13 @@
             // Attach a click event listener to the button
             addBookBtn.addEventListener('click', function () {
                 // Redirect the user to the '/add_book' route
-                window.location.href = '/add_book';
+                window.location.href = '{{ url_for('add_book') }}';
             });
         }
     });
 
     document.getElementById('new-search-btn').addEventListener('click', function() {
-        history.back();
+        window.location.href = '{{ url_for('index') }}';
     });
 
     // Function to sort table
@@ -228,69 +292,207 @@
 
     document.addEventListener('DOMContentLoaded', function () {
         // Add click listeners to all rows
-        const rows = document.querySelectorAll('tbody tr');
-        rows.forEach(row => {
-            row.addEventListener('click', function () {
-                const bookId = row.getAttribute('data-id');
-                if (!bookId) return;
+        document.querySelectorAll('tbody tr').forEach(row => {
+            row.addEventListener('click', handleRowClick);
+        });
+    });
 
-                // Fetch book details from the API
-                fetch(`/details?id=${bookId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.error) {
-                            alert(`Error: ${data.error}`);
-                            return;
+    // Handle row click
+    async function handleRowClick(event) {
+        const row = event.currentTarget;
+        const bookId = row.getAttribute('data-id');
+        if (!bookId) return;
+
+        const userId = {{ current_user.id if current_user.is_authenticated else 'null' }};
+        try {
+            // Fetch book details
+            const bookData = await fetchJson(`/details?id=${bookId}`);
+            if (!bookData) return;
+
+            // Fetch library searches data
+            const searchData = await fetchJson(`/library_searches?id=${bookId}`);
+            if (!searchData) return;
+
+            // Populate modal data
+            populateModal(bookId, userId, bookData, searchData);
+
+            // Show the modal
+            $('#bookDetailsModal').modal('show');
+
+        } catch (error) {
+            console.error('Error handling row click:', error);
+        }
+    }
+
+    // Utility function: Fetch and parse JSON
+    async function fetchJson(url) {
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            if (data.error) {
+                alert(`Error: ${data.error}`);
+                return null;
+            }
+            return data;
+        } catch (error) {
+            console.error('Error fetching JSON:', error);
+            return null;
+        }
+    }
+
+    // Populate modal with book and search data
+    function populateModal(bookId, userId, bookData, searchData) {
+        document.getElementById('modal-id').textContent = bookData.id;
+
+        // Set the status and feedback radio buttons if user is logged in
+        if (userId) {
+            const status = bookData.status;
+            const readBox = document.getElementById('modal-statusRead');
+            const upNextBox = document.getElementById('modal-upNext');
+            const noStatusBox = document.getElementById('modal-noStatus');
+            readBox.setAttribute('data-book-id', bookData.id);
+            readBox.setAttribute('data-user-id', userId);
+            upNextBox.setAttribute('data-book-id', bookData.id);
+            upNextBox.setAttribute('data-user-id', userId);
+            noStatusBox.setAttribute('data-book-id', bookData.id);
+            noStatusBox.setAttribute('data-user-id', userId);
+            if (status === 'read') {
+                readBox.checked = true;
+            } else if (status === 'up_next') {
+                upNextBox.checked = true;
+            } else {
+                noStatusBox.checked = true;
+            }
+            const feedback = bookData.feedback;
+            const fbLikedBox = document.getElementById('modal-fbLiked');
+            const fbDislikedBox = document.getElementById('modal-fbDisliked');
+            const noFeedbackBox = document.getElementById('modal-noFeedback');
+            fbLikedBox.setAttribute('data-book-id', bookData.id);
+            fbLikedBox.setAttribute('data-user-id', userId);
+            fbDislikedBox.setAttribute('data-book-id', bookData.id);
+            fbDislikedBox.setAttribute('data-user-id', userId);
+            noFeedbackBox.setAttribute('data-book-id', bookData.id);
+            noFeedbackBox.setAttribute('data-user-id', userId);
+            if (feedback === 'like') {
+                fbLikedBox.checked = true;
+            } else if (feedback === 'dislike') {
+                fbDislikedBox.checked = true;
+            } else {
+                noFeedbackBox.checked = true;
+            }
+        }
+        document.getElementById('modal-title').textContent = bookData.title;
+        document.getElementById('modal-author').textContent = bookData.author;
+        document.getElementById('modal-description').textContent = bookData.book_description || '';
+        document.getElementById('modal-rating').textContent = bookData.rating || '';
+        document.getElementById('modal-image').setAttribute('src', bookData.image || '');
+        document.getElementById('modal-categories-flat').textContent = bookData.categories_flat || '';
+        document.getElementById('modal-pages').textContent = bookData.hardcover || '';
+        document.getElementById('modal-isbn10').textContent = bookData.isbn_10 || '';
+        document.getElementById('modal-isbn13').textContent = bookData.isbn_13 || '';
+        document.getElementById('modal-asin').textContent = bookData.asin || '';
+        document.getElementById('modal-bestsellers-rank-flat').textContent = bookData.bestsellers_rank_flat || '';
+        document.getElementById('modal-specifications-flat').textContent = bookData.specifications_flat || '';
+        document.getElementById('modal-buy-on-amazon-btn').setAttribute('href', bookData.link || '#');
+
+        const librarySearchesList = document.getElementById('modal-library-searches');
+        librarySearchesList.innerHTML = ''; // Clear existing items
+        Object.entries(searchData).forEach(([key, value]) => {
+            const listItem = document.createElement('li');
+            const link = document.createElement('a');
+            link.href = value;
+            link.textContent = key;
+            link.target = '_blank';
+            listItem.appendChild(link);
+            librarySearchesList.appendChild(listItem);
+        });
+    }
+
+    {% set user_id = current_user.id if current_user.is_authenticated else None %}
+    {% if user_id  %}
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get all radio buttons in the status group
+        const statusRadios = document.querySelectorAll('input[name="status"]');
+
+        // Add a change event listener to each radio button
+        statusRadios.forEach(function (radio) {
+            radio.addEventListener('change', function () {
+                const statusValue = this.value; // Get selected value
+                const bookId = this.getAttribute('data-book-id'); // Get book ID
+                // Send a POST request to /change_status route
+                const formData = new FormData();
+                    formData.append('status', statusValue);
+                    formData.append('book_id', bookId);
+                fetch('/change_status', {
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => {
+                    if (response.ok) {
+                        const updated_book = response.json();
+                        const statusSpan = document.getElementById('status-span-' + bookId);
+                        let status_content
+                        if (statusValue === 'read') {
+                            status_content = '<i class="fa fa-check" aria-hidden="true"></i>';
+                        } else if (statusValue === 'up_next') {
+                            status_content = '<i class="fa fa-bookmark" aria-hidden="true"></i>';
+                        } else {
+                            status_content = '<i class="fa fa_check" aria-hidden="true" style="visibility: hidden;"></i>';
                         }
-                        fetch(`/library_searches?id=${bookId}`)
-                            .then(response => response.json())
-                            .then(search_data => {
-                                if (search_data.error) {
-                                    alert(`Error: ${search_data.error}`);
-                                    return;
-                                }
-
-                                // Populate the modal fields using data
-                                document.getElementById('modal-id').textContent = data.id;
-                                document.getElementById('modal-title').textContent = data.title;
-                                document.getElementById('modal-author').textContent = data.author;
-                                document.getElementById('modal-description').textContent = data.book_description || '';
-                                document.getElementById('modal-rating').textContent = data.rating || '';
-                                document.getElementById('modal-image').setAttribute('src', data.image || '');
-                                document.getElementById('modal-categories-flat').textContent = data.categories_flat || '';
-                                document.getElementById('modal-pages').textContent = data.hardcover || '';
-                                document.getElementById('modal-isbn10').textContent = data.isbn_10 || '';
-                                document.getElementById('modal-isbn13').textContent = data.isbn_13 || '';
-                                document.getElementById('modal-asin').textContent = data.asin || '';
-                                document.getElementById('modal-bestsellers-rank-flat').textContent = data.bestsellers_rank_flat || '';
-                                document.getElementById('modal-specifications-flat').textContent = data.specifications_flat || '';
-                                document.getElementById('modal-buy-on-amazon-btn').setAttribute('href', data.link || '#');
-
-                                const librarySearchesList = document.getElementById('modal-library-searches');
-                                librarySearchesList.innerHTML = ''; // Clear existing items
-                                Object.entries(search_data).forEach(([key, value]) => {
-                                    const listItem = document.createElement('li');
-                                    const link = document.createElement('a');
-                                    link.href = value;
-                                    link.textContent = key;
-                                    link.target = '_blank';
-                                    listItem.appendChild(link);
-                                    librarySearchesList.appendChild(listItem);
-                                });
-                                
-                                // Trigger the Bootstrap modal
-                                $('#bookDetailsModal').modal('show');
-                            })
-                            .catch(error => {
-                                console.error('Error fetching book details:', error);
-                            });
-                    })
-                    .catch(error => {
-                        console.error('Error fetching book details:', error);
-                    });
-
+                        statusSpan.innerHTML = status_content;
+                        console.log(updated_book);
+                    } else {
+                        alert('Failed to update status: '+response.statusText);
+                    }
+                })
+                .catch(error => {
+                    alert('Error: '+ error);
+                });
             });
         });
     });
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get all radio buttons in the feedback group
+        const statusRadios = document.querySelectorAll('input[name="feedback"]');
+
+        // Add a change event listener to each radio button
+        statusRadios.forEach(function (radio) {
+            radio.addEventListener('change', function () {
+                const fb = this.value; // Get selected value
+                const bookId = this.getAttribute('data-book-id'); // Get book ID
+                // Send a POST request to /change_status route
+                const formData = new FormData();
+                    formData.append('feedback', fb);
+                    formData.append('book_id', bookId);
+                fetch('/change_feedback', {
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => {
+                    if (response.ok) {
+                        const updated_book = response.json();
+                        const fbSpan = document.getElementById('fb-span-' + bookId);
+                        let fb_content
+                        if (fb === 'like') {
+                            fb_content = '<i class="fa fa-thumbs-up" aria-hidden="true"></i>';
+                        } else if (fb === 'dislike') {
+                            fb_content = '<i class="fa fa-thumbs-down" aria-hidden="true"></i>';
+                        } else {
+                            fb_content = '<i class="fa fa_check" aria-hidden="true" style="visibility: hidden;"></i>';
+                        }
+                        fbSpan.innerHTML = fb_content;
+                        console.log(updated_book);
+                    } else {
+                        alert('Failed to update feedback: '+response.statusText);
+                    }
+                })
+                .catch(error => {
+                    alert('Error: '+ error);
+                });
+            });
+        });
+    });
+    {% endif %}
+
 </script>
 {% endblock %}

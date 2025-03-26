@@ -1,10 +1,11 @@
 from flask import current_app as app, render_template, request, jsonify, flash, redirect, url_for
-from flask_security import roles_required
+from flask_security import roles_required, current_user, auth_required
 
 from app.asin_data import fetch_product_details
 from app.categories import get_category_bs_tree, id_to_fullpath
 from app.books import search_by_categories, get_book_by_id, build_library_search_urls, search_by_author, \
-    search_by_title, add_new_book
+    search_by_title, add_new_book, book_to_dict_with_status_and_feedback, \
+    set_book_status, set_book_feedback
 from app.forms import BookForm
 
 
@@ -67,10 +68,10 @@ def search():
 @app.route('/details', methods=['GET'])
 def details():
     """
-    Registers API routes for the application and defines a single endpoint
-    to fetch book details by ID. The route '/details' allows fetching book
+    The route '/details' allows fetching book
     information in JSON format by providing the book ID via the query
-    parameter `id`.
+    parameter `id`.   For logged on users, the feedback and reading status
+    of the book are also returned.
     """
     error, status, book = _check_for_required_book(request)
     if error:
@@ -78,7 +79,9 @@ def details():
     # some descriptions have &nbsp; and these need to be rendered as just space... no markup allowed here
     book.book_description = book.book_description.replace('\u00A0', '\u0020')
 
-    return jsonify(book.to_dict())
+    user_id = current_user.id if current_user.is_authenticated else None
+    book_dict = book_to_dict_with_status_and_feedback(book, user_id)
+    return jsonify(book_dict)
 
 
 @app.route("/library_searches", methods=['GET'])
@@ -118,3 +121,49 @@ def fill_by_asin():
     if not book_data:
         return jsonify({"error": f"ASIN {asin} not found"}), 404, None
     return jsonify(book_data)
+
+
+@app.route('/change_status', methods=["POST"])
+@auth_required()
+def change_status():
+    # Validate required parameters
+    book_id = request.form.get('book_id')
+    status = request.form.get('status')
+
+    if not book_id or not book_id.isdigit():
+        return jsonify({"error": "Invalid or missing 'book_id' parameter"}), 400
+
+    if not status:
+        return jsonify({"error": "Missing 'status' parameter"}), 400
+
+    # Validate if status is supported
+    allowed_statuses = ['read', 'up_next', 'none']
+    if status not in allowed_statuses:
+        return jsonify({"error": f"Invalid 'status' value. Allowed values: {', '.join(allowed_statuses)}"}), 400
+
+    user_id = current_user.id
+    updated_book = set_book_status(book_id, status, user_id)
+    return jsonify(updated_book), 200
+
+
+@app.route('/change_feedback', methods=["POST"])
+@auth_required()
+def change_feedback():
+    # Validate required parameters
+    book_id = request.form.get('book_id')
+    fb = request.form.get('feedback')
+
+    if not book_id or not book_id.isdigit():
+        return jsonify({"error": "Invalid or missing 'book_id' parameter"}), 400
+
+    if not fb:
+        return jsonify({"error": "Missing 'feedback' parameter"}), 400
+
+    # Validate if feedback is supported
+    allowed_feedback = ['like', 'dislike', 'none']
+    if fb not in allowed_feedback:
+        return jsonify({"error": f"Invalid 'feedback' value. Allowed values: {', '.join(allowed_feedback)}"}), 400
+
+    user_id = current_user.id
+    updated_book = set_book_feedback(book_id, fb, user_id)
+    return jsonify(updated_book), 200

@@ -46,7 +46,7 @@ def create_app():
     from app.security.models import User, Role
     global user_datastore
     user_datastore = SQLAlchemyUserDatastore(db, User, Role)
-    security = Security(app, user_datastore) # overridden below
+    security = Security(app, user_datastore)  # overridden below
 
     db.init_app(app)
     mail.init_app(app)
@@ -57,6 +57,9 @@ def create_app():
     admin = Admin(app, name='Book List Administration', template_mode='bootstrap4',
                   index_view=SecureAdminIndexView(name="Admin"))
 
+    # Lazily init data models with their relationships
+    from .books import ReadingStatus, Feedback, Book
+    from .security.models import User
     # setup of users and roles
     with app.app_context():
         security.datastore.find_or_create_role(name='admin', description='Administrator')
@@ -80,5 +83,8 @@ def create_app():
     with app.app_context():
         from . import routes
         from .security import routes
+
+    from .books import render_icon
+    app.jinja_env.filters['render_icon'] = render_icon
 
     return app

@@ -44,3 +44,16 @@
   {% include "security/_menu.html" %}
 </div>
 {% endblock content %}
+
+{% block scripts %}
+{{ super() }}
+    <script>
+        // Set the value of the next field to the referrer if it is empty.
+        document.addEventListener("DOMContentLoaded", function () {
+            var nextInput = document.getElementById("next");
+            if (nextInput && nextInput.value.trim() === "") {
+                nextInput.value = "{{ request.referrer }}";
+            }
+        });
+    </script>
+{% endblock %}
