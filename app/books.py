@@ -150,12 +150,13 @@ def _add_user_status_and_feedback_joins(query):
     user_id = current_user.id if current_user.is_authenticated else None
     if user_id:
         # Join feedback and status if user logged in
-        query = ((((query
-            .outerjoin(ReadingStatus, ReadingStatus.book_id == Book.id))
-            .outerjoin(Feedback, Feedback.book_id == Book.id))
-            .filter(
-                (ReadingStatus.user_id == user_id) | (ReadingStatus.user_id.is_(None)),
-                (Feedback.user_id == user_id) | (Feedback.user_id.is_(None))))
+        query = ((query
+            .outerjoin(
+                ReadingStatus,
+                (ReadingStatus.book_id == Book.id) & ((ReadingStatus.user_id == user_id) | (ReadingStatus.user_id.is_(None))),))
+            .outerjoin(
+                Feedback,
+                (Feedback.book_id == Book.id) & ((Feedback.user_id == user_id) | (Feedback.user_id.is_(None))),)
             .options(
                 contains_eager(Book.reading_statuses),
                 contains_eager(Book.feedbacks)))
@@ -384,6 +385,24 @@ def update_book(book_form: BookForm) -> Book:
     return book
 
 
+def del_book(book_id):
+    """
+    Deletes a book from the database based on the provided book ID.
+
+    :param book_id: The ID of the book to delete.
+    :type book_id: int
+    :raises ValueError: If no book with the specified ID is found.
+    """
+    try:
+        book = get_book_by_id(book_id)
+        if not book:
+            raise ValueError(f"Book with ID {book_id} not found.")
+
+        db.session.delete(book)
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        raise RuntimeError(f"An error occurred while deleting the book: {e}")
 
 
 PLACEHOLDER = '<span style="display: inline-block; width: 14px; height: 14px; margin: 0;"></span>'

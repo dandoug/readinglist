@@ -1,11 +1,12 @@
 from flask import current_app as app, render_template, request, jsonify, flash, redirect, url_for
 from flask_security import roles_required, current_user, auth_required
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 from app.asin_data import fetch_product_details
 from app.categories import get_category_bs_tree, id_to_fullpath
 from app.books import search_by_categories, get_book_by_id, build_library_search_urls, search_by_author, \
     search_by_title, add_new_book, book_to_dict_with_status_and_feedback, \
-    set_book_status, set_book_feedback, PLACEHOLDER, update_book
+    set_book_status, set_book_feedback, PLACEHOLDER, update_book, del_book
 from app.forms import BookForm
 
 
@@ -105,7 +106,7 @@ def add_book():
         try:
             book = add_new_book(form)  # Attempt to add the book
             flash(f"Book id:{book.id} title:'{book.title}' added successfully!", "success")
-            return redirect(url_for("index"))
+            return redirect(form.next.data if form.next.data else url_for("index"))
         except ValueError as ve:  # Handle value-related issues (e.g., duplicate unique fields)
             flash(f"Failed to add book due to data error: {ve}", "danger")
         except RuntimeError as re:  # Handle unexpected runtime errors
@@ -179,6 +180,32 @@ def fill_by_asin():
     if not book_data:
         return jsonify({"error": f"ASIN {asin} not found"}), 404, None
     return jsonify(book_data)
+
+
+@app.route('/delete_book', methods=["POST"])
+@roles_required('admin')
+def delete_book():
+    # Validate required parameters
+    book_id = request.form.get('book_id')
+
+    if not book_id or not book_id.isdigit():
+        return jsonify({"error": "Invalid or missing 'book_id' parameter"}), 400
+
+    try:
+        del_book(book_id)
+
+        flash(f"Book id:{book_id} deleted successfully!", "success")
+        return jsonify({"message": f"Book id:{book_id} deleted successfully!"}), 200
+    except IntegrityError as e:
+        flash(f"IntegrityError: {str(e)}")
+        return jsonify({"error": "Cannot delete the book as it is referenced elsewhere"}), 400
+    except SQLAlchemyError as e:
+        flash(f"SQLAlchemyError: {str(e)}")
+        return jsonify({"error": "An error occurred while processing the request"}), 500
+    except Exception as e:
+        flash(f"Unhandled exception: {str(e)}")
+        return jsonify({"error": "An unexpected error occurred"}), 500
+
 
 
 @app.route('/change_status', methods=["POST"])

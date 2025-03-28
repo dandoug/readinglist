@@ -52,7 +52,7 @@
                 "No matching books were found."
             }}</span>
         </div>
-        <!-- Buttons -->
+        <!-- Buttons -->    
         <div class="col-auto text-end">
             {% if current_user.is_authenticated and 'editor' in current_user.roles %}
             <button id="add-book-btn" type="button" class="btn btn-sm btn-info" style="cursor: pointer;"
@@ -142,6 +142,9 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="bookDetailsModalLabel">Book Details</h5>
                 <span class="text-end">
+                    {% if current_user.is_authenticated and 'admin' in current_user.roles %}
+                      <button id="delete-book-btn" type="button" class="btn btn-sm btn-danger" style="cursor: pointer;">Delete book</button>
+                    {% endif %}                
                     {% if current_user.is_authenticated and 'editor' in current_user.roles %}
                       <button id="edit-book-btn" type="button" class="btn btn-sm btn-info" style="cursor: pointer;">Edit book</button>
                     {% endif %}
@@ -235,6 +238,44 @@
                 window.location.href = '{{ url_for('edit_book') }}' + '?id=' + bookId;
             });
         }
+        // Get the "Delete book" button element by its ID
+        const deleteBookBtn = document.getElementById('delete-book-btn');
+
+        // Check if the button exists (to avoid errors when the user does not have the "editor" role)
+        if (deleteBookBtn) {
+            // Attach a click event listener to the button
+            deleteBookBtn.addEventListener('click', function () {
+                // Get the data-book-id attribute value
+                const bookId = deleteBookBtn.getAttribute('data-book-id');
+                // Show a confirmation dialog before deleting a book
+                const confirmDelete =confirm("Are you sure you want to delete book id: " + bookId + "?");
+                if (confirmDelete) {
+                    const url = '{{ url_for('delete_book') }}'; // URL to send the POST request to
+                    // Prepare URL-encoded data
+                    const formData = new URLSearchParams();
+                    formData.append('book_id', bookId);
+                    // Use fetch to send the POST request
+                    fetch(url, {
+                        method: 'POST', // Specify method
+                        body: formData // Send the URL-encoded object as the body
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            // Handle success
+                            console.log('Book deleted successfully!');
+                            window.location.reload();
+                        } else {
+                            // Handle errors in the response
+                            console.error('Failed to delete the book:', response.statusText);
+                        }
+                    })
+                    .catch(error => {
+                        // Handle network or unexpected errors
+                        console.error('An error occurred:', error);
+                    });
+                }
+            });
+        }        
     });
 
     document.getElementById('new-search-btn').addEventListener('click', function() {
@@ -389,6 +430,11 @@
     function populateModal(bookId, userId, bookData, searchData) {
         document.getElementById('modal-id').textContent = bookData.id;
 
+        {% if current_user.is_authenticated and 'admin' in current_user.roles %}
+          // get the delete-book-btn and set the data-book-id attribute to bookData.id
+          const deleteBookBtn = document.getElementById('delete-book-btn');
+          deleteBookBtn.setAttribute('data-book-id', bookData.id);
+        {% endif %}
         {% if current_user.is_authenticated and 'editor' in current_user.roles %}
           // get the edit-book-btn and set the data-book-id attribute to bookData.id
           const editBookBtn = document.getElementById('edit-book-btn');
