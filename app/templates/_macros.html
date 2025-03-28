@@ -16,6 +16,7 @@
   </div>
 {% endmacro %}
 
+
 {% macro show_flashed_messages() %}
     {% with messages = get_flashed_messages(with_categories=True) %}
         {% if messages %}
@@ -27,3 +28,36 @@
         {% endif %}
     {% endwith %}
 {% endmacro %}
+
+
+{% macro form_group(label, name, options) %}
+<div class="col-auto">
+    <label><strong>{{ label }}</strong></label>
+    <div class="form-group d-flex align-items-center justify-content-between">
+        {% for option in options %}
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="{{ name }}" id="modal-{{ option.id }}" value="{{ option.value }}">
+            <label class="form-check-label" for="modal-{{ option.id }}">
+                {% if option.icon is defined and option.icon %}
+                <i class="fa {{ option.icon }}" aria-hidden="true"></i>
+                {% endif %}
+                {{ option.text if option.text is defined else '' }}
+            </label>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endmacro %}
+
+{%- macro icon_class(name) -%}
+    {%- set icon_classes = {
+        "up_next": "fa-bookmark",
+        "read": "fa-check",
+        "like": "fa-thumbs-up",
+        "dislike": "fa-thumbs-down"
+    } -%}{{ icon_classes[name] }}
+{%- endmacro -%}
+
+{%- macro icon(name) -%}
+    <i class="fa {{ icon_class(name) }}"></i>
+{%- endmacro -%}

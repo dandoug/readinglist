@@ -337,14 +337,15 @@ def add_new_book(book_form: BookForm) -> Book:
         raise RuntimeError(f"An unexpected error occurred: {e}")
     return new_book
 
+PLACEHOLDER = '<span style="display: inline-block; width: 14px; height: 14px; margin: 0;"></span>'
 
-def render_icon(item, icon_mapping, span_id, default_icon="fa-check"):
+def render_icon(item, icon_mapping, span_id):
     # item is the enumeration value (like 'like', 'read'),
     # icon_mapping is a dictionary mapping enum values to font-awesome icons
     if item in icon_mapping:
         return Markup(f'<span id="{span_id}"><i class="fa {icon_mapping[item]}" aria-hidden="true"></i></span>')
     # not in mapping, just use hidden default as a spacer
-    return Markup(f'<span id="{span_id}"><i class="fa {default_icon}" aria-hidden="true" style="visibility: hidden;"></i></span>')
+    return Markup(f'<span id="{span_id}">{PLACEHOLDER}</span>')
 
 
 def get_book_status(book_id, user_id) -> ReadingStatusEnum:

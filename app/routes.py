@@ -5,7 +5,7 @@ from app.asin_data import fetch_product_details
 from app.categories import get_category_bs_tree, id_to_fullpath
 from app.books import search_by_categories, get_book_by_id, build_library_search_urls, search_by_author, \
     search_by_title, add_new_book, book_to_dict_with_status_and_feedback, \
-    set_book_status, set_book_feedback
+    set_book_status, set_book_feedback, PLACEHOLDER
 from app.forms import BookForm
 
 
@@ -62,7 +62,7 @@ def search():
         # one of author, title or cat must be specified
         return jsonify({"error": "Missing author, title, or cat search parameter"}), 400, None
 
-    return render_template('results.html', books=bks)
+    return render_template('results.html', books=bks, placeholder=PLACEHOLDER)
 
 
 @app.route('/details', methods=['GET'])

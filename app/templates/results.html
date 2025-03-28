@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% from '_macros.html' import form_group, icon_class, icon %}
 
 <!-- Title -->
 {% block title %} Search Results {% endblock %}
@@ -112,15 +113,15 @@
                                     {% set rst = book.reading_statuses[0].status.value if book.reading_statuses else None %}
                                     {% set span_id = 'status-span-' ~ book.id %}
                                     {{ rst | render_icon({
-                                        'up_next': 'fa-bookmark',
-                                        'read': 'fa-check'
+                                        'up_next': icon_class('up_next'),
+                                        'read': icon_class('read')
                                     }, span_id) }}
 
                                     {% set fb = book.feedbacks[0].feedback.value if book.feedbacks else None %}
-                                    {% set span_id = 'fb-span-' ~ book.id %}
+                                    {% set span_id = 'feedback-span-' ~ book.id %}
                                     {{ fb | render_icon({
-                                        'like': 'fa-thumbs-up',
-                                        'dislike': 'fa-thumbs-down'
+                                        'like': icon_class('like'),
+                                        'dislike': icon_class('dislike')
                                     }, span_id) }}
                                 </div>
                             </div>
@@ -152,40 +153,27 @@
                     </div>
                     {% set user_id = current_user.id if current_user.is_authenticated else None %}
                     {% if user_id  %}
-                        <div class="col-auto">
-                            <label><strong>Reading Status</strong></label>
-                            <div class="form-group d-flex align-items-center justify-content-between">
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="status" id="modal-statusRead" value="read">
-                                    <label class="form-check-label" for="modal-statusRead"><i class="fa fa-check" aria-hidden="true"></i></label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="status" id="modal-upNext" value="up_next">
-                                    <label class="form-check-label" for="modal-upNext"><i class="fa fa-bookmark" aria-hidden="true"></i></label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="status" id="modal-noStatus" value="none">
-                                    <label class="form-check-label" for="modal-noStatus">(None)</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-auto">
-                            <label><strong>Feedback</strong></label>
-                            <div class="form-group d-flex align-items-center justify-content-between">
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="feedback" id="modal-fbLiked" value="like">
-                                    <label class="form-check-label" for="modal-fbLiked"><i class="fa fa-thumbs-up" aria-hidden="true"></i></label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="feedback" id="modal-fbDisliked" value="dislike">
-                                    <label class="form-check-label" for="modal-fbDisliked"><i class="fa fa-thumbs-down" aria-hidden="true"></i></label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="feedback" id="modal-noFeedback" value="none">
-                                    <label class="form-check-label" for="modal-noFeedback">(None)</label>
-                                </div>
-                            </div>
-                        </div>
+                        <!-- Reading Status -->
+                        {{ form_group(
+                            'Reading Status',
+                            'status',
+                            [
+                                {'id': 'statusRead', 'value': 'read', 'icon': icon_class('read')},
+                                {'id': 'upNext', 'value': 'up_next', 'icon': icon_class('up_next') },
+                                {'id': 'noStatus', 'value': 'none', 'text': '(None)'}
+                            ]
+                        ) }}
+
+                        <!-- Feedback -->
+                        {{ form_group(
+                            'Feedback',
+                            'feedback',
+                            [
+                                {'id': 'fbLiked', 'value': 'like', 'icon': icon_class('like')},
+                                {'id': 'fbDisliked', 'value': 'dislike', 'icon': icon_class('dislike')},
+                                {'id': 'noFeedback', 'value': 'none', 'text': '(None)'}
+                            ]
+                        ) }}
                     {% endif %}
                 </div>
                 <p><strong>Title:</strong> <span id="modal-title"></span></p>
@@ -340,46 +328,50 @@
         }
     }
 
+    function updateCheckBox(boxId, bookData, userId, valueToCheck, checkedValue) {
+        const box = document.getElementById(boxId);
+        box.setAttribute('data-book-id', bookData.id);
+        box.setAttribute('data-user-id', userId);
+        box.checked = valueToCheck === checkedValue;
+    }
+
+    function updateBookStatus(bookData, userId) {
+        const statusMap = {
+            read: 'modal-statusRead',
+            up_next: 'modal-upNext',
+            default: 'modal-noStatus',
+        };
+
+        // Set the status checkboxes
+        Object.entries(statusMap).forEach(([status, boxId]) => {
+            const valueToCheck = status === 'default' ? undefined : status;
+            updateCheckBox(boxId, bookData, userId, bookData.status, valueToCheck);
+        });
+    }
+
+    function updateFeedback(bookData, userId) {
+        const feedbackMap = {
+            like: 'modal-fbLiked',
+            dislike: 'modal-fbDisliked',
+            default: 'modal-noFeedback',
+        };
+
+        // Set the feedback checkboxes
+        Object.entries(feedbackMap).forEach(([feedback, boxId]) => {
+            const valueToCheck = feedback === 'default' ? undefined : feedback;
+            updateCheckBox(boxId, bookData, userId, bookData.feedback, valueToCheck);
+        });
+    }
+
+
     // Populate modal with book and search data
     function populateModal(bookId, userId, bookData, searchData) {
         document.getElementById('modal-id').textContent = bookData.id;
 
         // Set the status and feedback radio buttons if user is logged in
         if (userId) {
-            const status = bookData.status;
-            const readBox = document.getElementById('modal-statusRead');
-            const upNextBox = document.getElementById('modal-upNext');
-            const noStatusBox = document.getElementById('modal-noStatus');
-            readBox.setAttribute('data-book-id', bookData.id);
-            readBox.setAttribute('data-user-id', userId);
-            upNextBox.setAttribute('data-book-id', bookData.id);
-            upNextBox.setAttribute('data-user-id', userId);
-            noStatusBox.setAttribute('data-book-id', bookData.id);
-            noStatusBox.setAttribute('data-user-id', userId);
-            if (status === 'read') {
-                readBox.checked = true;
-            } else if (status === 'up_next') {
-                upNextBox.checked = true;
-            } else {
-                noStatusBox.checked = true;
-            }
-            const feedback = bookData.feedback;
-            const fbLikedBox = document.getElementById('modal-fbLiked');
-            const fbDislikedBox = document.getElementById('modal-fbDisliked');
-            const noFeedbackBox = document.getElementById('modal-noFeedback');
-            fbLikedBox.setAttribute('data-book-id', bookData.id);
-            fbLikedBox.setAttribute('data-user-id', userId);
-            fbDislikedBox.setAttribute('data-book-id', bookData.id);
-            fbDislikedBox.setAttribute('data-user-id', userId);
-            noFeedbackBox.setAttribute('data-book-id', bookData.id);
-            noFeedbackBox.setAttribute('data-user-id', userId);
-            if (feedback === 'like') {
-                fbLikedBox.checked = true;
-            } else if (feedback === 'dislike') {
-                fbDislikedBox.checked = true;
-            } else {
-                noFeedbackBox.checked = true;
-            }
+            updateBookStatus(bookData, userId);
+            updateFeedback(bookData, userId);
         }
         document.getElementById('modal-title').textContent = bookData.title;
         document.getElementById('modal-author').textContent = bookData.author;
@@ -411,86 +403,68 @@
     {% set user_id = current_user.id if current_user.is_authenticated else None %}
     {% if user_id  %}
     document.addEventListener('DOMContentLoaded', function () {
-        // Get all radio buttons in the status group
-        const statusRadios = document.querySelectorAll('input[name="status"]');
+        // Reusable function to handle radio button change events
+        function handleRadioChange(groupName, apiEndpoint, getUpdatedContentCallback) {
+            // Get all radio buttons in the specified group
+            const radios = document.querySelectorAll(`input[name="${groupName}"]`);
 
-        // Add a change event listener to each radio button
-        statusRadios.forEach(function (radio) {
-            radio.addEventListener('change', function () {
-                const statusValue = this.value; // Get selected value
-                const bookId = this.getAttribute('data-book-id'); // Get book ID
-                // Send a POST request to /change_status route
-                const formData = new FormData();
-                    formData.append('status', statusValue);
+            // Add a change event listener to each radio button
+            radios.forEach(function (radio) {
+                radio.addEventListener('change', function () {
+                    const value = this.value; // Get selected value
+                    const bookId = this.getAttribute('data-book-id'); // Get book ID
+
+                    // Send a POST request to the specified API endpoint
+                    const formData = new FormData();
+                    formData.append(groupName, value);
                     formData.append('book_id', bookId);
-                fetch('/change_status', {
-                    method: 'POST',
-                    body: formData,
-                })
-                .then(response => {
-                    if (response.ok) {
-                        const updated_book = response.json();
-                        const statusSpan = document.getElementById('status-span-' + bookId);
-                        let status_content
-                        if (statusValue === 'read') {
-                            status_content = '<i class="fa fa-check" aria-hidden="true"></i>';
-                        } else if (statusValue === 'up_next') {
-                            status_content = '<i class="fa fa-bookmark" aria-hidden="true"></i>';
+
+                    fetch(apiEndpoint, {
+                        method: 'POST',
+                        body: formData,
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            return response.json().then(updated_book => {
+                                // Get the span by ID and update its content with the callback
+                                const span = document.getElementById(`${groupName}-span-${bookId}`);
+                                span.innerHTML = getUpdatedContentCallback(value);
+                            });
                         } else {
-                            status_content = '<i class="fa fa_check" aria-hidden="true" style="visibility: hidden;"></i>';
+                            alert(`Failed to update ${groupName}: ` + response.statusText);
                         }
-                        statusSpan.innerHTML = status_content;
-                        console.log(updated_book);
-                    } else {
-                        alert('Failed to update status: '+response.statusText);
-                    }
-                })
-                .catch(error => {
-                    alert('Error: '+ error);
+                    })
+                    .catch(error => {
+                        alert('Error: ' + error);
+                    });
                 });
             });
-        });
-    });
-    document.addEventListener('DOMContentLoaded', function () {
-        // Get all radio buttons in the feedback group
-        const statusRadios = document.querySelectorAll('input[name="feedback"]');
+        }
 
-        // Add a change event listener to each radio button
-        statusRadios.forEach(function (radio) {
-            radio.addEventListener('change', function () {
-                const fb = this.value; // Get selected value
-                const bookId = this.getAttribute('data-book-id'); // Get book ID
-                // Send a POST request to /change_status route
-                const formData = new FormData();
-                    formData.append('feedback', fb);
-                    formData.append('book_id', bookId);
-                fetch('/change_feedback', {
-                    method: 'POST',
-                    body: formData,
-                })
-                .then(response => {
-                    if (response.ok) {
-                        const updated_book = response.json();
-                        const fbSpan = document.getElementById('fb-span-' + bookId);
-                        let fb_content
-                        if (fb === 'like') {
-                            fb_content = '<i class="fa fa-thumbs-up" aria-hidden="true"></i>';
-                        } else if (fb === 'dislike') {
-                            fb_content = '<i class="fa fa-thumbs-down" aria-hidden="true"></i>';
-                        } else {
-                            fb_content = '<i class="fa fa_check" aria-hidden="true" style="visibility: hidden;"></i>';
-                        }
-                        fbSpan.innerHTML = fb_content;
-                        console.log(updated_book);
-                    } else {
-                        alert('Failed to update feedback: '+response.statusText);
-                    }
-                })
-                .catch(error => {
-                    alert('Error: '+ error);
-                });
-            });
-        });
+        // Define the callback functions for generating updated content
+        function getStatusUpdatedContent(statusValue) {
+            if (statusValue === 'read') {
+                return '{{ icon("read") }}';
+            } else if (statusValue === 'up_next') {
+                return '{{ icon("up_next") }}';
+            } else {
+                return '{{ placeholder|safe }}';
+            }
+        }
+
+        function getFeedbackUpdatedContent(fbValue) {
+            if (fbValue === 'like') {
+                return '{{ icon("like") }}';
+            } else if (fbValue === 'dislike') {
+                return '{{ icon("dislike") }}';
+            } else {
+                return '{{ placeholder|safe }}';
+            }
+        }
+
+        // Attach the event handlers for each group
+        handleRadioChange('status', '/change_status', getStatusUpdatedContent);
+        handleRadioChange('feedback', '/change_feedback', getFeedbackUpdatedContent);
     });
     {% endif %}
 
