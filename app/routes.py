@@ -5,7 +5,7 @@ from app.asin_data import fetch_product_details
 from app.categories import get_category_bs_tree, id_to_fullpath
 from app.books import search_by_categories, get_book_by_id, build_library_search_urls, search_by_author, \
     search_by_title, add_new_book, book_to_dict_with_status_and_feedback, \
-    set_book_status, set_book_feedback, PLACEHOLDER
+    set_book_status, set_book_feedback, PLACEHOLDER, update_book
 from app.forms import BookForm
 
 
@@ -95,7 +95,12 @@ def library_searches():
 @app.route('/add_book', methods=["GET", "POST"])
 @roles_required('editor')
 def add_book():
-    form = BookForm()
+    form = BookForm(data = (request.form if request.method == "POST" else request.args))
+
+    # If next not set, use the referrer if we have one, for where to go when done
+    if not form.next.data:
+        form.next.data = request.referrer if request.referrer else url_for("index")
+
     if form.validate_on_submit():  # Checks if form is submitted and valid
         try:
             book = add_new_book(form)  # Attempt to add the book
@@ -108,6 +113,59 @@ def add_book():
         except Exception as e:  # General fallback for any unanticipated exceptions
             flash(f"An error occurred while adding the book: {e}", "danger")
     return render_template("add_book.html", book_form=form)
+
+
+@app.route('/edit_book', methods=["GET", "POST"])
+@roles_required('editor')
+def edit_book():
+    form = BookForm(data = (request.form if request.method == "POST" else request.args))
+
+    # If next not set, use the referrer if we have one, for where to go when done
+    if not form.next.data:
+        form.next.data = request.referrer if request.referrer else url_for("index")
+
+    if not form.id.data or not str(form.id.data).isdigit():  # Validate 'book_id'
+        return jsonify({"error": "Invalid or missing 'id' parameter"}), 400
+
+    if request.method == "POST":  # Check if the request method is POST
+        if form.validate_on_submit():  # Checks if form is submitted and valid
+            try:
+                book = update_book(form)  # Attempt to update the book
+                flash(f"Book id:{book.id} title:'{book.title}' updated successfully!", "success")
+                # on successful update, go to next
+                return redirect(form.next.data if form.next.data else url_for("index"))
+            except ValueError as ve:  # Handle value-related issues (e.g., duplicate unique fields)
+                flash(f"Failed to update book due to data error: {ve}", "danger")
+            except RuntimeError as re:  # Handle unexpected runtime errors
+                flash(f"An unexpected error occurred: {re}", "danger")
+            except Exception as e:  # General fallback for any unanticipated exceptions
+                flash(f"An error occurred while updating the book: {e}", "danger")
+    else:
+        # fill in book from database
+        try:
+            book = get_book_by_id(form.id.data)
+            if not book:
+                flash(f"Book with ID {form.id.data} not found.", "warning")
+                return redirect(form.next.data if form.next.data else url_for("index"))
+        except Exception as e:
+            flash(f"Failed to get the book with ID {form.id.data}: {e}", "danger")
+            return redirect(form.next.data if form.next.data else url_for("index"))
+
+        if book:
+            form.title.data = book.title
+            form.author.data = book.author
+            form.book_description.data = book.book_description
+            form.asin.data = book.asin
+            form.bestsellers_rank_flat.data = book.bestsellers_rank_flat
+            form.categories_flat.data = book.categories_flat
+            form.hardcover.data = book.hardcover
+            form.image.data = book.image
+            form.isbn_10.data = book.isbn_10
+            form.isbn_13.data = book.isbn_13
+            form.link.data = book.link
+            form.rating.data = book.rating
+    # return to or show initial edit form
+    return render_template("edit_book.html", book_form=form)
 
 
 @app.route('/fill_by_asin', methods=["GET"])

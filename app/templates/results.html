@@ -141,9 +141,14 @@
             <!-- Modal Header -->
             <div class="modal-header">
                 <h5 class="modal-title" id="bookDetailsModalLabel">Book Details</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span>&times;</span>
-                </button>
+                <span class="text-end">
+                    {% if current_user.is_authenticated and 'editor' in current_user.roles %}
+                      <button id="edit-book-btn" type="button" class="btn btn-sm btn-info" style="cursor: pointer;">Edit book</button>
+                    {% endif %}
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span>&times;</span>
+                    </button>
+                </span>
             </div>
             <!-- Modal Body -->
             <div class="modal-body">
@@ -212,6 +217,22 @@
             addBookBtn.addEventListener('click', function () {
                 // Redirect the user to the '/add_book' route
                 window.location.href = '{{ url_for('add_book') }}';
+            });
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get the "Edit book" button element by its ID
+        const editBookBtn = document.getElementById('edit-book-btn');
+
+        // Check if the button exists (to avoid errors when the user does not have the "editor" role)
+        if (editBookBtn) {
+            // Attach a click event listener to the button
+            editBookBtn.addEventListener('click', function () {
+                // Get the data-book-id attribute value
+                const bookId = editBookBtn.getAttribute('data-book-id');
+                // Redirect the user to the '/add_book' route
+                window.location.href = '{{ url_for('edit_book') }}' + '?id=' + bookId;
             });
         }
     });
@@ -367,6 +388,12 @@
     // Populate modal with book and search data
     function populateModal(bookId, userId, bookData, searchData) {
         document.getElementById('modal-id').textContent = bookData.id;
+
+        {% if current_user.is_authenticated and 'editor' in current_user.roles %}
+          // get the edit-book-btn and set the data-book-id attribute to bookData.id
+          const editBookBtn = document.getElementById('edit-book-btn');
+          editBookBtn.setAttribute('data-book-id', bookData.id);
+        {% endif %}
 
         // Set the status and feedback radio buttons if user is logged in
         if (userId) {

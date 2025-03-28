@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, IntegerField, TextAreaField, SelectField, URLField
+from wtforms import StringField, IntegerField, TextAreaField, SelectField, URLField, HiddenField
 from wtforms.fields.numeric import DecimalField
 from wtforms.validators import DataRequired, Optional, Length, NumberRange, URL
 
@@ -126,3 +126,6 @@ class BookForm(FlaskForm):
             Length(max=4096, message="Specifications cannot exceed 4096 characters.")
         ]
     )
+
+    # Next (Hidden Field)
+    next = HiddenField("next")

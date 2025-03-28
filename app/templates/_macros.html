@@ -1,11 +1,16 @@
 
-{% macro render_field_with_errors(field) %}
+{% macro render_field_with_errors(field, readonly=None) %}
+  {% set is_readonly = readonly | default(False) %}
   <div class="row form-group">
     <div class="col-md-2 text-end d-flex flex-column align-items-end bl-label">
         {{ field.label }}
     </div>
     <div class="col-md">
-        {{ field(class_="w-100", **kwargs)|safe }}
+        {% if is_readonly %}
+            {{ field(class_="w-100 form-control-plaintext", readonly="readonly")|safe }}
+        {% else %}
+            {{ field(class_="w-100")|safe }}
+        {% endif %}
         {% if field.errors %}
           <ul>
             {% for error in field.errors %}<li class="fs-error-msg">{{ error }}</li>{% endfor %}

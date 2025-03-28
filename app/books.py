@@ -337,6 +337,55 @@ def add_new_book(book_form: BookForm) -> Book:
         raise RuntimeError(f"An unexpected error occurred: {e}")
     return new_book
 
+
+def update_book(book_form: BookForm) -> Book:
+    """
+    Updates the details of an existing book in the database. It retrieves the book
+    based on the provided ID in the book form, updates the book's attributes with new
+    data, and commits the changes to the database. In the case of any errors during
+    the database operation, the session is rolled back and appropriate exceptions
+    are raised.
+
+    :param book_form: Form containing updated data for a book
+    :type book_form: BookForm
+    :return: The updated book object
+    :rtype: Book
+    :raises ValueError: Raised when a unique constraint in the database is violated
+    :raises RuntimeError: Raised in case of a database request error or any unexpected error
+    """
+    try:
+        book = get_book_by_id(book_form.id.data)
+        # Update the new book
+        book.author=book_form.author.data
+        book.title=book_form.title.data
+        book.asin=book_form.asin.data
+        book.link=book_form.link.data
+        book.image=book_form.image.data
+        book.categories_flat=book_form.categories_flat.data
+        book.book_description=book_form.book_description.data
+        book.rating=book_form.rating.data or 0.0
+        book.isbn_13=book_form.isbn_13.data
+        book.isbn_10=book_form.isbn_10.data
+        book.hardcover=book_form.hardcover.data
+        book.bestsellers_rank_flat=book_form.bestsellers_rank_flat.data
+        book.specifications_flat=book_form.specifications_flat.data
+
+        # Update the book in the database
+        db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
+        raise ValueError("A book with the same unique constraint already exists.")
+    except InvalidRequestError as e:
+        db.session.rollback()
+        raise RuntimeError(f"Database request error: {e}")
+    except Exception as e:
+        db.session.rollback()
+        raise RuntimeError(f"An unexpected error occurred: {e}")
+    return book
+
+
+
+
 PLACEHOLDER = '<span style="display: inline-block; width: 14px; height: 14px; margin: 0;"></span>'
 
 def render_icon(item, icon_mapping, span_id):
