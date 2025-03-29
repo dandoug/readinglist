@@ -120,16 +120,30 @@ class Book(db.Model):
         return f"<Book(id={self.id}, title='{self.title}', author='{self.author}')>"
 
 
-def search_by_categories(categories):
+def search_by_categories(categories, status_filter: str  = None,
+                            feedback_filter: str = None):
     """
-    Search for books where the `categories_flat` value matches any value in `categories`.
+    Searches for books based on specified categories and optional filters for status and feedback.
 
-    Args:
-        categories (list of str): List of category strings to match.
+    This function retrieves a list of books that match one or more categories. The results
+    are sorted alphabetically by book title. Additional optional filters can be applied
+    to refine the search results by user status or feedback.
 
-    Returns:
-        list: List of books matching the input categories, sorted by `categories_flat`,
-              `author`, and `title`.
+    :param categories: A list of book categories to filter the query. The function will
+        search for books matching any of the provided categories.
+    :type categories: list
+
+    :param status_filter: An optional status filter to further refine the query. Default
+        is None.
+    :type status_filter: str, optional
+
+    :param feedback_filter: An optional feedback filter to apply additional
+        refinement to the query. Default is None.
+    :type feedback_filter: str, optional
+
+    :return: A list of books that match the given criteria. Returns an empty list if
+        no matching books are found or if no categories are provided.
+    :rtype: list
     """
     if not categories:
         return []  # Return an empty list if no categories are provided
@@ -140,6 +154,8 @@ def search_by_categories(categories):
              .order_by(asc(Book.title)))  # sort by title
 
     query = _add_user_status_and_feedback_joins(query)
+
+    query = add_status_and_feedback_filters(query, status_filter, feedback_filter)
 
     # execute the query
     return query.all()
@@ -173,19 +189,28 @@ def _add_user_status_and_feedback_joins(query):
 VALID_SEARCH_BY_ATTRIBUTES = {"author", "title"}
 
 
-def _search_by_attribute(attribute: str, value: str) -> list[Book]:
+def _search_by_attribute(attribute: str, value: str, status_filter: str  = None,
+                            feedback_filter: str = None) -> list[Book]:
     """
-    Common helper to search books by a specific attribute.
+    Searches for books in the database based on a specific attribute and value,
+    with optional filters for book status and user feedback.
 
-    Args:
-        attribute (str): The name of the book attribute to search (e.g., 'author', 'title').
-        value (str): The search value.
+    This function executes a query on the `Book` database model, applying a
+    case-insensitive partial match for the specified attribute with its value,
+    and optionally filters the results by status or feedback. The query can
+    also return all books sorted by the attribute when the value is "*".
 
-    Returns:
-        list: List of `Book` objects matching the search criteria.
-
-    Raises:
-        ValueError: If the attribute is not valid.
+    :param attribute: The attribute of the book to be searched by, such as 'title'
+        or 'author'. The attribute must belong to the predefined valid attributes.
+    :param value: The value to search for within the specified attribute. Supports
+        case-insensitive partial matches.
+    :param status_filter: Optional filter to apply for book status (default is None).
+    :param feedback_filter: Optional filter to apply for user feedback (default
+        is None).
+    :return: A list of `Book` objects matching the search criteria and the optional
+        filters.
+    :rtype: list[Book]
+    :raises ValueError: If the specified attribute is not a valid search attribute.
     """
     if attribute not in VALID_SEARCH_BY_ATTRIBUTES:
         raise ValueError(f"Invalid attribute '{attribute}'. Must be one of {VALID_SEARCH_BY_ATTRIBUTES}.")
@@ -203,20 +228,40 @@ def _search_by_attribute(attribute: str, value: str) -> list[Book]:
         # Perform a case-insensitive partial match (using ilike)
         query = query.filter(getattr(Book, attribute).ilike(f"%{value}%"))
 
+    query = add_status_and_feedback_filters(query, status_filter, feedback_filter)
+
     # execute the query
     books = query.all()
 
     return books
 
 
-def search_by_author(author):
+def add_status_and_feedback_filters(query, status_filter, feedback_filter):
+    if status_filter:
+        if status_filter != "none":
+            # handles read and up_next
+            query = query.filter(ReadingStatus.status == status_filter)
+        else:
+            # finds only books without a status set
+            query = query.filter(ReadingStatus.status.is_(None))
+    if feedback_filter:
+        if feedback_filter != "none":
+            # handles like and dislike
+            query = query.filter(Feedback.feedback == feedback_filter)
+        else:
+            # finds only books without a feedback set
+            query = query.filter(Feedback.feedback.is_(None))
+    return query
+
+
+def search_by_author(author: str, status_filter: str, feedback_filter: str):
     """Search for books by author's name."""
-    return _search_by_attribute("author", author)
+    return _search_by_attribute("author", author, status_filter, feedback_filter)
 
 
-def search_by_title(title):
+def search_by_title(title, status_filter: str, feedback_filter: str):
     """Search for books by title."""
-    return _search_by_attribute("title", title)
+    return _search_by_attribute("title", title, status_filter, feedback_filter)
 
 
 def book_to_dict_with_status_and_feedback(book, user_id):

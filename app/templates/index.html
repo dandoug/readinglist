@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% from '_macros.html' import search_filters %}
 
 <!-- Title -->
 {% block title %} Search Books {% endblock %}
@@ -79,9 +80,10 @@
                                 <button id="author-search-btn" type="button" class="btn btn-sm btn-primary mt-2">Search</button>
                             </div>
                         </div>
+                        {{ search_filters('byauthor-') }}
                         <div class="row mt-0">
                             <div class="col">
-                                <label for="author-search-input"></label><input type="text" id="author-search-input" class="form-control" placeholder="Author name or partial name">
+                                <label for="author-search-input"></label><input type="text" id="author-search-input" class="form-control" placeholder="Author name or partial name or * to search all authors">
                             </div>
                         </div>
                     </div>
@@ -101,9 +103,10 @@
                                 <button id="title-search-btn" type="button" class="btn btn-sm btn-primary mt-2">Search</button>
                             </div>
                         </div>
+                        {{ search_filters('bytitle-') }}
                         <div class="row mt-1">
                             <div class="col">
-                                <label for="title-search-input"></label><input type="text" id="title-search-input" class="form-control" placeholder="Book title or partial title">
+                                <label for="title-search-input"></label><input type="text" id="title-search-input" class="form-control" placeholder="Book title or partial title or * to search all titles">
                             </div>
                         </div>
                     </div>
@@ -124,6 +127,7 @@
                                 <button id="cat-search-btn" type="button" class="btn btn-sm btn-primary">Search</button>
                             </div>
                         </div>
+                        {{ search_filters('bycategory-') }}
                         <div class="row mt-2">
                             <div class="col">
                                 <div id="tree"></div>
@@ -184,13 +188,68 @@
             tree.collapseAll();
         });
 
+        {% set user_id = current_user.id if current_user.is_authenticated else None %}
+        {% if user_id  %}
+            function resetRadiosByPrefix(prefix) {
+                const feedbackRadios = document.querySelectorAll(`input[name="${prefix}feedback"]`);
+                const statusRadios = document.querySelectorAll(`input[name="${prefix}status"]`);
+
+                feedbackRadios.forEach(radio => radio.checked = false);
+                statusRadios.forEach(radio => radio.checked = false);
+            }
+
+            // reset filter buttons functionality
+            document.getElementById('byauthor-reset-btn').addEventListener('click', function() {
+                resetRadiosByPrefix('byauthor-');
+            });
+            document.getElementById('bytitle-reset-btn').addEventListener('click', function() {
+                resetRadiosByPrefix('bytitle-');
+            });
+            document.getElementById('bycategory-reset-btn').addEventListener('click', function() {
+                resetRadiosByPrefix('bycategory-');
+            });
+        {% endif %}
+
+        /**
+         * Get URL parameters based on the prefix for radio buttons
+         * @param {string} prefix - The prefix used for the radio button names.
+         * @returns {string} - A concatenated string of URL parameters.
+         */
+        function getSearchParamsByPrefix(prefix) {
+            let statusParam = document.querySelector(`input[name="${prefix}status"]:checked`)?.value;
+            if (statusParam) {
+                statusParam = '&status=' + encodeURIComponent(statusParam);
+            } else {
+                statusParam = '';
+            }
+
+            let feedbackParam = document.querySelector(`input[name="${prefix}feedback"]:checked`)?.value;
+            if (feedbackParam) {
+                feedbackParam = '&feedback=' + encodeURIComponent(feedbackParam);
+            } else {
+                feedbackParam = '';
+            }
+
+            return statusParam + feedbackParam;
+        }
+
         // Category search button functionality
         document.getElementById('cat-search-btn').addEventListener('click', function() {
             const tree = $('#tree').treeview(true);
             const checkedNodes = tree.getChecked();
             const checkedNodesIds = checkedNodes.map(node => node.id);
             if (checkedNodesIds.length !== 0) {
-                window.location.href = '/search?' + checkedNodesIds.map(id => 'cat=' + encodeURIComponent(id)).join('&');
+                {% set user_id = current_user.id if current_user.is_authenticated else None %}
+                {% if user_id  %}
+                    // Reuse the function for the 'byauthor-' prefix
+                    const additionalParams = getSearchParamsByPrefix('bycategory-');
+                {% else %}
+                    const additionalParams = ''; // Default to no params if user is not authenticated
+                {% endif %}
+                window.location.href = '/search?' + checkedNodesIds.map(id => 'cat=' + encodeURIComponent(id)).join('&')
+                    + additionalParams;
+            } else {
+                alert('Please select at least one category.');
             }
         });
 
@@ -198,7 +257,14 @@
         document.getElementById('author-search-btn').addEventListener('click', function() {
             const author = document.getElementById('author-search-input').value.trim();
             if (author) {
-                window.location.href = '/search?author=' + encodeURIComponent(author);
+                {% set user_id = current_user.id if current_user.is_authenticated else None %}
+                {% if user_id  %}
+                    // Reuse the function for the 'byauthor-' prefix
+                    const additionalParams = getSearchParamsByPrefix('byauthor-');
+                {% else %}
+                    const additionalParams = ''; // Default to no params if user is not authenticated
+                {% endif %}
+                window.location.href = '/search?author=' + encodeURIComponent(author) + additionalParams;
             } else {
                 alert('Please enter an author name.');
             }
@@ -208,7 +274,14 @@
         document.getElementById('title-search-btn').addEventListener('click', function() {
             const title = document.getElementById('title-search-input').value.trim();
             if (title) {
-                window.location.href = '/search?title=' + encodeURIComponent(title);
+                {% set user_id = current_user.id if current_user.is_authenticated else None %}
+                {% if user_id  %}
+                    // Reuse the function for the 'byauthor-' prefix
+                    const additionalParams = getSearchParamsByPrefix('bytitle-');
+                {% else %}
+                    const additionalParams = ''; // Default to no params if user is not authenticated
+                {% endif %}
+                window.location.href = '/search?title=' + encodeURIComponent(title) + additionalParams;
             } else {
                 alert('Please enter a book title.');
             }

@@ -10,6 +10,12 @@ from app.books import search_by_categories, get_book_by_id, build_library_search
 from app.forms import BookForm
 
 
+@app.before_request
+def add_global_vars():
+    # Access the global Jinja environment, including in macros
+    app.jinja_env.globals.update(current_user=current_user)
+
+
 def _check_for_required_book(req):
     """
     Checks for the required book based on the 'id' parameter provided in the request and returns appropriate
@@ -52,13 +58,16 @@ def search():
     title = request.args.get('title')
     categories = request.args.getlist('cat')
 
+    status_filter = request.args.get('status', None)
+    feedback_filter = request.args.get('feedback', None)
+
     if author:
-        bks = search_by_author(author)
+        bks = search_by_author(author, status_filter, feedback_filter)
     elif title:
-        bks = search_by_title(title)
+        bks = search_by_title(title, status_filter, feedback_filter)
     elif categories:
         # Decode encoded categories to full path strings before searching
-        bks = search_by_categories([id_to_fullpath(category) for category in categories])
+        bks = search_by_categories([id_to_fullpath(category) for category in categories], status_filter, feedback_filter)
     else:
         # one of author, title or cat must be specified
         return jsonify({"error": "Missing author, title, or cat search parameter"}), 400, None
