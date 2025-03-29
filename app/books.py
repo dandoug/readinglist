@@ -120,8 +120,8 @@ class Book(db.Model):
         return f"<Book(id={self.id}, title='{self.title}', author='{self.author}')>"
 
 
-def search_by_categories(categories, status_filter: str  = None,
-                            feedback_filter: str = None):
+def search_by_categories(categories, status_filter: str = None,
+                         feedback_filter: str = None):
     """
     Searches for books based on specified categories and optional filters for status and feedback.
 
@@ -167,15 +167,16 @@ def _add_user_status_and_feedback_joins(query):
     if user_id:
         # Join feedback and status if user logged in
         query = ((query
-            .outerjoin(
-                ReadingStatus,
-                (ReadingStatus.book_id == Book.id) & ((ReadingStatus.user_id == user_id) | (ReadingStatus.user_id.is_(None))),))
-            .outerjoin(
-                Feedback,
-                (Feedback.book_id == Book.id) & ((Feedback.user_id == user_id) | (Feedback.user_id.is_(None))),)
-            .options(
-                contains_eager(Book.reading_statuses),
-                contains_eager(Book.feedbacks)))
+        .outerjoin(
+            ReadingStatus,
+            (ReadingStatus.book_id == Book.id) & (
+                    (ReadingStatus.user_id == user_id) | (ReadingStatus.user_id.is_(None))), ))
+        .outerjoin(
+            Feedback,
+            (Feedback.book_id == Book.id) & ((Feedback.user_id == user_id) | (Feedback.user_id.is_(None))), )
+        .options(
+            contains_eager(Book.reading_statuses),
+            contains_eager(Book.feedbacks)))
     else:
         # If no user logged in, status and feedback should be empty for all books, no joining
         query = (query
@@ -189,8 +190,8 @@ def _add_user_status_and_feedback_joins(query):
 VALID_SEARCH_BY_ATTRIBUTES = {"author", "title"}
 
 
-def _search_by_attribute(attribute: str, value: str, status_filter: str  = None,
-                            feedback_filter: str = None) -> list[Book]:
+def _search_by_attribute(attribute: str, value: str, status_filter: str = None,
+                         feedback_filter: str = None) -> list[Book]:
     """
     Searches for books in the database based on a specific attribute and value,
     with optional filters for book status and user feedback.
@@ -402,19 +403,19 @@ def update_book(book_form: BookForm) -> Book:
     try:
         book = get_book_by_id(book_form.id.data)
         # Update the new book
-        book.author=book_form.author.data
-        book.title=book_form.title.data
-        book.asin=book_form.asin.data
-        book.link=book_form.link.data
-        book.image=book_form.image.data
-        book.categories_flat=book_form.categories_flat.data
-        book.book_description=book_form.book_description.data
-        book.rating=book_form.rating.data or 0.0
-        book.isbn_13=book_form.isbn_13.data
-        book.isbn_10=book_form.isbn_10.data
-        book.hardcover=book_form.hardcover.data
-        book.bestsellers_rank_flat=book_form.bestsellers_rank_flat.data
-        book.specifications_flat=book_form.specifications_flat.data
+        book.author = book_form.author.data
+        book.title = book_form.title.data
+        book.asin = book_form.asin.data
+        book.link = book_form.link.data
+        book.image = book_form.image.data
+        book.categories_flat = book_form.categories_flat.data
+        book.book_description = book_form.book_description.data
+        book.rating = book_form.rating.data or 0.0
+        book.isbn_13 = book_form.isbn_13.data
+        book.isbn_10 = book_form.isbn_10.data
+        book.hardcover = book_form.hardcover.data
+        book.bestsellers_rank_flat = book_form.bestsellers_rank_flat.data
+        book.specifications_flat = book_form.specifications_flat.data
 
         # Update the book in the database
         db.session.commit()
@@ -451,6 +452,7 @@ def del_book(book_id):
 
 
 PLACEHOLDER = '<span style="display: inline-block; width: 14px; height: 14px; margin: 0;"></span>'
+
 
 def render_icon(item, icon_mapping, span_id):
     # item is the enumeration value (like 'like', 'read'),
@@ -578,4 +580,3 @@ def set_book_feedback(book_id: int, fb: str, user_id: int) -> dict:
 
     book = get_book_by_id(book_id)
     return book_to_dict_with_status_and_feedback(book, user_id)
-

@@ -105,7 +105,7 @@ def library_searches():
 @app.route('/add_book', methods=["GET", "POST"])
 @roles_required('editor')
 def add_book():
-    form = BookForm(data = (request.form if request.method == "POST" else request.args))
+    form = BookForm(data=(request.form if request.method == "POST" else request.args))
 
     # If next not set, use the referrer if we have one, for where to go when done
     if not form.next.data:
@@ -128,7 +128,7 @@ def add_book():
 @app.route('/edit_book', methods=["GET", "POST"])
 @roles_required('editor')
 def edit_book():
-    form = BookForm(data = (request.form if request.method == "POST" else request.args))
+    form = BookForm(data=(request.form if request.method == "POST" else request.args))
 
     # If next not set, use the referrer if we have one, for where to go when done
     if not form.next.data:
@@ -214,7 +214,6 @@ def delete_book():
     except Exception as e:
         flash(f"Unhandled exception: {str(e)}")
         return jsonify({"error": "An unexpected error occurred"}), 500
-
 
 
 @app.route('/change_status', methods=["POST"])

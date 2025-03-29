@@ -10,8 +10,8 @@ import boto3
 import json
 import os
 
-AWS_REGION = os.getenv("AWS_REGION", "us-west-1")
-SECRET_NAME = "prod/readinglist-config"
+AWS_REGION = os.getenv("AWS_REGION")
+SECRET_NAME = os.getenv("SECRET_NAME")
 
 
 def fetch_secrets(secret_name):
@@ -21,6 +21,11 @@ def fetch_secrets(secret_name):
 
 
 if __name__ == "__main__":
+    if not SECRET_NAME:
+        raise ValueError("Environment variable SECRET_NAME must be set to the name of the secret.")
+    if not AWS_REGION:
+        raise ValueError("Environment variable AWS_REGION must be set to the name of the region from which to retrieve the secret.")
+
     secrets = fetch_secrets(SECRET_NAME)
 
     # Write secrets to a .env file that will be loaded by app into configuration
