@@ -1,7 +1,7 @@
-from sqlalchemy import text
 import base64
 
 from . import db
+from .books import Book
 
 SEPARATOR = ' > '   # separator for full category strings
 
@@ -12,7 +12,7 @@ def get_category_list():
     order.
 
     The function establishes a database connection and executes an SQL query to
-    retrieve distinct book categories from the `readinglist.books` table. After
+    retrieve distinct book categories from the database. After
     retrieving the results, the function processes and returns the list of unique
     categories.
 
@@ -23,12 +23,13 @@ def get_category_list():
         alphabetically.
     :rtype: list[str]
     """
-    with db.engine.connect() as conn:
-        result = conn.execute(
-            text("SELECT distinct categories_flat FROM readinglist.books order by categories_flat;"))
-    categories = []
-    for row in result:
-        categories.append(row.categories_flat)
+    result = (db.session.query(Book.categories_flat)
+              .distinct()
+              .order_by(Book.categories_flat)
+              .all())
+
+    # Extracting the results into a list
+    categories = [row.categories_flat for row in result]
     return categories
 
 

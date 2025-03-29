@@ -45,7 +45,7 @@ class Config:
     SECURITY_REGISTERABLE=False  # we provide our own register view to only allow admin role to register
     SECURITY_POST_REGISTER_VIEW = "/admin/user/"
 
-    SECURITY_EMAIL_SENDER = "admin@booklist.media"
+    SECURITY_EMAIL_SENDER = os.getenv("SECURITY_EMAIL_SENDER")
 
     SECURITY_CONFIRMABLE = True
     SECURITY_RECOVERABLE = True
