@@ -23,13 +23,13 @@ $ pip install -r requirements.txt
 
 ## Execution Environment
 
-There a file called [.env.sample](.env.sample) in the project root.  You should copy this and rename it to [.env]()   Edit the renamed file and set the environment variables in it to match your environment (read the comments in the file for more hints).  This file should never be checked into source control.  In a production environment, the environment variables set this way would typically be set externally and so this file probably wouldn't even exist.  It's intended for local development and testing.  In the production environment I use, this is done via AWS Secret Manager and loaded during deployment via [fetch_secrets.py](fetch_secrets.py).
+There a file called [.env.sample](.env.sample) in the project root.  You should copy this and rename it to [.env]()   Edit the renamed file and set the environment variables in it to match your environment (read the comments in the file for more hints).  This file should never be checked into source control.  In a production environment, the environment variables set this way would typically be set externally and so this file probably wouldn't even exist.  It's intended for local development and testing.  In the production environment I use, this is done via AWS Secret Manager and loaded during deployment via [fetch_secrets.py](.ebextensions/fetch_secrets.py).
 
 ### Database schema
 
-The DDL to create the database tables is in [books.sql](model/books.sql), [security.sql](model/security.sql), and [favorites.sql](model/favoriites.sql).  The should be run to create the necessary tables in that order.
+The DDL to create the database tables is in [books.sql](database/books.sql), [security.sql](database/security.sql), and [favorites.sql](database/favoriites.sql).  The should be run to create the necessary tables in that order.
 
-There's also a script [initial_book_load](model/initial_book_load.sql) that can load up about 200 books that I used to start.  You can use it or not to boot strap your collection.
+There's also a script [initial_book_load](database/initial_book_load.sql) that can load up about 200 books that I used to start.  You can use it or not to boot strap your collection.
 
 ### Users and Roles
 
