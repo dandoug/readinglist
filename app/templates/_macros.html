@@ -36,7 +36,7 @@
 
 
 {% macro form_group(label, name, options, id_prefix='modal-') %}
-<div class="col-md-3">
+<div class="col-md-4">
     <label class="d-flex align-items-center justify-content-center">{{ label }}</label>
     <div class="form-group d-flex align-items-center justify-content-end">
         {% for option in options %}
@@ -72,7 +72,7 @@
     {% set user_id = current_user.id if current_user.is_authenticated else None %}
     {% if user_id  %}
         <div class="row mt-0">
-            <div class="col-md-6 d-flex justify-content-end">
+            <div class="col-md-4 d-flex justify-content-end">
               <span class="font-weight-bold">Search Filters:</span>
             </div>
             <!-- Reading Status -->

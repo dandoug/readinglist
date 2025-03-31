@@ -1,5 +1,4 @@
 from markupsafe import Markup
-from sqlalchemy.dialects.mysql import insert
 from sqlalchemy.exc import IntegrityError, InvalidRequestError
 from flask_security import current_user
 from sqlalchemy.orm import mapped_column, Mapped, relationship, contains_eager, declared_attr, noload
@@ -513,70 +512,88 @@ def get_book_feedback(book_id, user_id) -> FeedbackEnum:
 
 def set_book_status(book_id: int, status: str, user_id: int) -> dict:
     """
-    Upserts a reading status for a user and book.
+    Set the reading status of a book for a specific user. This function allows the user
+    to update their reading status of a particular book, delete an existing status, or
+    add a new status if it doesn't already exist. If the status is set to "none", any
+    existing status for that book and user combination will be removed.
 
-    :param book_id: The ID of the book whose status is being updated.
-    :param status: The new status as a string. Must be convertible to ReadingStatusEnum or 'none'
-    :param user_id: The ID of the user for whom the status is being updated.
+    :param book_id: The identifier of the book whose reading status is being modified.
+    :type book_id: int
+    :param status: The new reading status for the book. Accepted values are the status
+        strings such as "none", "reading", "completed", etc.
+    :type status: str
+    :param user_id: The identifier of the user whose book reading status is being updated.
+    :type user_id: int
+    :return: A dictionary containing the updated details of the book, including its
+        status and feedback for the given user.
+    :rtype: dict
     """
-    if status == "none":
-        stmt = db.delete(ReadingStatus).where(
-            ReadingStatus.user_id == user_id,
-            ReadingStatus.book_id == book_id
-        )
-    else:
-        stmt = insert(ReadingStatus).values(
-            user_id=user_id,
-            book_id=book_id,
-            status=status
-        )
-        # Add ON DUPLICATE KEY UPDATE clause
-        stmt = stmt.on_duplicate_key_update({"status": status})
+    # Check if the reading status already exists for this user_id and book_id
+    existing_status = db.session.query(ReadingStatus).filter_by(
+        user_id=user_id,
+        book_id=book_id
+    ).first()
 
-    # Use Flask-SQLAlchemy's db.session for execution
-    db.session.execute(stmt)
+    # If "none", delete the reading status
+    if status == "none":
+        if existing_status:
+            db.session.delete(existing_status)
+    else:
+        if existing_status:
+            # Update the current reading status
+            existing_status.status = status
+        else:
+            # Add a new reading status
+            new_status = ReadingStatus(user_id=user_id, book_id=book_id, status=status)
+            db.session.add(new_status)
+
+    # Commit the transaction
     db.session.commit()
 
+    # Get the updated book and return its details
     book = get_book_by_id(book_id)
     return book_to_dict_with_status_and_feedback(book, user_id)
 
 
+
 def set_book_feedback(book_id: int, fb: str, user_id: int) -> dict:
     """
-    Sets feedback for a book by a user. This function allows adding, updating,
-    or deleting feedback based on the given `fb` parameter. If the feedback
-    (`fb`) is "none", the feedback for the specific book by the specified user
-    is removed. Otherwise, new feedback is inserted or existing feedback is updated.
+    Updates or removes feedback for a specific book and user. If a feedback entry exists for the given
+    user and book, it will be updated based on the provided feedback value. If the feedback is marked
+    as "none", the existing feedback will be removed. If no feedback exists, a new entry will be created.
+    Finally, the updated book details are fetched and returned.
 
-    :param book_id: The unique identifier of the book for which feedback is being
-        set.
+    :param book_id: Identifier of the book for which the feedback is being set
     :type book_id: int
-    :param fb: The feedback string provided by the user. If set to "none",
-        the feedback is removed.
+    :param fb: Feedback string provided by the user, set to "none" to delete feedback
     :type fb: str
-    :param user_id: The unique identifier of the user providing the feedback.
+    :param user_id: Identifier of the user providing the feedback
     :type user_id: int
-    :return: A dictionary containing the updated book data, feedback status,
-        and the feedback details after processing.
+    :return: A dictionary containing updated details of the book along with status and feedback data
     :rtype: dict
     """
-    if fb == "none":
-        stmt = db.delete(Feedback).where(
-            Feedback.user_id == user_id,
-            Feedback.book_id == book_id
-        )
-    else:
-        stmt = insert(Feedback).values(
-            user_id=user_id,
-            book_id=book_id,
-            feedback=fb
-        )
-        # Add ON DUPLICATE KEY UPDATE clause
-        stmt = stmt.on_duplicate_key_update({"feedback": fb})
+    # Check if feedback already exists for this user_id and book_id
+    existing_feedback = db.session.query(Feedback).filter_by(
+        user_id=user_id,
+        book_id=book_id
+    ).first()
 
-    # Use Flask-SQLAlchemy's db.session for execution
-    db.session.execute(stmt)
+    # If "none", delete the feedback
+    if fb == "none":
+        if existing_feedback:
+            db.session.delete(existing_feedback)
+    else:
+        if existing_feedback:
+            # Update existing feedback
+            existing_feedback.feedback = fb
+        else:
+            # Insert new feedback if it wasn't there
+            new_feedback = Feedback(user_id=user_id, book_id=book_id, feedback=fb)
+            db.session.add(new_feedback)
+
+    # Commit the transaction
     db.session.commit()
 
+    # Get the updated book and return its details
     book = get_book_by_id(book_id)
     return book_to_dict_with_status_and_feedback(book, user_id)

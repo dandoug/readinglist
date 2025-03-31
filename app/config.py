@@ -17,7 +17,6 @@ class Config:
     RDS_USERNAME = os.getenv("RDS_USERNAME", "readinglist")
     RDS_PASSWORD = os.getenv("RDS_PASSWORD")
 
-    SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{RDS_USERNAME}:{quote_plus(str(RDS_PASSWORD))}@{RDS_HOSTNAME}:{RDS_PORT}/{RDS_DB_NAME}"
     SQLALCHEMY_TRACK_MODIFICATIONS = False  # Avoid overhead of tracking
 
     # Add any other app-wide default configurations here
@@ -57,12 +56,14 @@ class DevelopmentConfig(Config):
     """Development-specific configuration."""
     DEBUG = True
     SQLALCHEMY_ECHO = True  # Log SQL queries for debugging
+    SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{Config.RDS_USERNAME}:{quote_plus(str(Config.RDS_PASSWORD))}@{Config.RDS_HOSTNAME}:{Config.RDS_PORT}/{Config.RDS_DB_NAME}"
 
 
 class ProductionConfig(Config):
     """Production-specific configuration."""
     DEBUG = False
     SQLALCHEMY_ECHO = False
+    SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{Config.RDS_USERNAME}:{quote_plus(str(Config.RDS_PASSWORD))}@{Config.RDS_HOSTNAME}:{Config.RDS_PORT}/{Config.RDS_DB_NAME}"
 
 
 class TestingConfig(Config):
