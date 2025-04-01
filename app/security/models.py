@@ -3,7 +3,7 @@ from flask_admin.contrib.sqla import ModelView
 from flask_security import current_user
 from sqlalchemy.orm import relationship, declared_attr
 
-from .. import db
+from app import db
 
 # Define models
 fsqla.FsModels.set_db_info(db)

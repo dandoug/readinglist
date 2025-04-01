@@ -15,9 +15,6 @@ CREATE TABLE books (
     specifications_flat TEXT           -- Miscellaneous specifications flattened
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE INDEX idx_asin ON books (asin);
-CREATE INDEX idx_isbn_13 ON books (isbn_13);
-CREATE INDEX idx_isbn_10 ON books (isbn_10);
 CREATE INDEX idx_title ON books (title);
 CREATE INDEX idx_author ON books (author);
 CREATE INDEX idx_rating ON books (rating);

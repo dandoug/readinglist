@@ -1,12 +1,12 @@
-from flask import current_app as app, render_template, request, jsonify, flash, redirect, url_for
+from flask import current_app as app, render_template, request, jsonify, flash, redirect, url_for, g
 from flask_security import roles_required, current_user, auth_required
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
-from app.asin_data import fetch_product_details
-from app.categories import get_category_bs_tree, id_to_fullpath
-from app.books import search_by_categories, get_book_by_id, build_library_search_urls, search_by_author, \
+from app.services import fetch_product_details
+from app.services import search_by_categories, get_book_by_id, search_by_author, \
     search_by_title, add_new_book, book_to_dict_with_status_and_feedback, \
-    set_book_status, set_book_feedback, PLACEHOLDER, update_book, del_book
+    set_book_status, set_book_feedback, update_book, del_book, get_category_bs_tree, id_to_fullpath
+from app.helpers import PLACEHOLDER, build_library_search_urls
 from app.forms import BookForm
 
 
@@ -86,8 +86,6 @@ def details():
     error, status, book = _check_for_required_book(request)
     if error:
         return error, status
-    # some descriptions have &nbsp; and these need to be rendered as just space... no markup allowed here
-    book.book_description = book.book_description.replace('\u00A0', '\u0020')
 
     user_id = current_user.id if current_user.is_authenticated else None
     book_dict = book_to_dict_with_status_and_feedback(book, user_id)
@@ -96,10 +94,15 @@ def details():
 
 @app.route("/library_searches", methods=['GET'])
 def library_searches():
-    error, status, book = _check_for_required_book(request)
-    if error:
-        return error, status
-    return jsonify(build_library_search_urls(book))
+    # Extract 'author' and 'title' query parameters
+    author = request.args.get('author')
+    title = request.args.get('title')
+
+    # Validate that both parameters are provided
+    if not author or not title:
+        return jsonify({"error": "Both 'author' and 'title' query parameters are required."}), 400
+
+    return jsonify(build_library_search_urls(author, title))
 
 
 @app.route('/add_book', methods=["GET", "POST"])
@@ -235,8 +238,8 @@ def change_status():
         return jsonify({"error": f"Invalid 'status' value. Allowed values: {', '.join(allowed_statuses)}"}), 400
 
     user_id = current_user.id
-    updated_book = set_book_status(book_id, status, user_id)
-    return jsonify(updated_book), 200
+    set_book_status(book_id, status, user_id)
+    return jsonify({'new_status': status}), 200
 
 
 @app.route('/change_feedback', methods=["POST"])
@@ -258,5 +261,5 @@ def change_feedback():
         return jsonify({"error": f"Invalid 'feedback' value. Allowed values: {', '.join(allowed_feedback)}"}), 400
 
     user_id = current_user.id
-    updated_book = set_book_feedback(book_id, fb, user_id)
-    return jsonify(updated_book), 200
+    set_book_feedback(book_id, fb, user_id)
+    return jsonify({'new_feedback': fb}), 200

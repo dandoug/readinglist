@@ -1,12 +1,62 @@
 import base64
 
-from . import db
-from .books import Book
-
-SEPARATOR = ' > '   # separator for full category strings
+from app import db
+from app.models import Book
 
 
-def get_category_list():
+def get_category_bs_tree():
+    """
+    Generates a bootstrap-compatible tree structure from a given category hierarchy.
+    This function first retrieves a category tree and then recursively converts it
+    into a tree structure that can be used in applications utilizing bootstrap tree views.
+
+    :rtype: list
+    :return: A list representing the bootstrap-compatible tree structure,
+        where each element is a dictionary with keys "text" for the category name
+        and "nodes" containing any child categories in the same format.
+    """
+    def _add_categories(cat, context, tree, children):
+        fullpath = context + _SEPARATOR + cat if context else cat
+        node = {
+            "text": cat,
+            "state": {"checked": False},
+            "fullpath": fullpath,
+            "id": _fullpath_to_id(fullpath)
+        }
+        tree.append(node)
+        if children:
+            node["nodes"] = []
+            for child in children:
+                _add_categories(child, fullpath, node["nodes"], children[child])
+
+    categories = _get_category_tree()
+    bs_tree = []
+    for category in categories:
+        _add_categories(category, '', bs_tree, categories[category])
+    return bs_tree
+
+
+def id_to_fullpath(encoded_id):
+    """
+    Decodes a URL-safe HTML id string back into the original fullpath using Base64.
+
+    The function reverses the transformations applied in `fullpath_to_id`, ensuring
+    that the output matches the original input string.
+
+    :param encoded_id: The Base64-encoded URL-safe HTML id string to be decoded.
+    :type encoded_id: str
+    :return: The original fullpath string.
+    :rtype: str
+    """
+    safe_decoded = (encoded_id
+                    .replace('-', '+')
+                    .replace('_', '/')
+                    .replace('*', '='))
+    decoded = base64.b64decode(safe_decoded).decode('utf-8')
+    return decoded
+
+
+def _get_category_list():
     """
     Fetches a list of unique book categories from the database sorted in alphabetical
     order.
@@ -33,7 +83,10 @@ def get_category_list():
     return categories
 
 
-def get_category_tree():
+_SEPARATOR = ' > '   # separator for full category strings
+
+
+def _get_category_tree():
     """
     Builds a hierarchical tree of categories from a flat list of category strings
     separated by ' > '. Each category string represents a path, where top-level
@@ -58,48 +111,16 @@ def get_category_tree():
             sub_category = sub_categories.pop(0)
             _add_categories(sub_category, tree[cat], sub_categories)
 
-    categories = get_category_list()
+    categories = _get_category_list()
     category_tree = {}
     for category in categories:
-        categories = category.split(SEPARATOR)
+        categories = category.split(_SEPARATOR)
         top_level_category = categories.pop(0)
         _add_categories(top_level_category, category_tree, categories)
     return category_tree
 
 
-def get_category_bs_tree():
-    """
-    Generates a bootstrap-compatible tree structure from a given category hierarchy.
-    This function first retrieves a category tree and then recursively converts it
-    into a tree structure that can be used in applications utilizing bootstrap tree views.
-
-    :rtype: list
-    :return: A list representing the bootstrap-compatible tree structure,
-        where each element is a dictionary with keys "text" for the category name
-        and "nodes" containing any child categories in the same format.
-    """
-    def _add_categories(cat, context, tree, children):
-        fullpath = context+SEPARATOR+cat if context else cat
-        node = {
-            "text": cat,
-            "state": {"checked": False},
-            "fullpath": fullpath,
-            "id": fullpath_to_id(fullpath)
-        }
-        tree.append(node)
-        if children:
-            node["nodes"] = []
-            for child in children:
-                _add_categories(child, fullpath, node["nodes"], children[child])
-
-    categories = get_category_tree()
-    bs_tree = []
-    for category in categories:
-        _add_categories(category, '', bs_tree, categories[category])
-    return bs_tree
-
-
-def fullpath_to_id(fullpath):
+def _fullpath_to_id(fullpath):
     """
     Converts a fullpath string into a URL-safe HTML id by encoding it using Base64.
 
@@ -119,24 +140,4 @@ def fullpath_to_id(fullpath):
     return safe_encoded
 
 
-def id_to_fullpath(encoded_id):
-    """
-    Decodes a URL-safe HTML id string back into the original fullpath using Base64.
-
-    The function reverses the transformations applied in `fullpath_to_id`, ensuring
-    that the output matches the original input string.
-
-    :param encoded_id: The Base64-encoded URL-safe HTML id string to be decoded.
-    :type encoded_id: str
-    :return: The original fullpath string.
-    :rtype: str
-    """
-    safe_decoded = (encoded_id
-                    .replace('-', '+')
-                    .replace('_', '/')
-                    .replace('*', '='))
-    decoded = base64.b64decode(safe_decoded).decode('utf-8')
-    return decoded
-
-
-__all__ = ['get_category_list', 'get_category_tree', 'get_category_bs_tree', 'fullpath_to_id', 'id_to_fullpath']
+__all__ = ['get_category_bs_tree', 'id_to_fullpath']

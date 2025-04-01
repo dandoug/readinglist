@@ -29,7 +29,7 @@
         {% if current_user.is_authenticated %}
             <p class="mb-1 text-muted small" style="line-height: 1;">{{ current_user.email }}</p>
             <div class="d-flex">
-                {% if 'admin' in current_user.roles %}
+                {% if current_user.has_role('admin') %}
                     <a href="{{ url_for('admin.index') }}" class="btn btn-sm btn-primary mr-2">Admin</a>
                 {% endif %}
                 <a href="{{ url_for('security.logout') }}?next={{ request.url|urlencode }}" class="btn btn-sm btn-secondary">Logout</a>
@@ -54,7 +54,7 @@
         </div>
         <!-- Buttons -->    
         <div class="col-auto text-end">
-            {% if current_user.is_authenticated and 'editor' in current_user.roles %}
+            {% if current_user.is_authenticated and current_user.has_role('editor') %}
             <button id="add-book-btn" type="button" class="btn btn-sm btn-info" style="cursor: pointer;"
 >Add a book</button>
             {% endif %}
@@ -142,10 +142,10 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="bookDetailsModalLabel">Book Details</h5>
                 <span class="text-end">
-                    {% if current_user.is_authenticated and 'admin' in current_user.roles %}
+                    {% if current_user.is_authenticated and  current_user.has_role('admin') %}
                       <button id="delete-book-btn" type="button" class="btn btn-sm btn-danger" style="cursor: pointer;">Delete book</button>
                     {% endif %}                
-                    {% if current_user.is_authenticated and 'editor' in current_user.roles %}
+                    {% if current_user.is_authenticated and current_user.has_role('editor') %}
                       <button id="edit-book-btn" type="button" class="btn btn-sm btn-info" style="cursor: pointer;">Edit book</button>
                     {% endif %}
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -360,7 +360,10 @@
             if (!bookData) return;
 
             // Fetch library searches data
-            const searchData = await fetchJson(`/library_searches?id=${bookId}`);
+            const encodedAuthor = encodeURIComponent(bookData.author);
+            const encodedTitle = encodeURIComponent(bookData.title);
+            const searchData = await fetchJson(`/library_searches?author=${encodedAuthor}&title=${encodedTitle}`);
+
             if (!searchData) return;
 
             // Populate modal data
@@ -430,12 +433,12 @@
     function populateModal(bookId, userId, bookData, searchData) {
         document.getElementById('modal-id').textContent = bookData.id;
 
-        {% if current_user.is_authenticated and 'admin' in current_user.roles %}
+        {% if current_user.is_authenticated and current_user.has_role('admin') %}
           // get the delete-book-btn and set the data-book-id attribute to bookData.id
           const deleteBookBtn = document.getElementById('delete-book-btn');
           deleteBookBtn.setAttribute('data-book-id', bookData.id);
         {% endif %}
-        {% if current_user.is_authenticated and 'editor' in current_user.roles %}
+        {% if current_user.is_authenticated and current_user.has_role('editor') %}
           // get the edit-book-btn and set the data-book-id attribute to bookData.id
           const editBookBtn = document.getElementById('edit-book-btn');
           editBookBtn.setAttribute('data-book-id', bookData.id);

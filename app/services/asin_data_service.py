@@ -83,4 +83,4 @@ def fetch_product_details(asin):
                     return_value['isbn_13'] = isbn_13_str
 
             return return_value
-    return {} # empty if errors
+    return {}  # empty if errors

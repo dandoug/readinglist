@@ -1,3 +1,4 @@
+import logging
 import os
 from urllib.parse import quote_plus
 
@@ -38,10 +39,13 @@ class Config:
     # have session and remember cookie be samesite (flask/flask_login)
     REMEMBER_COOKIE_SAMESITE = "strict"
     SESSION_COOKIE_SAMESITE = "strict"
+    SESSION_COOKIE_HTTPONLY = True
+    REMEMBER_COOKIE_HTTPONLY = True
+
 
     SECURITY_USERNAME_ENABLE = False  # keep it simple, just email
     SECURITY_USE_REGISTER_V2 = True
-    SECURITY_REGISTERABLE=False  # we provide our own register view to only allow admin role to register
+    SECURITY_REGISTERABLE = False  # we provide our own register view to only allow admin role to register
     SECURITY_POST_REGISTER_VIEW = "/admin/user/"
 
     SECURITY_EMAIL_SENDER = os.getenv("SECURITY_EMAIL_SENDER")
@@ -51,17 +55,33 @@ class Config:
 
     FLASK_ADMIN_SWATCH = "sandstone"
 
+    # Logging configuration - override in specific environments
+    LOGGING_LEVEL = logging.INFO  # Default logging level
+
+    CACHE_TYPE = "SimpleCache"  # This configures an in-memory cache
+    CACHE_DEFAULT_TIMEOUT = 300  # Values are cached for 300 seconds (5 minutes) by default
+
+    @classmethod
+    def configure_logging(cls):
+        # Global logging setup
+        logging.basicConfig(level=cls.LOGGING_LEVEL)  # Set logging level dynamically
+
+        # Configure SQLAlchemy specific logging
+        logging.getLogger("sqlalchemy.engine").setLevel(cls.LOGGING_LEVEL)
+
 
 class DevelopmentConfig(Config):
     """Development-specific configuration."""
     DEBUG = True
-    SQLALCHEMY_ECHO = True  # Log SQL queries for debugging
+    LOGGING_LEVEL = logging.INFO
+    SQLALCHEMY_ECHO = False  # Log SQL queries for debugging, set logging config in configure_logging()
     SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{Config.RDS_USERNAME}:{quote_plus(str(Config.RDS_PASSWORD))}@{Config.RDS_HOSTNAME}:{Config.RDS_PORT}/{Config.RDS_DB_NAME}"
 
 
 class ProductionConfig(Config):
     """Production-specific configuration."""
     DEBUG = False
+    LOGGING_LEVEL = logging.WARNING
     SQLALCHEMY_ECHO = False
     SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{Config.RDS_USERNAME}:{quote_plus(str(Config.RDS_PASSWORD))}@{Config.RDS_HOSTNAME}:{Config.RDS_PORT}/{Config.RDS_DB_NAME}"
 
@@ -69,12 +89,22 @@ class ProductionConfig(Config):
 class TestingConfig(Config):
     """Testing-specific configuration."""
     TESTING = True
+    LOGGING_LEVEL = logging.ERROR  # Minimal logging in tests
     SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"  # Use an in-memory database for testing
 
 
+# Automatically configure logging for the chosen environment
+def configure_app_logging(env="development"):
+    config_class = _config_by_name[env]
+    config_class.configure_logging()
+
+
 # A dictionary to easily map environment modes to configuration classes
-config_by_name = {
+_config_by_name = {
     "development": DevelopmentConfig,
     "production": ProductionConfig,
     "testing": TestingConfig,
 }
+
+
+__all__ = ["Config", "DevelopmentConfig", "ProductionConfig", "TestingConfig", "configure_app_logging"]

@@ -1,4 +1,4 @@
-from flask import redirect, url_for, abort
+from flask import abort
 from flask_admin import expose, AdminIndexView
 from flask_security import current_user
 
@@ -22,6 +22,6 @@ class SecureAdminIndexView(AdminIndexView):
     @expose('/')
     def index(self):
         # Check if user is authenticated and has the 'admin' role
-        if not current_user.is_authenticated or 'admin' not in [role.name for role in current_user.roles]:
+        if not current_user.is_authenticated or current_user.has_role('admin') is not True:
             abort(403)  # Return a 403 Forbidden error if not authorized
         return self.render("admin/booklist_index.html")

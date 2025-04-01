@@ -5,9 +5,14 @@ from datetime import datetime, timezone
 from dotenv import load_dotenv
 from flask import Flask
 from flask_admin import Admin
+from flask_caching import Cache
+from flask_login import user_logged_out
 from flask_mailman import Mail
 from flask_security import SQLAlchemyUserDatastore, Security, hash_password
 from flask_sqlalchemy import SQLAlchemy
+
+from app.config import configure_app_logging
+from app.security.user_session_cache import custom_user_loader, on_logout
 
 # Initial admin user.  Only create if db contains no admins
 INITIAL_USER_PASSWORD = "example1"
@@ -18,6 +23,7 @@ load_dotenv()  # Loads variables from .env into the environment if file exists
 db = SQLAlchemy()
 user_datastore = None
 admin = None
+cache = None
 
 
 def create_app():
@@ -37,7 +43,8 @@ def create_app():
     app.config.from_object(f"app.config.{env.capitalize()}Config")
 
     # Configure logging
-    logging.basicConfig(level=logging.INFO)
+    # Set up logging for the environment
+    configure_app_logging(env)
 
     # Set up email handling using Flask-Mailman
     mail = Mail(app)  # Initialize Flask-Mailman
@@ -58,8 +65,13 @@ def create_app():
                   index_view=SecureAdminIndexView(name="Admin"))
 
     # Lazily init data models with their relationships
-    from .books import ReadingStatus, Feedback, Book
+    from app.models import ReadingStatus, Feedback, Book
     from .security.models import User
+
+    # override the user loader for login manager to use some caching
+    security.login_manager.user_loader(custom_user_loader)
+    user_logged_out.connect(on_logout, app)
+
     # setup of users and roles
     with app.app_context():
         security.datastore.find_or_create_role(name='admin', description='Administrator')
@@ -84,7 +96,10 @@ def create_app():
         from . import routes
         from .security import routes
 
-    from .books import render_icon
+        global cache
+        cache = Cache(app)
+
+    from app.helpers import render_icon
     app.jinja_env.filters['render_icon'] = render_icon
 
     return app

@@ -28,7 +28,7 @@
         {% if current_user.is_authenticated %}
             <p class="mb-1 text-muted small" style="line-height: 1;">{{ current_user.email }}</p>
             <div class="d-flex">
-                {% if 'admin' in current_user.roles %}
+                {% if current_user.has_role('admin') %}
                     <a href="{{ url_for('admin.index') }}" class="btn btn-sm btn-primary mr-2">Admin</a>
                 {% endif %}
                 <a href="{{ url_for('security.logout') }}?next={{ request.url|urlencode }}" class="btn btn-sm btn-secondary">Logout</a>
@@ -57,7 +57,7 @@
             </li>
 
             <!-- Tab at the far right -->
-            {% if current_user.is_authenticated and 'editor' in current_user.roles %}
+            {% if current_user.is_authenticated and current_user.has_role('editor') %}
             <li class="nav-item ml-auto" id="add-book-tab" style="cursor: pointer;">
                 <a class="nav-link" id="add-book-tab-link" data-toggle="tab" role="tab" aria-controls="add-book" aria-selected="false">Add a book</a>
             </li>

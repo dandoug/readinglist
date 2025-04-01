@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, IntegerField, TextAreaField, SelectField, URLField, HiddenField
+from wtforms import StringField, IntegerField, TextAreaField, URLField, HiddenField
 from wtforms.fields.numeric import DecimalField
 from wtforms.validators import DataRequired, Optional, Length, NumberRange, URL
 
@@ -52,7 +52,7 @@ class BookForm(FlaskForm):
             Optional(),
             NumberRange(min=0, max=5, message="Rating must be between 1 and 5.")
         ],
-        filters = [lambda x: float(x) if x else None]  # Converts valid strings to float
+        filters=[lambda x: float(x) if x else None]  # Converts valid strings to float
     )
 
     # Book Cover Image URL (Optional but must be a valid URL if provided)

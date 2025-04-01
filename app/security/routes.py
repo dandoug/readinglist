@@ -1,14 +1,14 @@
-from flask import current_app as app, request, render_template, redirect, url_for, \
+from flask import current_app as app, request, render_template, redirect, \
     jsonify, after_this_request
 from flask_admin.menu import MenuLink
 from flask_login import login_required
-from flask_security import roles_required, current_user
+from flask_security import roles_required
 from flask_security.forms import build_form_from_request
 from flask_security.registerable import register_user, register_existing
 from flask_security.utils import view_commit, get_post_register_redirect, config_value as cv
 
 from .models import SecureModelView, User, Role
-from .. import db, admin
+from app import db, admin
 
 
 class UserModelView(SecureModelView):
@@ -36,7 +36,7 @@ admin.add_view(RoleModelView(Role, db.session))
 
 @app.errorhandler(403)
 def access_forbidden(e):
-    return jsonify({'error': 'You do not have permission to access this resource'}), 403
+    return jsonify({'error': f'You do not have permission to access this resource {e}'}), 403
 
 
 @app.route('/register', methods=['GET', 'POST'])
