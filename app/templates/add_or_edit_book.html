@@ -89,7 +89,7 @@
 <script>
 
     document.getElementById('cancel-btn').addEventListener('click', function () {
-        window.location.href = '{{ book_form.next.data if book_form.next.data else url_for("index") }}';
+        window.location.href = '{{ (book_form.next.data if book_form.next.data else url_for("index"))|safe }}';
     });
 
     document.getElementById('fill-by-asin').addEventListener('click', async function () {

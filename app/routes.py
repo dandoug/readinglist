@@ -34,7 +34,9 @@ def _check_for_required_book(req):
     if not book_id or not book_id.isdigit():
         return jsonify({"error": "Invalid or missing 'id' parameter"}), 400, None
 
-    book = get_book_by_id(book_id)
+    book = get_book_by_id(book_id,
+                          current_user.id if current_user.is_authenticated else None,
+                          load_status=True, load_feedback=True)
     if not book:
         return jsonify({"error": f"Book {book_id} not found"}), 404, None
 

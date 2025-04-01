@@ -1,37 +1,68 @@
 from sqlalchemy import update, delete
 from sqlalchemy.exc import IntegrityError, InvalidRequestError
-from sqlalchemy.orm import noload
+from sqlalchemy.orm import noload, joinedload
 
 from app import db
 from ..forms import BookForm
 from app.models import Book, Feedback, ReadingStatus, FeedbackEnum, ReadingStatusEnum
 
 
-def get_book_by_id(book_id, load_status=False, load_feedback=False):
+def get_book_by_id(book_id, user_id=None, load_status=False, load_feedback=False):
     """
-    Fetches a book object based on the provided book ID. The function allows
-    loading or excluding related data such as reading statuses and feedbacks
-    using the `load_status` and `load_feedback` flags.
+    Fetches a book entity by its unique identifier and optionally joins related
+    information such as reading statuses and feedback, depending on the provided
+    parameters. This method ensures that the query will only include the relevant
+    records for the given user if `user_id` is supplied. If `load_status` or
+    `load_feedback` is True, it will perform an OUTER JOIN to fetch related data.
+    Otherwise, the relationships will not be loaded.
 
-    :param book_id: The ID of the book to retrieve.
+    This function is designed to optimize database queries by controlling the
+    loading of related entities, reducing unnecessary data retrieval.
+
+    :param book_id: Unique identifier of the book to be fetched.
     :type book_id: int
-    :param load_status: A flag indicating whether to load reading statuses
-        related to the book. Default is False.
+    :param user_id: Unique identifier of the user for filtering statuses or feedback
+        (optional, defaults to None).
+    :type user_id: int, optional
+    :param load_status: If True, includes the relevant reading statuses for the
+        specified user. If False, skips the loading of reading statuses. Defaults
+        to False.
     :type load_status: bool
-    :param load_feedback: A flag indicating whether to load feedbacks
-        related to the book. Default is False.
+    :param load_feedback: If True, includes the relevant feedback for the specified
+        user. If False, skips the loading of feedback. Defaults to False.
     :type load_feedback: bool
-    :return: The book object corresponding to the provided ID, or None if
-        not found.
+    :return: A Book instance matching the provided `book_id`, with related reading
+        statuses and feedback if requested, or None if no match is found.
     :rtype: Book or None
     """
     query = db.session.query(Book)
-    if not load_status:
+
+    if load_status and user_id is not None:
+        # An OUTER JOIN will occur here, loading only related ReadingStatus entries
+        # that match BOTH user_id and book_id. If no matches are found, the relationship
+        # will simply be an empty list.
+        query = query.options(
+            joinedload(Book.reading_statuses.and_(
+                (ReadingStatus.user_id == user_id) & (ReadingStatus.book_id == book_id)
+            ))
+        )
+    else:
         query = query.options(noload(Book.reading_statuses))
-    if not load_feedback:
+
+    if load_feedback and user_id is not None:
+        # Similarly, an OUTER JOIN will occur here for Feedback, following the same logic as above.
+        query = query.options(
+            joinedload(Book.feedbacks.and_(
+                (Feedback.user_id == user_id) & (Feedback.book_id == book_id)
+            ))
+        )
+    else:
         query = query.options(noload(Book.feedbacks))
 
+    # If no ReadingStatus or Feedback records exist, the book will still be returned,
+    # but relationships will be empty lists.
     return query.filter_by(id=book_id).first()
+
 
 
 def add_new_book(book_form: BookForm) -> Book:
@@ -290,12 +321,57 @@ def set_book_feedback(book_id: int, fb: str, user_id: int) -> dict:
 
 
 def book_to_dict_with_status_and_feedback(book, user_id):
+    """
+    Converts a book object to a dictionary representation while appending user's
+    feedback and reading status when available. This function ensures that the
+    resulting dictionary contains accurately mapped data for feedback and status
+    for a specified user.
+
+    If `book.feedbacks` or `book.reading_statuses` are available, the feedback
+    and status values are extracted from these lists respectively. If unavailable
+    or empty, the function queries for the user's feedback or status using
+    appropriate functions. Default values are assigned when feedback or status
+    is missing or uninitialized.
+
+    Parameters
+    ----------
+    :param book:
+        The book object containing attributes and possibly associated feedbacks
+        and reading statuses.
+    :param user_id:
+        The unique identifier of the user for whom feedback and status are
+        retrieved.
+
+    Returns
+    -------
+    :return:
+        A dictionary representation of the book object with additional `feedback`
+        and `status` keys reflecting the user's interaction with the book.
+    :rtype: dict
+    """
     book_dict = book.to_dict()
     if user_id:
-        fb = get_book_feedback(book_dict['id'], user_id)
-        if fb:
-            book_dict['feedback'] = fb.value
-        status = get_book_status(book_dict['id'], user_id)
-        if status:
-            book_dict['status'] = status.value
+        if book.feedbacks is not None and book.feedbacks != []:
+            #  Assume it's a list with one thing in it, grab first Feedback and get feedback
+            book_dict['feedback'] = book.feedbacks[0].feedback.value
+        elif book.feedbacks is None:
+            #  Know nothing, query feedback then
+            fb = get_book_feedback(book_dict['id'], user_id)
+            if fb:
+                book_dict['feedback'] = fb.value
+        else:
+            # Empty list, then... i.e. no feedback.  Set to None
+            book_dict['feedback'] = 'none'
+
+        if book.reading_statuses is not None and book.reading_statuses != []:
+            #  Assume it's a list with one thing in it, grab first Reading_Status and get status
+            book_dict['status'] = book.reading_statuses[0].status.value
+        elif book.reading_statuses is None:
+            #  Know noting, query db
+            status = get_book_status(book_dict['id'], user_id)
+            if status:
+                book_dict['status'] = status.value
+        else:
+            # Empty list, then... i.e. no status.  Set to None
+            book_dict['status'] = 'none'
     return book_dict
