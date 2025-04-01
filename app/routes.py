@@ -6,7 +6,7 @@ from app.services import fetch_product_details
 from app.services import search_by_categories, get_book_by_id, search_by_author, \
     search_by_title, add_new_book, book_to_dict_with_status_and_feedback, \
     set_book_status, set_book_feedback, update_book, del_book, get_category_bs_tree, id_to_fullpath
-from app.helpers import PLACEHOLDER, build_library_search_urls
+from app.helpers import PLACEHOLDER, build_library_search_urls, compute_next_url
 from app.forms import BookForm
 
 
@@ -112,7 +112,7 @@ def add_book():
 
     # If next not set, use the referrer if we have one, for where to go when done
     if not form.next.data:
-        form.next.data = request.referrer if request.referrer else url_for("index")
+        form.next.data = compute_next_url(request)
 
     if form.validate_on_submit():  # Checks if form is submitted and valid
         try:
@@ -135,7 +135,7 @@ def edit_book():
 
     # If next not set, use the referrer if we have one, for where to go when done
     if not form.next.data:
-        form.next.data = request.referrer if request.referrer else url_for("index")
+        form.next.data = compute_next_url(request)
 
     if not form.id.data or not str(form.id.data).isdigit():  # Validate 'book_id'
         return jsonify({"error": "Invalid or missing 'id' parameter"}), 400

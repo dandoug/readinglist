@@ -9,7 +9,7 @@
   {% include "security/_form_title_include.html" %}
 
   <div class="mt-2">
-  <form action="{{ url_for_security('login') }}{{ prop_next() }}" method="post" name="login_user_form" class="needs-validation">
+  <form action="{{ url_for_security('login') }}" method="post" name="login_user_form" class="needs-validation">
     {{ login_user_form.hidden_tag() }}
 
     <!-- Render form errors in Bootstrap style -->
@@ -52,7 +52,7 @@
         document.addEventListener("DOMContentLoaded", function () {
             var nextInput = document.getElementById("next");
             if (nextInput && nextInput.value.trim() === "") {
-                nextInput.value = "{{ request.referrer }}";
+                nextInput.value = "{{  (parse_url(request.referrer).path ~ ('?' ~ parse_url(request.referrer).query if parse_url(request.referrer).query else '') if request.referrer else url_for('index'))| safe }}";
             }
         });
     </script>

@@ -9,6 +9,7 @@ from flask_security.utils import view_commit, get_post_register_redirect, config
 
 from .models import SecureModelView, User, Role
 from app import db, admin
+from app.helpers import parse_url
 
 
 class UserModelView(SecureModelView):
@@ -38,6 +39,10 @@ admin.add_view(RoleModelView(Role, db.session))
 def access_forbidden(e):
     return jsonify({'error': f'You do not have permission to access this resource {e}'}), 403
 
+# Add the function to the Jinja2 global context
+@app.context_processor
+def utility_processor():
+    return {"parse_url": parse_url}
 
 @app.route('/register', methods=['GET', 'POST'])
 @login_required  # Ensure only logged-in users can access

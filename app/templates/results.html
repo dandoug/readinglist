@@ -32,7 +32,7 @@
                 {% if current_user.has_role('admin') %}
                     <a href="{{ url_for('admin.index') }}" class="btn btn-sm btn-primary mr-2">Admin</a>
                 {% endif %}
-                <a href="{{ url_for('security.logout') }}?next={{ request.url|urlencode }}" class="btn btn-sm btn-secondary">Logout</a>
+                <a href="{{ url_for('security.logout', next=request.full_path) }}" class="btn btn-sm btn-secondary">Logout</a>
             </div>
         {% else %}
             <p class="mb-1 text-muted small" style="line-height: 1;">&nbsp;</p>

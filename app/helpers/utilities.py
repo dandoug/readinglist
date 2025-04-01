@@ -1,5 +1,6 @@
+from flask import url_for
 from markupsafe import Markup
-from urllib.parse import quote_plus
+from urllib.parse import quote_plus, urlparse, urlunparse
 
 PLACEHOLDER = '<span style="display: inline-block; width: 14px; height: 14px; margin: 0;"></span>'
 
@@ -48,3 +49,24 @@ def render_icon(item, icon_mapping, span_id):
         return Markup(f'<span id="{span_id}"><i class="fa {icon_mapping[item]}" aria-hidden="true"></i></span>')
     # not in mapping, just use hidden default as a spacer
     return Markup(f'<span id="{span_id}">{PLACEHOLDER}</span>')
+
+
+def compute_next_url(request):
+    return urlparse(request.referrer).path + (
+        '?' + urlparse(request.referrer).query if urlparse(request.referrer).query else '') \
+        if request.referrer else url_for("index")
+
+
+# Define a custom function wrapping `urlparse` to parse URLs
+def parse_url(url):
+    if not url:
+        return None
+    parsed = urlparse(url)
+    return {
+        "path": parsed.path,
+        "query": parsed.query,
+        "full": url
+    }
+
+
+
