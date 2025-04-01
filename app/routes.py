@@ -10,39 +10,6 @@ from app.helpers import PLACEHOLDER, build_library_search_urls, compute_next_url
 from app.forms import BookForm
 
 
-@app.before_request
-def add_global_vars():
-    # Access the global Jinja environment, including in macros
-    app.jinja_env.globals.update(current_user=current_user)
-
-
-def _check_for_required_book(req):
-    """
-    Checks for the required book based on the 'id' parameter provided in the request and returns appropriate
-    responses in cases of an invalid or missing ID, or if the book with the given ID does not exist.
-
-    :param req: Flask request object containing request arguments.
-    :type req: flask.request.Request
-    :return:
-        A tuple containing three values:
-            - A JSON response object with an error message or None.
-            - HTTP status code (400 or 404 in case of errors, None if successful).
-            - The book object if it exists, otherwise None.
-    :rtype: tuple
-    """
-    book_id = req.args.get('id')
-    if not book_id or not book_id.isdigit():
-        return jsonify({"error": "Invalid or missing 'id' parameter"}), 400, None
-
-    book = get_book_by_id(book_id,
-                          current_user.id if current_user.is_authenticated else None,
-                          load_status=True, load_feedback=True)
-    if not book:
-        return jsonify({"error": f"Book {book_id} not found"}), 404, None
-
-    return None, 200, book
-
-
 @app.route('/')
 def index():  # put application's code here
     category_bs_tree = get_category_bs_tree()
@@ -167,18 +134,7 @@ def edit_book():
             return redirect(form.next.data if form.next.data else url_for("index"))
 
         if book:
-            form.title.data = book.title
-            form.author.data = book.author
-            form.book_description.data = book.book_description
-            form.asin.data = book.asin
-            form.bestsellers_rank_flat.data = book.bestsellers_rank_flat
-            form.categories_flat.data = book.categories_flat
-            form.hardcover.data = book.hardcover
-            form.image.data = book.image
-            form.isbn_10.data = book.isbn_10
-            form.isbn_13.data = book.isbn_13
-            form.link.data = book.link
-            form.rating.data = book.rating
+            form.fill_from_book(book)
     # return to or show initial edit form
     return render_template("edit_book.html", book_form=form)
 
@@ -265,3 +221,30 @@ def change_feedback():
     user_id = current_user.id
     set_book_feedback(book_id, fb, user_id)
     return jsonify({'new_feedback': fb}), 200
+
+
+def _check_for_required_book(req):
+    """
+    Checks for the required book based on the 'id' parameter provided in the request and returns appropriate
+    responses in cases of an invalid or missing ID, or if the book with the given ID does not exist.
+
+    :param req: Flask request object containing request arguments.
+    :type req: flask.request.Request
+    :return:
+        A tuple containing three values:
+            - A JSON response object with an error message or None.
+            - HTTP status code (400 or 404 in case of errors, None if successful).
+            - The book object if it exists, otherwise None.
+    :rtype: tuple
+    """
+    book_id = req.args.get('id')
+    if not book_id or not book_id.isdigit():
+        return jsonify({"error": "Invalid or missing 'id' parameter"}), 400, None
+
+    book = get_book_by_id(book_id,
+                          current_user.id if current_user.is_authenticated else None,
+                          load_status=True, load_feedback=True)
+    if not book:
+        return jsonify({"error": f"Book {book_id} not found"}), 404, None
+
+    return None, 200, book

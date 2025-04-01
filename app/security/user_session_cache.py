@@ -1,4 +1,5 @@
 from flask import session
+from flask_login import AnonymousUserMixin
 from flask_security.utils import set_request_attr
 
 
@@ -35,6 +36,9 @@ def _cache_key_from_string(fs_uniquifier: str):
 
 
 def _cache_key_from_user(user):
+    if isinstance(user, AnonymousUserMixin):
+        # Handle the case where the user is not authenticated
+        return None
     return _cache_key_from_string(user.fs_uniquifier)
 
 

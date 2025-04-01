@@ -129,3 +129,20 @@ class BookForm(FlaskForm):
 
     # Next (Hidden Field)
     next = HiddenField("next")
+
+    def fill_from_book(self, book):
+        """
+            Populate the form fields from a Book object.
+        """
+        self.title.data = book.title
+        self.author.data = book.author
+        self.book_description.data = book.book_description
+        self.asin.data = book.asin
+        self.bestsellers_rank_flat.data = book.bestsellers_rank_flat
+        self.categories_flat.data = book.categories_flat
+        self.hardcover.data = book.hardcover
+        self.image.data = book.image
+        self.isbn_10.data = book.isbn_10
+        self.isbn_13.data = book.isbn_13
+        self.link.data = book.link
+        self.rating.data = book.rating

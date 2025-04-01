@@ -1,15 +1,15 @@
-from flask import current_app as app, request, render_template, redirect, \
-    jsonify, after_this_request
+from flask import current_app as app, request, render_template, redirect, after_this_request
+from flask_admin import Admin
 from flask_admin.menu import MenuLink
 from flask_login import login_required
 from flask_security import roles_required
 from flask_security.forms import build_form_from_request
 from flask_security.registerable import register_user, register_existing
 from flask_security.utils import view_commit, get_post_register_redirect, config_value as cv
+from flask_sqlalchemy import SQLAlchemy
 
+from . import registration_bp
 from .models import SecureModelView, User, Role
-from app import db, admin
-from app.helpers import parse_url
 
 
 class UserModelView(SecureModelView):
@@ -29,22 +29,13 @@ class RoleModelView(SecureModelView):
     form_columns = ['name', 'description', 'users']
 
 
-admin.add_link(MenuLink(name='Home', url='/'))
+def register_admin_views(db: SQLAlchemy, admin: Admin):
+    admin.add_link(MenuLink(name='Home', url='/'))
+    admin.add_view(UserModelView(User, db.session))
+    admin.add_view(RoleModelView(Role, db.session))
 
-admin.add_view(UserModelView(User, db.session))
-admin.add_view(RoleModelView(Role, db.session))
 
-
-@app.errorhandler(403)
-def access_forbidden(e):
-    return jsonify({'error': f'You do not have permission to access this resource {e}'}), 403
-
-# Add the function to the Jinja2 global context
-@app.context_processor
-def utility_processor():
-    return {"parse_url": parse_url}
-
-@app.route('/register', methods=['GET', 'POST'])
+@registration_bp.route('/register', methods=['GET', 'POST'])
 @login_required  # Ensure only logged-in users can access
 @roles_required('admin')  # Restrict to users with the 'admin' role
 def custom_register():

@@ -10,7 +10,7 @@
     {% include "security/_form_title_include.html" %}
 
     <div class="mt-2">
-        <form action="{{ url_for('custom_register') }}" method="post" name="register_user_form">
+        <form action="{{ url_for('registration.custom_register') }}" method="post" name="register_user_form">
             {{ register_user_form.hidden_tag() }}
 
             <!-- Form errors (if any) -->
