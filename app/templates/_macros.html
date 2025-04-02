@@ -35,22 +35,28 @@
 {% endmacro %}
 
 
-{% macro form_group(label, name, options, id_prefix='modal-') %}
-<div class="col-md-4">
-    <label class="d-flex align-items-center justify-content-center">{{ label }}</label>
-    <div class="form-group d-flex align-items-center justify-content-end">
-        {% for option in options %}
-        <div class="form-check form-check-inline">
-            {% set input_id = id_prefix ~ option.id %}
-            <input class="form-check-input" type="radio" name="{{ name }}" id="{{ input_id }}" value="{{ option.value }}">
-            <label class="form-check-label" for="{{ input_id }}">
-                {% if option.icon is defined and option.icon %}
-                <i class="fa {{ option.icon }}" aria-hidden="true"></i>
-                {% endif %}
-                {{ option.text if option.text is defined else '' }}
-            </label>
+{% macro form_group(label, name, options, id_prefix='modal-', col_class='col-md-3') %}
+<div class="{{ col_class }} justify-content-end">
+    <div class="container">
+        <div class="row justify-content-end">
+            <label class="d-flex align-items-center">{{ label }}</label>
         </div>
-        {% endfor %}
+        <div class="row justify-content-end">
+            <div class="form-group d-flex align-items-center">
+                {% for option in options %}
+                <div class="form-check form-check-inline mr-0 ml-2">
+                    {% set input_id = id_prefix ~ option.id %}
+                    <input class="form-check-input" type="radio" name="{{ name }}" id="{{ input_id }}" value="{{ option.value }}">
+                    <label class="form-check-label" for="{{ input_id }}">
+                        {% if option.icon is defined and option.icon %}
+                        <i class="fa {{ option.icon }}" aria-hidden="true"></i>
+                        {% endif %}
+                        {{ option.text if option.text is defined else '' }}
+                    </label>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
     </div>
 </div>
 {% endmacro %}
@@ -71,8 +77,8 @@
 {%- macro search_filters(filter_prefix) -%}
     {% set user_id = current_user.id if current_user.is_authenticated else None %}
     {% if user_id  %}
-        <div class="row mt-0">
-            <div class="col-md-4 d-flex justify-content-end">
+        <div class="row">
+            <div class="col-md-3 d-flex justify-content-end mb-2">
               <span class="font-weight-bold">Search Filters:</span>
             </div>
             <!-- Reading Status -->
@@ -98,11 +104,9 @@
                 ],
                 filter_prefix
             ) }}
-        </div>
-        <div class="row mt-0">
-            <div class="col-md-12 d-flex justify-content-end">
+            <div class="col-md-3 d-flex justify-content-end">
                 {%- set reset_filter_btn_id = filter_prefix ~ 'reset-btn' -%}
-                <button id="{{ reset_filter_btn_id }}" class="btn btn-sm btn-secondary ms-1">Reset filters</button>
+                <button id="{{ reset_filter_btn_id }}" class="btn btn-sm btn-secondary ms-1" style="height: 32px;">Reset filters</button>
             </div>
         </div>  
     {% endif %}
