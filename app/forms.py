@@ -137,6 +137,7 @@ class BookForm(FlaskForm):
         self.title.data = book.title
         self.author.data = book.author
         self.book_description.data = book.book_description
+        self.specifications_flat.data = book.specifications_flat
         self.asin.data = book.asin
         self.bestsellers_rank_flat.data = book.bestsellers_rank_flat
         self.categories_flat.data = book.categories_flat
