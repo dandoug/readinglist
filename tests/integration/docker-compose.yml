@@ -17,15 +17,19 @@ services:
   mail:
     image: inbucket/inbucket:latest
     environment:
-      INBUCKET_STORAGE: memory                  # Store emails in memory (default)
-      INBUCKET_LOGLEVEL: info                   # Log level for inbucket logs
-      INBUCKET_SMTP_PORT: 1025                  # Set SMTP port
-      INBUCKET_POP3_PORT: 1100                 # Set POP3 port
+      INBUCKET_STORAGE: memory
+      INBUCKET_LOGLEVEL: info
+      INBUCKET_SMTP_ADDR: 0.0.0.0:1025
+      INBUCKET_SMTP_DOMAIN: localhost
+      INBUCKET_SMTP_ACCEPTDOMAINS: localhost
+      INBUCKET_SMTP_DEFAULTACCEPT: false
+      INBUCKET_POP3_ADDR: 0.0.0.0:1100
+      INBUCKET_POP3_DOMAIN: localhost
       INBUCKET_WEB_PORT: 2500                  # Set web UI port
     ports:
       - "1025:1025"   # SMTP for sending email
       - "1100:1100"   # POP3 for retrieving email
-      - "2500:2500"   # Web UI for viewing emails
+      - "9000:9000"   # Web UI for viewing emails
     healthcheck:
       test: ["CMD", "nc", "-z", "127.0.0.1", "1025"]
       interval: 5s
