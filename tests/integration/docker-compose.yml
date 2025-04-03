@@ -1,0 +1,33 @@
+services:
+  db:
+    image: mysql:8.0 # Official MySQL image (multi-platform)
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_USER: test_user
+      MYSQL_PASSWORD: test_password
+      MYSQL_DATABASE: test_readinglist # Updated database name
+    ports:
+      - "13306:3306" # Map container's 3306 to host's 13306
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-u", "test_user", "-p", "test_password"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  mail:
+    image: inbucket/inbucket:latest
+    environment:
+      INBUCKET_STORAGE: memory                  # Store emails in memory (default)
+      INBUCKET_LOGLEVEL: info                   # Log level for inbucket logs
+      INBUCKET_SMTP_PORT: 1025                  # Set SMTP port
+      INBUCKET_POP3_PORT: 1100                 # Set POP3 port
+      INBUCKET_WEB_PORT: 2500                  # Set web UI port
+    ports:
+      - "1025:1025"   # SMTP for sending email
+      - "1100:1100"   # POP3 for retrieving email
+      - "2500:2500"   # Web UI for viewing emails
+    healthcheck:
+      test: ["CMD", "nc", "-z", "127.0.0.1", "1025"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
