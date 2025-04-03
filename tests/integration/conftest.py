@@ -5,6 +5,10 @@ import pymysql
 import smtplib
 import poplib
 from pathlib import Path
+from bs4 import BeautifulSoup
+
+import app
+from app import create_app
 
 # Calculate the path to where the SQL files are
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent  # Navigate to the project root
@@ -81,13 +85,57 @@ def load_initial_data(db_connection):
     TABLE_CREATION_SCRIPTS = [
         "books.sql",
         "security.sql",
-        "favoriites.sql"
+        "favorites.sql"
     ]
     for script_name in TABLE_CREATION_SCRIPTS:
         sql_file_path = DATABASE_DIR / script_name
         execute_sql_file(db_connection, sql_file_path)
     # Now, load the book data... has embedded ; characters, but the statements are all on single lines
-    execute_sql_file(db_connection, INTEGRATION_DIR / "integration_test_initial_book_load.sql","\n")
+    execute_sql_file(db_connection, INTEGRATION_DIR / "integration_test_initial_book_load.sql", split_char="\n")
+
+
+@pytest.fixture(scope="session")
+def flask_app(db_connection, smtp_connection):
+    """
+    Create a Flask application fixture that depends on the database and SMTP server.
+    Runs once per test session.
+    """
+    # Create the application
+    app = create_app()
+
+    yield app
+
+@pytest.fixture
+def client(flask_app):
+    """
+    Create a test client using the Flask app for individual tests.
+    """
+    return flask_app.test_client()
+
+
+@pytest.fixture
+def logged_in_client(client):
+    response = client.get('/login')
+    assert response.status_code == 200
+
+    # Parse the CSRF token from the response HTML
+    soup = BeautifulSoup(response.data, "html.parser")
+    csrf_token = soup.find("input", {"id": "csrf_token"})["value"]
+
+    # Log in to create a session 
+    form_params = {
+        "next": "/",
+        "csrf_token": csrf_token,
+        "email": app.INITIAL_USER_EMAIL,
+        "password": app.INITIAL_USER_PASSWORD,
+        "submit": "Login"
+    }
+    response = client.post('/login', data=form_params)
+
+    assert response.status_code == 302
+    assert response.headers["Location"] == "/"
+
+    return client
 
 
 def execute_sql_file(db_session, file_path, split_char=";"):

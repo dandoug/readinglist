@@ -2,10 +2,12 @@ argon2-cffi==23.1.0
 argon2-cffi-bindings==21.2.0
 attrs==25.3.0
 bcrypt==4.3.0
+beautifulsoup4==4.13.3
 bleach==6.2.0
 blinker==1.9.0
 boto3==1.37.16
 botocore==1.37.16
+bs4==0.0.2
 cachelib==0.13.0
 certifi==2025.1.31
 cffi==1.17.1
@@ -56,6 +58,7 @@ PyYAML==5.3
 requests==2.32.3
 s3transfer==0.11.4
 six==1.17.0
+soupsieve==2.6
 SQLAlchemy==2.0.39
 SQLAlchemy-Utils==0.41.2
 texttable==1.7.0

@@ -2,7 +2,6 @@ import os
 import logging
 from datetime import datetime, timezone
 
-from dotenv import load_dotenv
 from flask import Flask
 from flask_admin import Admin
 from flask_caching import Cache
@@ -17,8 +16,6 @@ from app.helpers import register_globals
 # Initial admin user.  Only create if db contains no admins
 INITIAL_USER_PASSWORD = "example1"
 INITIAL_USER_EMAIL    = "admin@example.com"
-
-load_dotenv()  # Loads variables from .env into the environment if file exists
 
 db = SQLAlchemy()
 user_datastore = None

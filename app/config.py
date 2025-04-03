@@ -1,12 +1,20 @@
 import logging
 import os
+from pathlib import Path
 from urllib.parse import quote_plus
 
 from dotenv import load_dotenv
 
-# Load environment variables from a .env file, if it exists
-load_dotenv()
+# Calculate the path to where the SQL files are
+PROJECT_ROOT = Path(__file__).resolve().parent.parent # Navigate to the project root
+INTEGRATION_DIR = PROJECT_ROOT / "tests" / "integration"
 
+# Determine which environment file to load
+env = os.getenv("FLASK_ENV", "development").lower()  # Default to "development"
+dotenv_path = INTEGRATION_DIR / ".env.testing" if env in {"testing"} else PROJECT_ROOT / ".env"
+
+# Load the appropriate .env file
+load_dotenv(str(dotenv_path))
 
 class Config:
     """Base configuration with default settings."""
@@ -89,8 +97,10 @@ class ProductionConfig(Config):
 class TestingConfig(Config):
     """Testing-specific configuration."""
     TESTING = True
-    LOGGING_LEVEL = logging.ERROR  # Minimal logging in tests
-    SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"  # Use an in-memory database for testing
+    DEBUG = True
+    LOGGING_LEVEL = logging.WARNING
+    SERVER_NAME = '0.0.0.0:8000'
+    SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{Config.RDS_USERNAME}:{quote_plus(str(Config.RDS_PASSWORD))}@{Config.RDS_HOSTNAME}:{Config.RDS_PORT}/{Config.RDS_DB_NAME}"
 
 
 # Automatically configure logging for the chosen environment
