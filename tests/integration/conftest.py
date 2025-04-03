@@ -103,6 +103,15 @@ def flask_app(db_connection, smtp_connection):
     # Create the application
     app = create_app()
 
+    # The app created a user with email=app.INITIAL_USER_EMAIL that
+    # has admin role.  For testing purposes, we add `editor` role to
+    # that user here, too
+    with app.app_context():
+        from app import user_datastore, INITIAL_USER_EMAIL, db
+        user = user_datastore.find_user(email=INITIAL_USER_EMAIL)
+        user_datastore.add_role_to_user(user, 'editor')
+        db.session.commit()
+
     yield app
 
 @pytest.fixture
@@ -114,7 +123,8 @@ def client(flask_app):
 
 
 @pytest.fixture
-def logged_in_client(client):
+def logged_in_client(flask_app):
+    client = flask_app.test_client()
     response = client.get('/login')
     assert response.status_code == 200
 
