@@ -46,7 +46,7 @@
     <div class="row align-items-center mt-1">
         <!-- Text -->
         <div class="col">
-            <span>{{
+            <span id="search-results-summary">{{
                 "Found " ~ (books|length|string) ~ " matching books." if books|length > 1 else
                 "Found a matching book." if books|length == 1 else
                 "No matching books were found."
