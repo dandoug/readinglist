@@ -1,6 +1,6 @@
 import pytest
-from flask import Flask, abort, render_template_string
-from unittest.mock import MagicMock, patch, Mock
+from flask import Flask, abort, render_template_string, g
+from unittest.mock import Mock
 
 from app.helpers.globals import register_globals
 
@@ -22,7 +22,6 @@ def mock_current_user():
     return mock_current_user
 
 
-
 def test_403_error_handler(app):
     """Test that the 403 error handler is properly registered and responds correctly."""
     with app.test_client() as client:
@@ -36,7 +35,6 @@ def test_403_error_handler(app):
         response_json = response.get_json()
         assert 'error' in response_json
         assert response_json['error'].startswith('You do not have permission to access this resource')
-
 
 
 def test_context_processor(app):
@@ -56,19 +54,25 @@ def test_context_processor(app):
 # @patch('globals.current_user', new_callable=MagicMock)
 def test_global_jinja_vars(mock_current_user, app):
     """Test that current_user is added to the global Jinja environment before each request."""
-    mock_current_user.is_authenticated = True  # Mock user to simulate an authenticated session
 
     with app.test_client() as client:
         # Simulate raising a 403 error in the app.
         @app.route('/')
         def index():
-            app.jinja_env.globals.update(current_user=mock_current_user)
-            return render_template_string("Current user authenticated: {{ current_user.is_authenticated }}")
+            # This sets in local context, but the add_global_vars() call we registered will copy to global
+            g._login_user = mock_current_user
+            # Macro access of current_user fails unless current_user set in globals causing this
+            # template string to fail because current_user is unknown in macro's context
+            return render_template_string("""
+                {%- macro user_is_authenticated() -%}
+                    {{ current_user.is_authenticated }}
+                {%- endmacro -%}
+                Current user authenticated: {{ user_is_authenticated() }}""")
 
         # Make a simple request to trigger the before_request function
         response = client.get('/')
 
         # Check that the current_user is available in the Jinja global environment
-        assert response.status_code == 200
+        assert response.status_code == 200  # if current_user is unknown to macro, will get 500 here
         response_str = response.get_data(as_text=True)
         assert response_str == 'Current user authenticated: True'
