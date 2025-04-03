@@ -1,6 +1,6 @@
 from flask import url_for
 from markupsafe import Markup
-from urllib.parse import quote_plus, urlparse, urlunparse
+from urllib.parse import quote_plus, urlparse
 
 PLACEHOLDER = '<span style="display: inline-block; width: 14px; height: 14px; margin: 0;"></span>'
 
@@ -15,7 +15,7 @@ _SEARCH_TEMPLATES = {
 }
 
 
-def build_library_search_urls(author, title):
+def build_library_search_urls(author, title) -> dict[str, str]:
     """
     Builds library search URLs using the given author and title.
 
@@ -42,7 +42,7 @@ def build_library_search_urls(author, title):
     return search_urls
 
 
-def render_icon(item, icon_mapping, span_id):
+def render_icon(item, icon_mapping, span_id) -> Markup:
     # item is the enumeration value (like 'like', 'read'),
     # icon_mapping is a dictionary mapping enum values to font-awesome icons
     if item in icon_mapping:
@@ -67,6 +67,3 @@ def parse_url(url):
         "query": parsed.query,
         "full": url
     }
-
-
-

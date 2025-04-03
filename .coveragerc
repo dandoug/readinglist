@@ -1,0 +1,7 @@
+[run]
+source = app
+branch = True
+
+[report]
+omit =
+    */tests/*
