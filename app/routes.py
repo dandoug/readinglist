@@ -1,6 +1,5 @@
 from flask import current_app as app, render_template, request, jsonify, flash, redirect, url_for, g
 from flask_security import roles_required, current_user, auth_required
-from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 from app.services import fetch_product_details
 from app.services import search_by_categories, get_book_by_id, search_by_author, \
@@ -88,10 +87,6 @@ def add_book():
             book = add_new_book(form)  # Attempt to add the book
             flash(f"Book id:{book.id} title:'{book.title}' added successfully!", "success")
             return redirect(form.next.data if form.next.data else url_for("index"))
-        except ValueError as ve:  # Handle value-related issues (e.g., duplicate unique fields)
-            flash(f"Failed to add book due to data error: {ve}", "danger")
-        except RuntimeError as re:  # Handle unexpected runtime errors
-            flash(f"An unexpected error occurred: {re}", "danger")
         except Exception as e:  # General fallback for any unanticipated exceptions
             flash(f"An error occurred while adding the book: {e}", "danger")
     return render_template("add_book.html", book_form=form)
@@ -116,10 +111,6 @@ def edit_book():
                 flash(f"Book id:{book.id} title:'{book.title}' updated successfully!", "success")
                 # on successful update, go to next
                 return redirect(form.next.data if form.next.data else url_for("index"))
-            except ValueError as ve:  # Handle value-related issues (e.g., duplicate unique fields)
-                flash(f"Failed to update book due to data error: {ve}", "danger")
-            except RuntimeError as re:  # Handle unexpected runtime errors
-                flash(f"An unexpected error occurred: {re}", "danger")
             except Exception as e:  # General fallback for any unanticipated exceptions
                 flash(f"An error occurred while updating the book: {e}", "danger")
     else:
@@ -166,12 +157,6 @@ def delete_book():
 
         flash(f"Book id:{book_id} deleted successfully!", "success")
         return jsonify({"message": f"Book id:{book_id} deleted successfully!"}), 200
-    except IntegrityError as e:
-        flash(f"IntegrityError: {str(e)}")
-        return jsonify({"error": "Cannot delete the book as it is referenced elsewhere"}), 400
-    except SQLAlchemyError as e:
-        flash(f"SQLAlchemyError: {str(e)}")
-        return jsonify({"error": "An error occurred while processing the request"}), 500
     except Exception as e:
         flash(f"Unhandled exception: {str(e)}")
         return jsonify({"error": "An unexpected error occurred"}), 500
