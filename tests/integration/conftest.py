@@ -38,7 +38,7 @@ def db_connection(docker_compose):
     for _ in range(10):  # Retry multiple times if DB isn't ready
         try:
             conn = pymysql.connect(
-                host="localhost",  # Connecting to local Docker MySQL
+                host="host.docker.internal",  # Connecting to local Docker MySQL
                 port=13306,  # Updated to match the new port mapping
                 user="test_user",
                 password="test_password",
@@ -59,7 +59,7 @@ def db_connection(docker_compose):
 def smtp_connection(docker_compose):
     """Provide a connection to the SMTP server."""
     try:
-        conn = smtplib.SMTP(host="localhost", port=1025)
+        conn = smtplib.SMTP(host="host.docker.internal", port=1025)
         yield conn
         conn.quit()
     except Exception as e:
@@ -70,7 +70,7 @@ def smtp_connection(docker_compose):
 def pop_connection(docker_compose):
     """Provide a connection to the POP3 server."""
     try:
-        conn = poplib.POP3(host="localhost", port=1100)
+        conn = poplib.POP3(host="host.docker.internal", port=1100)
         yield conn
         conn.quit()
     except Exception as e:
