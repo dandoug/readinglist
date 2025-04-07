@@ -102,6 +102,17 @@ class TestingConfig(Config):
     SERVER_NAME = '0.0.0.0:8000'
     SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{Config.RDS_USERNAME}:{quote_plus(str(Config.RDS_PASSWORD))}@{Config.RDS_HOSTNAME}:{Config.RDS_PORT}/{Config.RDS_DB_NAME}"
 
+    def __init__(self):
+        super().__init__()
+
+        # Workaround for running tests in a container locally under act (https://github.com/nektos/act)
+        if os.getenv("ACT") and os.getenv("RDS_HOSTNAME") == "localhost":
+            self.RDS_HOSTNAME = "host.docker.internal"
+            self.SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{Config.RDS_USERNAME}:{quote_plus(str(Config.RDS_PASSWORD))}@{self.RDS_HOSTNAME}:{Config.RDS_PORT}/{Config.RDS_DB_NAME}"
+        if os.getenv("ACT") and os.getenv("mail_server") == "localhost":
+            self.MAIL_SERVER = "host.docker.internal"
+
+
 
 # Automatically configure logging for the chosen environment
 def configure_app_logging(env="development"):
