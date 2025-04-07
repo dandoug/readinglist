@@ -1,0 +1,28 @@
+title: Booklist.media Documentation
+#email: admin@booklist.media
+#description: >- # this means to ignore newlines until "baseurl:"
+#  Notes and documentation about developing the site at [booklist.media](https://booklist.media).
+#baseurl: "" # the subpath of your site, e.g. /blog
+url: "https://dandoug.github.io/readinglist/" # the base hostname & protocol for your site, e.g. http://example.com
+
+
+plugins:
+  - jekyll-remote-theme
+
+
+# Build settings
+remote_theme: just-the-docs/just-the-docs
+
+# Set a path/url to a favicon that will be displayed by the browser
+favicon_ico: "/assets/images/favicon.ico"
+
+defaults:
+  -
+    scope:
+      path: "" # an empty string here means all files in the project
+    values:
+      layout: "default"
+      nav_enabled: true
+
+exclude:
+  - .idea/
