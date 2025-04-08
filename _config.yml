@@ -30,7 +30,7 @@ url: "https://dandoug.github.io/readinglist/" # the base hostname & protocol for
 
 # Build settings
 #theme: minima
-theme: just-the-docs
+remote_theme: just-the-docs
 #plugins:
 #  - jekyll-feed
 
