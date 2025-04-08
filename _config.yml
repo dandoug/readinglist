@@ -25,6 +25,4 @@ defaults:
       nav_enabled: true
 
 exclude:
-  - reports/
   - .idea/
-  - LICENSE
