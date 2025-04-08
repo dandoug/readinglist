@@ -1,3 +1,6 @@
+### Development metrics 
+![Pylint Score](https://img.shields.io/endpoint?url=https://docs.booklist.media/reports/pylint.json)&nbsp;&nbsp;&nbsp;![Test Line Coverage](https://img.shields.io/endpoint?url=https://docs.booklist.media/reports/coverage.json)
+
 # Reading List 
 
 This is a project I use to manage a reading list of books I'm interested in.  I started with the books from the [Jack Carr reading list](https://www.amazon.com/shop/jackcarrusa/list/37WQJIYIWUHJF?ref_=cm_sw_r_cp_ud_aipsflist_PQE3BJ1TEY9FAW4707A8) on Amazon, but then I found others I wanted to add for my own interests.  It quickly grew beyond what I wanted to keep in a simple text file or even a spreadsheet.

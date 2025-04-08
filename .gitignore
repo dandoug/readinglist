@@ -4,3 +4,7 @@ __pycache__
 .venv
 coverage.xml
 .coverage
+.secrets
+coverage.json
+pylint.json
+pylint.report.txt

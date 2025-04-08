@@ -8,34 +8,43 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 jobs:
   build:
     runs-on:
-      #- codebuild-readinglist-${{ github.run_id }}-${{ github.run_attempt }}
       - ubuntu-latest
     steps:
-      # Step 1: Check out the repository
       - name: Checkout repository
         uses: actions/checkout@v4.2.2
 
-      # Step 2: Set up Python environment
       - name: Set up Python
         uses: actions/setup-python@v5.5.0
         with:
           python-version: '3.11'
 
-      # Step 3: Install dependencies
       - name: Install dependencies
         run: |
           python -m pip install --upgrade --no-cache-dir pip
           pip install --no-cache-dir -r requirements.txt
 
-      # Step 4: Lint code with pylint
       - name: Run pylint
         run: |
           pylint app/**/*.py run.py .ebextensions/*.py --fail-under=7 | tee pylint.report.txt
+          SCORE=$(grep -oE 'rated at [0-9]+\.[0-9]+' pylint.report.txt | grep -oE '[0-9]+\.[0-9]+')
+          echo "PYLINT_SCORE=$SCORE" >> $GITHUB_ENV
 
-      # Step 5: Run pytest with coverage
       - name: Run pytest with coverage
         run: |
           pytest --cov=app --cov-report=xml --cov-report=html --cov-fail-under=70
+          COVERAGE=$(grep -oE 'line-rate="[0-9]+\.[0-9]+"' coverage.xml | grep -oE '[0-9]+\.[0-9]+' | head -n 1 | awk '{printf "%.2f\n", $1 * 100}')
+          echo "PYTEST_COVERAGE=$COVERAGE" >> $GITHUB_ENV
+
+      - name: Publish updated reports to github pages
+        run: |
+          python .github/scripts/generate_badge_files.py ${{ env.PYTEST_COVERAGE }}  ${{ env.PYLINT_SCORE }}
+          .github/scripts/move_reports_to_gh_pages.sh
