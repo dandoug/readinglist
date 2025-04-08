@@ -4,6 +4,18 @@
 
 layout: home
 ---
-# Main heading
+# Booklist.media
 
-This is the place where my content goes.
+Eventually, this will be the place where I put documentation about using and developing the [booklist.media](https://booklist.media) site.  For now, this is just a placeholder.
+
+## Development metrics
+
+### Pylint
+
+* [pylint report](reports/pylint.report.txt)
+
+
+### Pytest
+
+* [coverage.xml](reports/coverage.xml)
+* [coverage html report](reports/htmlcov/index.html)
