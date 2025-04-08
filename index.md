@@ -2,20 +2,9 @@
 # Feel free to add content and custom Front Matter to this file.
 # To modify the layout, see https://jekyllrb.com/docs/themes/#overriding-theme-defaults
 
-layout: home
+title: Home
+nav_order: 1
 ---
-# Booklist.media
+# booklist.media
 
-Eventually, this will be the place where I put documentation about using and developing the [booklist.media](https://booklist.media) site.  For now, this is just a placeholder.
-
-## Development metrics
-
-### Pylint
-
-* [pylint report](reports/pylint.report.txt)
-
-
-### Pytest
-
-* [coverage.xml](reports/coverage.xml)
-* [coverage html report](reports/htmlcov/index.html)
+The [booklist.media](https://booklist.media) site is a hobby project I've created to teach myself skills for developing and maintaining software projects.  This site is a repository for documentation about the project.  The code for the site as well as this doc is all open source under [APL-2.0](LICENSE), but I'm not looking for any contributions or unsolicited help.

@@ -1,0 +1,7 @@
+# For development testing, make the URL on local host
+url: http://localhost:4000
+#
+# Refer to https://dev.to/derlin/testing-github-pages-with-remote-theme-locally-3nid
+# Use this command for building and serving in development mode
+#
+# bundle exec jekyll serve --config "_config.yml,_config_dev.yml"
