@@ -520,4 +520,6 @@ def _safe_string(in_str: str) -> str:
     :return: A new string with all non-breaking spaces replaced by regular spaces.
     :rtype: str
     """
+    if not in_str:
+        return ''
     return in_str.replace('\xa0', ' ')
