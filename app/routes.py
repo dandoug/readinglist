@@ -429,17 +429,29 @@ def _perform_search_base_on_args(req: Request):
     status_filter = req.args.get('status', None)
     feedback_filter = req.args.get('feedback', None)
 
-    bks = None
+    sort_column = req.args.get('sortColumn', None)
+    sort_order = req.args.get('sortOrder', 'asc')
+
     if author:
         bks = search_by_author(author, status_filter, feedback_filter)
     elif title:
         bks = search_by_title(title, status_filter, feedback_filter)
     elif categories:
         # Decode encoded categories to full path strings before searching
-        bks = search_by_categories([id_to_fullpath(category) for category in categories], status_filter,
-                                   feedback_filter)
+        bks = search_by_categories([id_to_fullpath(category) for category in categories], status_filter, feedback_filter)
     else:
         return None
+
+    # if sort criteria were supplied, then apply them
+    if sort_column:
+        # Verify sort criteria.  Returning None to our caller will return 400 to the browser
+        if sort_column not in ['title', 'author', 'rating']:
+            return None  # invalid input
+        if sort_order not in ['asc', 'desc']:
+            return None  # invalid input
+        # sort the books
+        reverse_order = (sort_order == 'desc')
+        bks = sorted(bks, key=lambda bk: getattr(bk, sort_column, ''), reverse=reverse_order)
 
     return bks
 

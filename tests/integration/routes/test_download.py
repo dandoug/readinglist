@@ -12,6 +12,18 @@ def test_author_download(client):
 
     assert len(data) == 4
 
+    response = client.get('/download', query_string={'author': 'rand', 'sortColumn': 'description'})
+    assert response.status_code == 400
+    response = client.get('/download', query_string={'author': 'rand', 'sortColumn': 'author', 'sortOrder': 'x'})
+    assert response.status_code == 400
+
+    response = client.get('/download', query_string={'author': 'rand', 'sortColumn': 'author', 'sortOrder': 'desc'})
+    assert response.status_code == 200
+    data = _receive_csv_file(response)
+    assert len(data) == 4
+    bk = data[0]
+    assert bk['Author'] == 'Laura Hillenbrand'
+
 
 def test_title_download(client):
     response = client.get('/download', query_string={'title': 'war'})
@@ -21,6 +33,13 @@ def test_title_download(client):
 
     assert len(data) == 57
 
+    response = client.get('/download', query_string={'title': 'war', 'sortColumn': 'title', 'sortOrder': 'asc'})
+    assert response.status_code == 200
+    data = _receive_csv_file(response)
+    assert len(data) == 57
+    bk = data[0]
+    assert bk['Title'] == 'A Higher Form of Killing: The Secret History of Chemical and Biological Warfare'
+
 
 def test_category_download(client):
     response = client.get('/download', query_string={'cat': ['Q2xhc3NpY3M*', 'RmFudGFzeQ**']})
@@ -29,6 +48,13 @@ def test_category_download(client):
     data = _receive_csv_file(response)
 
     assert len(data) == 4
+
+    response = client.get('/download', query_string={'cat': ['Q2xhc3NpY3M*', 'RmFudGFzeQ**'], 'sortColumn': 'rating', 'sortOrder': 'desc'})
+    assert response.status_code == 200
+    data = _receive_csv_file(response)
+    assert len(data) == 4
+    bk = data[0]
+    assert bk['Title'] == 'The Hobbit: 75th Anniversary Edition'
 
 
 def test_all_books(client):

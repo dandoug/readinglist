@@ -7,7 +7,7 @@ from app.models import Book, ReadingStatus, Feedback
 
 
 def search_by_categories(categories, status_filter: str = None,
-                         feedback_filter: str = None):
+                         feedback_filter: str = None) -> list[Book]:
     """
     Searches for books based on specified categories and optional filters for status and feedback.
 
@@ -47,12 +47,12 @@ def search_by_categories(categories, status_filter: str = None,
     return query.all()
 
 
-def search_by_author(author: str, status_filter: str, feedback_filter: str):
+def search_by_author(author: str, status_filter: str, feedback_filter: str) -> list[Book]:
     """Search for books by author's name."""
     return _search_by_attribute("author", author, status_filter, feedback_filter)
 
 
-def search_by_title(title, status_filter: str, feedback_filter: str):
+def search_by_title(title, status_filter: str, feedback_filter: str) -> list[Book]:
     """Search for books by title."""
     return _search_by_attribute("title", title, status_filter, feedback_filter)
 
