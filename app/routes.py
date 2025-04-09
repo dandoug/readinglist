@@ -488,7 +488,7 @@ def _make_csv_response(bks):
             _safe_string(bk.author),
             bk.rating,
             _safe_string(bk.book_description),
-            bk.feedbacks[0].value if bk.feedbacks else 'none',
+            bk.feedbacks[0].feedback.value if bk.feedbacks else 'none',
             bk.hardcover,
             bk.categories_flat,
             bk.bestsellers_rank_flat,
@@ -497,7 +497,7 @@ def _make_csv_response(bks):
             bk.isbn_13,
             bk.link,
             bk.image,
-            bk.reading_statuses[0].value if bk.reading_statuses else 'none',
+            bk.reading_statuses[0].status.value if bk.reading_statuses else 'none',
             bk.specifications_flat
         ])
     # Get the CSV content from the buffer

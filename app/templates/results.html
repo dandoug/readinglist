@@ -284,6 +284,63 @@
         }        
     });
 
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const downloadBtn = document.getElementById('download-btn');
+
+        if (downloadBtn) {
+            downloadBtn.addEventListener('click', function () {
+                // Base URL for downloading
+                let url = '{{ url_for('download') }}';
+
+                // Get the current URL's query parameters
+                const searchParams = new URLSearchParams(window.location.search);
+
+                // Check if the button has data-sort-column and data-sort-order attributes
+                const sortColumn = downloadBtn.getAttribute('data-sort-column');
+                const sortOrder = downloadBtn.getAttribute('data-sort-order');
+
+                // If sortColumn exists, append it to the query params
+                if (sortColumn) {
+                    searchParams.set('sortColumn', sortColumn);
+                }
+
+                // If sortOrder exists, append it to the query params
+                if (sortOrder) {
+                    searchParams.set('sortOrder', sortOrder);
+                }
+
+                // Append query params to the URL
+                url += `?${searchParams.toString()}`;
+
+                // Trigger download
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            alert(`Failed to download: ${response.statusText}`);
+                        }
+                        return response.blob();
+                    })
+                    .then(blob => {
+                        const downloadUrl = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.style.display = 'none';
+                        a.href = downloadUrl;
+                        a.download = 'booklist.csv';
+                        document.body.appendChild(a);
+                        a.click();
+                        window.URL.revokeObjectURL(downloadUrl);
+                        document.body.removeChild(a);
+                    })
+                    .catch(error => {
+                        alert('Error occurred while downloading:', error);
+                    });
+            });
+        }
+    });
+    
+    
+
     document.getElementById('new-search-btn').addEventListener('click', function() {
         window.location.href = '{{ url_for('index') }}';
     });
