@@ -1,3 +1,4 @@
+import os
 import subprocess
 import time
 import pytest
@@ -35,10 +36,16 @@ def docker_compose():
 @pytest.fixture(scope="session")
 def db_connection(docker_compose):
     """Provide a connection to the MySQL test database."""
+
+    # Work around for running in container under act (https://github.com/nektos/act)
+    if os.getenv("ACT") and os.getenv("RDS_HOSTNAME") == "localhost":
+        DB_HOST = "host.docker.internal"
+    else:
+        DB_HOST = os.getenv("RDS_HOSTNAME")
     for _ in range(10):  # Retry multiple times if DB isn't ready
         try:
             conn = pymysql.connect(
-                host="localhost",  # Connecting to local Docker MySQL
+                host=DB_HOST,  # Connecting to local Docker MySQL
                 port=13306,  # Updated to match the new port mapping
                 user="test_user",
                 password="test_password",
@@ -58,8 +65,13 @@ def db_connection(docker_compose):
 @pytest.fixture(scope="session")
 def smtp_connection(docker_compose):
     """Provide a connection to the SMTP server."""
+    # Work around for running in container under act (https://github.com/nektos/act)
+    if os.getenv("ACT") and os.getenv("MAIL_SERVER") == "localhost":
+        SMTP_HOST = "host.docker.internal"
+    else:
+        SMTP_HOST = os.getenv("MAIL_SERVER")
     try:
-        conn = smtplib.SMTP(host="localhost", port=1025)
+        conn = smtplib.SMTP(host=SMTP_HOST, port=1025)
         yield conn
         conn.quit()
     except Exception as e:
@@ -69,8 +81,12 @@ def smtp_connection(docker_compose):
 @pytest.fixture(scope="session")
 def pop_connection(docker_compose):
     """Provide a connection to the POP3 server."""
+    if os.getenv("ACT") and os.getenv("MAIL_SERVER") == "localhost":
+        POP_HOST = "host.docker.internal"
+    else:
+        POP_HOST = os.getenv("MAIL_SERVER")
     try:
-        conn = poplib.POP3(host="localhost", port=1100)
+        conn = poplib.POP3(host=POP_HOST, port=1100)
         yield conn
         conn.quit()
     except Exception as e:
