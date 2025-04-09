@@ -54,9 +54,11 @@
         </div>
         <!-- Buttons -->    
         <div class="col-auto text-end">
+            {% if books %}
+            <button id="download-btn" type="button" class="btn btn-sm btn-secondary" style="cursor: pointer;" data-sort-column="" data-sort-order="">Download</button>
+            {% endif %}
             {% if current_user.is_authenticated and current_user.has_role('editor') %}
-            <button id="add-book-btn" type="button" class="btn btn-sm btn-info" style="cursor: pointer;"
->Add a book</button>
+            <button id="add-book-btn" type="button" class="btn btn-sm btn-info" style="cursor: pointer;">Add a book</button>
             {% endif %}
             <button id="new-search-btn" type="button" class="btn btn-sm btn-primary">New search</button>
         </div>
@@ -290,6 +292,22 @@
     function sortTable(table, columnIndex, order) {
         const tbody = table.querySelector("tbody");
         const rows = Array.from(tbody.querySelectorAll("tr"));
+        
+        // Find the download button and set the data-sort-order and data-sort-column attributes
+        // based on the clicked column and order
+        const downloadBtn = document.getElementById('download-btn');
+        if (downloadBtn) {
+            downloadBtn.setAttribute('data-sort-order', order);
+            // Set the sortColumn based on the columnIndex
+            const sortColumn = columnIndex === 0
+                ? 'title'
+                : columnIndex === 1
+                    ? 'author'
+                    : columnIndex === 2
+                        ? 'rating'
+                        : '';
+            downloadBtn.setAttribute('data-sort-column', sortColumn);
+        }
 
         // Determine sort logic based on text inside <span> elements
         const isNumeric = (value) => !isNaN(parseFloat(value)) && isFinite(value);
