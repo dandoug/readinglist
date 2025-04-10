@@ -5,8 +5,8 @@ from flask import current_app as app, render_template, request, jsonify, flash, 
     Request
 from flask_security import roles_required, current_user, auth_required
 
-from app.services import fetch_product_details, build_about_info
-from app.services import search_by_categories, get_book_by_id, search_by_author, \
+from app.services import fetch_product_details, build_about_info, \
+    search_by_categories, get_book_by_id, search_by_author, \
     search_by_title, add_new_book, book_to_dict_with_status_and_feedback, \
     set_book_status, set_book_feedback, update_book, del_book, get_category_bs_tree, id_to_fullpath
 from app.helpers import PLACEHOLDER, build_library_search_urls, compute_next_url
