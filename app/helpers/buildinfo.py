@@ -1,3 +1,4 @@
+import logging
 import os
 import json
 from datetime import datetime
@@ -15,7 +16,7 @@ def check_and_generate_build_info():
     """
 
     if os.path.isfile(BUILD_INFO_FILE):
-        print(f"{BUILD_INFO_FILE} exists. Checking timestamps...")
+        logging.debug(f"{BUILD_INFO_FILE} exists. Checking timestamps...")
 
         try:
             # Load existing build-info.json file
@@ -38,19 +39,19 @@ def check_and_generate_build_info():
                 latest_timestamp = datetime.fromisoformat(latest_commit_date)
 
                 if latest_timestamp > existing_timestamp:
-                    print(f"Latest commit is newer than the one in {BUILD_INFO_FILE}. Regenerating...")
+                    logging.debug(f"Latest commit is newer than the one in {BUILD_INFO_FILE}. Regenerating...")
                     _generate_build_info(repo)
                 else:
-                    print(f"{BUILD_INFO_FILE} is up-to-date.")
+                    logging.debug(f"{BUILD_INFO_FILE} is up-to-date.")
             else:
-                print("Existing commit date is invalid. Regenerating...")
+                logging.debug("Existing commit date is invalid. Regenerating...")
                 _generate_build_info(repo)
 
         except NotGitRepository:
-            print("Git repository not found. Leaving existing build-info.json untouched.")
+            logging.warning("Git repository not found. Leaving existing build-info.json untouched.")
 
     else:
-        print(f"{BUILD_INFO_FILE} does not exist. Generating a new one...")
+        logging.debug(f"{BUILD_INFO_FILE} does not exist. Generating a new one...")
         _generate_build_info()
 
 
@@ -86,7 +87,7 @@ def _generate_build_info(repo: Repo = None):
 
     except NotGitRepository:
         # Fallback if Git repository is not initialized or unavailable
-        print("Git repository not found. Using default values.")
+        logging.warning("Git repository not found. Using default values.")
         build_info = {
             "branch": "",
             "commit_id": "",
@@ -99,7 +100,7 @@ def _generate_build_info(repo: Repo = None):
     # Write to build-info.json file
     with open(BUILD_INFO_FILE, 'w') as f:
         json.dump(build_info, f, indent=4)
-    print(f"Generated {BUILD_INFO_FILE} successfully.")
+    logging.debug(f"Generated {BUILD_INFO_FILE} successfully.")
 
 
 def _get_commit_target_branch(repo: Repo) -> str:
@@ -133,6 +134,8 @@ def _get_commit_target_branch(repo: Repo) -> str:
     except Exception as e:
         return f"(error: {e})"
 
+
+__all__ = ["check_and_generate_build_info"]
 
 if __name__ == "__main__":
     check_and_generate_build_info()
