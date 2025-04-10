@@ -1,7 +1,7 @@
 import logging
 import os
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from dulwich.repo import Repo
 from dulwich.errors import NotGitRepository
 from pathlib import Path
@@ -35,8 +35,8 @@ def check_and_generate_build_info():
 
             # Compare timestamps
             if existing_commit_date:
-                existing_timestamp = datetime.fromisoformat(existing_commit_date)
-                latest_timestamp = datetime.fromisoformat(latest_commit_date)
+                existing_timestamp = datetime.fromisoformat(existing_commit_date).replace(tzinfo=timezone.utc)
+                latest_timestamp = datetime.fromisoformat(latest_commit_date).replace(tzinfo=timezone.utc)
 
                 if latest_timestamp > existing_timestamp:
                     logging.debug(f"Latest commit is newer than the one in {BUILD_INFO_FILE}. Regenerating...")
@@ -55,11 +55,40 @@ def check_and_generate_build_info():
         _generate_build_info()
 
 
+def read_build_info() -> dict:
+    assert BUILD_INFO_FILE.exists()
+    build_info = json.loads(BUILD_INFO_FILE.read_text())
+    assert isinstance(build_info, dict)
+    return build_info
+
+
+def write_empty_build_info():
+    build_info = {
+        "branch": "",
+        "commit_id": "",
+        "committer": "",
+        "comment": "",
+        "build_date": "",
+        "commit_date": "",
+    }
+    # Write to build-info.json file
+    with open(BUILD_INFO_FILE, 'w') as f:
+        json.dump(build_info, f, indent=4)
+
+
+def remove_build_info():
+    # remove any existing file
+    try:
+        BUILD_INFO_FILE.unlink()
+    except FileNotFoundError:
+        pass
+
+
 def _generate_build_info(repo: Repo = None):
     """
     Generates a build-info.json file with Git metadata if available, or default values if Git is unavailable.
     """
-    build_date = datetime.now().isoformat()
+    build_date = datetime.now(timezone.utc).isoformat()  # Build date in UTC
 
     try:
         # Open the repository, if not passed in
@@ -73,7 +102,7 @@ def _generate_build_info(repo: Repo = None):
         commit_id = commit.id.decode()
         committer = commit.committer.decode()
         comment = commit.message.decode().strip()
-        commit_date = datetime.fromtimestamp(commit.commit_time).isoformat()
+        commit_date = datetime.fromtimestamp(commit.commit_time, timezone.utc).isoformat()
         branch = _get_commit_target_branch(repo)
 
         build_info = {
@@ -135,7 +164,8 @@ def _get_commit_target_branch(repo: Repo) -> str:
         return f"(error: {e})"
 
 
-__all__ = ["check_and_generate_build_info"]
+__all__ = ["check_and_generate_build_info", "read_build_info", "write_empty_build_info",
+           "remove_build_info", "BUILD_INFO_FILE"]
 
 if __name__ == "__main__":
     check_and_generate_build_info()
