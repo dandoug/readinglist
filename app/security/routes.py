@@ -1,4 +1,4 @@
-from flask import current_app as app, request, render_template, redirect, after_this_request
+from flask import current_app as app, request, render_template, redirect, after_this_request, url_for
 from flask_admin import Admin
 from flask_admin.menu import MenuLink
 from flask_login import login_required
@@ -30,6 +30,7 @@ class RoleModelView(SecureModelView):
 
 
 def register_admin_views(db: SQLAlchemy, admin: Admin):
+    admin.add_link(MenuLink(name='About', url='/about'))
     admin.add_link(MenuLink(name='Home', url='/'))
     admin.add_view(UserModelView(User, db.session))
     admin.add_view(RoleModelView(Role, db.session))
