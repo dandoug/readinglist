@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import search_filters %}
+
+<!-- Title -->
+{% block title %} About {% endblock %}
+
+<!-- Body -->
+{% block content %}
+<div class="container mt-3">
+    <!-- Row 1: Logo, Heading, and Login/Logout Button -->
+    <div class="row align-items-center">
+        <!-- Logo -->
+        <div class="col-auto">
+            <a href="{{ url_for('index') }}">
+            <img src="{{ url_for('static', filename='images/booksearch.png') }}"
+                 alt="Book Search Logo" class="img-fluid" style="width: 100px;">
+            </a>
+        </div>
+        <!-- Heading -->
+        <div class="col d-flex align-items-center" style="transform: translateY(-20%);">
+            <h1 class="mb-0" style="line-height: 1;">About</h1>
+        </div>
+        <!-- Login/Logout Button -->
+        <div class="col-auto text-end d-flex flex-column align-items-end" style="transform: translateY(-20%);">
+            {% if current_user.is_authenticated %}
+                <p class="mb-1 text-muted small" style="line-height: 1;">{{ current_user.email }}</p>
+                <div class="d-flex">
+                    {% if current_user.has_role('admin') %}
+                        <a href="{{ url_for('admin.index') }}" class="btn btn-sm btn-primary mr-2">Admin</a>
+                    {% endif %}
+                    <a href="{{ url_for('security.logout', next=request.full_path) }}" class="btn btn-sm btn-secondary">Logout</a>
+                </div>
+            {% else %}
+                <p class="mb-1 text-muted small" style="line-height: 1;">&nbsp;</p>
+                <a href="{{ url_for('security.login') }}" class="btn btn-sm btn-info">Login</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- About Section -->
+    <div class="mt-2">
+
+
+        {% if about_info %}
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h5 class="card-title">About Information</h5>
+                    <ul class="list-group list-group-flush">
+                        {% for key, value in about_info.items() %}
+                            <li class="list-group-item">
+                                <strong>{{ key }}:</strong>
+                                {% if value is mapping %}
+                                    <!-- If value is a dictionary -->
+                                    <dl class="mb-0 ml-4">
+                                        {% for k, v in value.items() %}
+                                            <dt>{{ k }}</dt>
+                                            <dd>{{ v }}</dd>
+                                        {% endfor %}
+                                    </dl>
+                                {% elif value is iterable and value|length and value[0] is mapping %}
+                                    <!-- If value is a list of dictionaries -->
+                                    <ul class="list-unstyled mb-0">
+                                        {% for item in value %}
+                                            <li>
+                                                <dl class="inline-dl mb-0 ml-4">
+                                                    {% for k, v in item.items() %}
+                                                        <dt>{{ k }}</dt>
+                                                        <dd>{{ v }}</dd>
+                                                    {% endfor %}
+                                                </dl>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                {% elif value is iterable and not value|string %}
+                                    <!-- If value is a list of strings -->
+                                    <ul class="list-unstyled mb-0">
+                                        {% for item in value %}
+                                            <li>{{ item }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                {% else %}
+                                    <!-- If value is a simple string -->
+                                    {{ value }}
+                                {% endif %}
+
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        {% else %}
+            <p class="text-muted">No additional information available.</p>
+        {% endif %}
+            
+
+    </div>
+</div>
+{% endblock %}

@@ -8,3 +8,5 @@ coverage.xml
 coverage.json
 pylint.json
 pylint.report.txt
+build-info.json
+app_package.zip

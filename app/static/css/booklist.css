@@ -23,3 +23,12 @@
   color: inherit; /* Ensures text remains default/normal */
   border-radius: 0.25rem 0.25rem 0 0; /* Existing border-radius */
 }
+.inline-dl {
+    display: inline; /* Inline layout for the entire <dl> */
+}
+
+.inline-dl dt, .inline-dl dd {
+    display: inline; /* Ensure <dt> and <dd> are inline elements */
+    margin-right: 10px; /* Add spacing between each term and definition */
+}
+
