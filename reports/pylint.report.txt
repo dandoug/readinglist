@@ -1,7 +1,27 @@
 ************* Module app.helpers.__init__
 app/helpers/__init__.py:1:0: C0301: Line too long (103/100) (line-too-long)
+app/helpers/__init__.py:3:0: C0301: Line too long (129/100) (line-too-long)
 ************* Module app.helpers
 app/helpers/__init__.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+************* Module app.helpers.buildinfo
+app/helpers/buildinfo.py:38:0: C0301: Line too long (110/100) (line-too-long)
+app/helpers/buildinfo.py:39:0: C0301: Line too long (106/100) (line-too-long)
+app/helpers/buildinfo.py:42:0: C0301: Line too long (111/100) (line-too-long)
+app/helpers/buildinfo.py:89:0: C0301: Line too long (109/100) (line-too-long)
+app/helpers/buildinfo.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+app/helpers/buildinfo.py:19:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+app/helpers/buildinfo.py:23:17: W1514: Using open without explicitly specifying an encoding (unspecified-encoding)
+app/helpers/buildinfo.py:42:20: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+app/helpers/buildinfo.py:45:20: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+app/helpers/buildinfo.py:54:8: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+app/helpers/buildinfo.py:58:0: C0116: Missing function or method docstring (missing-function-docstring)
+app/helpers/buildinfo.py:65:0: C0116: Missing function or method docstring (missing-function-docstring)
+app/helpers/buildinfo.py:75:9: W1514: Using open without explicitly specifying an encoding (unspecified-encoding)
+app/helpers/buildinfo.py:79:0: C0116: Missing function or method docstring (missing-function-docstring)
+app/helpers/buildinfo.py:130:9: W1514: Using open without explicitly specifying an encoding (unspecified-encoding)
+app/helpers/buildinfo.py:132:4: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+app/helpers/buildinfo.py:163:11: W0718: Catching too general exception Exception (broad-exception-caught)
+app/helpers/buildinfo.py:7:0: C0411: standard import "pathlib.Path" should be placed before third party imports "dulwich.repo.Repo", "dulwich.errors.NotGitRepository" (wrong-import-order)
 ************* Module app.helpers.globals
 app/helpers/globals.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 ************* Module app.helpers.utilities
@@ -59,12 +79,14 @@ app/security/models.py:23:4: C0116: Missing function or method docstring (missin
 app/security/models.py:30:0: C0115: Missing class docstring (missing-class-docstring)
 app/security/models.py:3:0: C0412: Imports from package flask_security are not grouped (ungrouped-imports)
 ************* Module app.security.routes
+app/security/routes.py:1:0: C0301: Line too long (101/100) (line-too-long)
 app/security/routes.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 app/security/routes.py:15:0: C0115: Missing class docstring (missing-class-docstring)
 app/security/routes.py:27:0: C0115: Missing class docstring (missing-class-docstring)
 app/security/routes.py:32:0: C0116: Missing function or method docstring (missing-function-docstring)
-app/security/routes.py:41:0: C0116: Missing function or method docstring (missing-function-docstring)
+app/security/routes.py:42:0: C0116: Missing function or method docstring (missing-function-docstring)
 app/security/routes.py:1:0: W0611: Unused current_app imported from flask as app (unused-import)
+app/security/routes.py:1:0: W0611: Unused url_for imported from flask (unused-import)
 ************* Module app.security.secure_index_view
 app/security/secure_index_view.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 app/security/secure_index_view.py:6:0: C0115: Missing class docstring (missing-class-docstring)
@@ -81,6 +103,13 @@ app/security/user_session_cache.py:25:14: W0613: Unused argument 'sender' (unuse
 app/security/user_session_cache.py:47:4: C0415: Import outside toplevel (.user_datastore) (import-outside-toplevel)
 ************* Module app.services
 app/services/__init__.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+************* Module app.services.about_service
+app/services/about_service.py:23:64: C0303: Trailing whitespace (trailing-whitespace)
+app/services/about_service.py:56:0: C0301: Line too long (119/100) (line-too-long)
+app/services/about_service.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+app/services/about_service.py:16:0: C0116: Missing function or method docstring (missing-function-docstring)
+app/services/about_service.py:101:11: W0718: Catching too general exception Exception (broad-exception-caught)
+app/services/about_service.py:54:8: C0415: Import outside toplevel (app.db) (import-outside-toplevel)
 ************* Module app.services.asin_data_service
 app/services/asin_data_service.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 app/services/asin_data_service.py:44:15: W3101: Missing timeout argument for method 'requests.get' can cause your program to hang indefinitely (missing-timeout)
@@ -116,5 +145,5 @@ run.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 .ebextensions/fetch_secrets.py:1:0: R0401: Cyclic import (app.security -> app.security.routes) (cyclic-import)
 
 -----------------------------------
-Your code has been rated at 7.99/10
+Your code has been rated at 8.02/10
 
