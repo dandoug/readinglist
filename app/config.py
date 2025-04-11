@@ -128,4 +128,4 @@ _config_by_name = {
 }
 
 
-__all__ = ["Config", "DevelopmentConfig", "ProductionConfig", "TestingConfig", "configure_app_logging"]
+__all__ = ["Config", "DevelopmentConfig", "ProductionConfig", "TestingConfig", "configure_app_logging", "PROJECT_ROOT"]

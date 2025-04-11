@@ -39,7 +39,60 @@
 
     <!-- About Section -->
     <div class="mt-2">
-        <p>About table of data goes here</p>
+
+
+        {% if about_info %}
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h5 class="card-title">About Information</h5>
+                    <ul class="list-group list-group-flush">
+                        {% for key, value in about_info.items() %}
+                            <li class="list-group-item">
+                                <strong>{{ key }}:</strong>
+                                {% if value is mapping %}
+                                    <!-- If value is a dictionary -->
+                                    <dl class="mb-0 ml-4">
+                                        {% for k, v in value.items() %}
+                                            <dt>{{ k }}</dt>
+                                            <dd>{{ v }}</dd>
+                                        {% endfor %}
+                                    </dl>
+                                {% elif value is iterable and value|length and value[0] is mapping %}
+                                    <!-- If value is a list of dictionaries -->
+                                    <ul class="list-unstyled mb-0">
+                                        {% for item in value %}
+                                            <li>
+                                                <dl class="inline-dl mb-0 ml-4">
+                                                    {% for k, v in item.items() %}
+                                                        <dt>{{ k }}</dt>
+                                                        <dd>{{ v }}</dd>
+                                                    {% endfor %}
+                                                </dl>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                {% elif value is iterable and not value|string %}
+                                    <!-- If value is a list of strings -->
+                                    <ul class="list-unstyled mb-0">
+                                        {% for item in value %}
+                                            <li>{{ item }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                {% else %}
+                                    <!-- If value is a simple string -->
+                                    {{ value }}
+                                {% endif %}
+
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        {% else %}
+            <p class="text-muted">No additional information available.</p>
+        {% endif %}
+            
+
     </div>
 </div>
 {% endblock %}
