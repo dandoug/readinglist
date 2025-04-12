@@ -1,5 +1,5 @@
 ### Development metrics 
-![Pylint Score](https://img.shields.io/endpoint?url=https://docs.booklist.media/reports/pylint.json)&nbsp;&nbsp;&nbsp;![Test Line Coverage](https://img.shields.io/endpoint?url=https://docs.booklist.media/reports/coverage.json)
+![Pylint Score](https://img.shields.io/endpoint?style=for-the-badge&url=https://docs.booklist.media/reports/pylint.json)&nbsp;&nbsp;&nbsp;![Test Line Coverage](https://img.shields.io/endpoint?style=for-the-badge&url=https://docs.booklist.media/reports/coverage.json)
 
 # Reading List 
 
