@@ -33,7 +33,8 @@ def build_about_info() -> dict:
         "python_compiler": platform.python_compiler(),
     }
     about_info["vars"] = _get_safe_environment_variables()
-    about_info["database"] = _database_info()
+    from app import db
+    about_info["database"] = _database_info(db)
 
     return about_info
 
@@ -47,11 +48,10 @@ def _get_safe_environment_variables():
     return {key: os.environ.get(key) for key in allowed_env_vars if key in os.environ}
 
 
-def _database_info():
+def _database_info(db):
     """Expose basic database info such as type and version."""
     try:
         # Establish a raw connection to extract database info
-        from app import db
         connection = db.engine.connect()
         server_version = connection.dialect.server_version_info  # Version as a tuple (e.g., (14, 2, 0)) for PostgreSQL
         database_type = connection.engine.name  # Type of DB (e.g., "postgresql", "mysql", "sqlite")
