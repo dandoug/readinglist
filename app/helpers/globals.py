@@ -6,8 +6,6 @@ global variables (like `current_user`) are available to all templates and views.
 from flask import jsonify
 from flask_login import current_user
 
-from app.helpers import parse_url
-
 
 def register_globals(app):
     """
@@ -36,6 +34,7 @@ def register_globals(app):
 
         Returns a dictionary of helper functions that can be accessed directly within templates.
         """
+        from app.helpers.utilities import parse_url  # pylint: disable=import-outside-toplevel
         return {"parse_url": parse_url}
 
     @app.before_request
