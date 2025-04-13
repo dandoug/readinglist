@@ -1,11 +1,16 @@
 import os
 import subprocess
 import time
+
 import pytest
 import pymysql
 import smtplib
 import poplib
 from pathlib import Path
+from threading import Thread
+from flask import Flask, jsonify, request
+import json
+from urllib.parse import urlparse
 from bs4 import BeautifulSoup
 
 import app
@@ -129,6 +134,50 @@ def flask_app(db_connection, smtp_connection):
         db.session.commit()
 
     yield app
+
+
+@pytest.fixture(scope="session")
+def asin_data_service(flask_app):
+    """
+    Create a second Flask application listening on port 8008.
+    This app sends back default test data for requests.
+    
+    Sample request URL:
+    https://api.asindataapi.com/request?api_key=...key...&amazon_domain=amazon.com&asin=1509540857&type=product
+    
+    Response in file asin_service_response.json
+    """
+
+    # Get host and port for test data provider
+    test_url = flask_app.config['ASIN_DATA_API_URL']
+    parsed_url = urlparse(test_url)
+    asin_host = parsed_url.hostname
+    asin_port = parsed_url.port
+
+    asin_app = Flask(__name__)
+
+    # Read in the sample response data as a dictionary
+    file_path = Path(__file__).parent / "asin_sample_response.json"
+    with open(file_path, "r", encoding='utf-8') as file:
+        json_data = json.load(file)
+
+    @asin_app.route('/request', methods=['GET'])
+    def stub_request():
+        asin = request.args.get("asin", None)
+        if asin == '0':
+            return jsonify({})
+        return jsonify(json_data)
+
+    # Run the app in a separate thread
+    def run_app():
+        asin_app.run(host=asin_host, port=asin_port)
+
+    thread = Thread(target=run_app, daemon=True)
+    thread.start()
+
+    yield app  # Provide the app for the fixture lifecycle
+
+
 
 @pytest.fixture
 def client(flask_app):
