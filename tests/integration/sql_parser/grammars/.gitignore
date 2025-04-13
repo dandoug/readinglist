@@ -1,0 +1,8 @@
+# Source grammar files come from https://github.com/antlr/grammars-v4/tree/master/sql/mysql/Oracle
+# The *.g4 files there are target agnostic.  In order to modify those predicts to work with
+# Python, run the transformGrammar.py script in this directory.   It changes occurances of "this." to
+# "self." which is what is required.   Running the script is idempotent (i.e. running it more than once
+# is the same as just running it once).  The script does create .bak files to backup the original grammars,
+# but we don't need those in source control.  That is why '*.bak' is excluded here.
+#
+*.bak
