@@ -64,16 +64,6 @@ app/security/user_session_cache.py:25:14: W0613: Unused argument 'sender' (unuse
 app/security/user_session_cache.py:47:4: C0415: Import outside toplevel (.user_datastore) (import-outside-toplevel)
 ************* Module app.services
 app/services/__init__.py:1:0: C0114: Missing module docstring (missing-module-docstring)
-************* Module app.services.about_service
-app/services/about_service.py:23:64: C0303: Trailing whitespace (trailing-whitespace)
-app/services/about_service.py:56:0: C0301: Line too long (119/100) (line-too-long)
-app/services/about_service.py:1:0: C0114: Missing module docstring (missing-module-docstring)
-app/services/about_service.py:16:0: C0116: Missing function or method docstring (missing-function-docstring)
-app/services/about_service.py:101:11: W0718: Catching too general exception Exception (broad-exception-caught)
-app/services/about_service.py:54:8: C0415: Import outside toplevel (app.db) (import-outside-toplevel)
-************* Module app.services.asin_data_service
-app/services/asin_data_service.py:1:0: C0114: Missing module docstring (missing-module-docstring)
-app/services/asin_data_service.py:44:15: W3101: Missing timeout argument for method 'requests.get' can cause your program to hang indefinitely (missing-timeout)
 ************* Module app.services.book_service
 app/services/book_service.py:277:0: C0301: Line too long (102/100) (line-too-long)
 app/services/book_service.py:278:0: C0301: Line too long (101/100) (line-too-long)
@@ -105,5 +95,5 @@ run.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 .ebextensions/fetch_secrets.py:1:0: R0401: Cyclic import (app.security -> app.security.routes) (cyclic-import)
 
 -----------------------------------
-Your code has been rated at 8.59/10
+Your code has been rated at 8.72/10
 
