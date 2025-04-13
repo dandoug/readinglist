@@ -1,8 +1,14 @@
+"""
+This module provides functionality to interact with the ASIN Data API for 
+retrieving detailed product information based on an ASIN (Amazon Standard 
+Identification Number). The `fetch_product_details` function sends a request 
+to the API and processes the response to extract meaningful product attributes, 
+such as title, authors, categories, ratings, and ISBN. The module is
+designed to be integrated with a Flask application and requires a valid API key 
+to function.
+"""
 import requests
 from flask import current_app
-
-# See https://trajectdata.com/ecommerce/asin-data-api/
-ASIN_DATA_API_URL = 'https://api.asindataapi.com/request'
 
 
 # Fetch the product details from the ASIN Data API
@@ -14,13 +20,13 @@ def fetch_product_details(asin):
     Identification Number) by performing a GET request to the ASIN Data
     API. It processes the API response and extracts specific data attributes
     related to the product, such as the title, rating, authors, description,
-    isbn numbers, etc. The result is returned as a structured dictionary.
+    ISBNs, etc. The result is returned as a structured dictionary.
 
     :param asin: A string representing the ASIN (Amazon Standard
         Identification Number) of the desired product to fetch details for.
     :return: A dictionary containing structured product details fetched
         from the API, including attributes such as title, author, image,
-        ISBN numbers, categories, and more. Returns an empty dictionary
+        ISBNs, categories, and more. Returns an empty dictionary
         if the product details are unavailable.
     :raises ValueError: If the API key for ASIN Data API is missing
         in the application configuration.
@@ -32,6 +38,9 @@ def fetch_product_details(asin):
     if not api_key:
         raise ValueError('ASIN Data API key is missing from configuration!')
 
+    # See https://trajectdata.com/ecommerce/asin-data-api/
+    api_url = current_app.config.get('ASIN_DATA_API_URL', 'https://api.asindataapi.com/request')
+
     # set up the request parameters
     params = {
         'api_key': api_key,
@@ -41,7 +50,7 @@ def fetch_product_details(asin):
         'output': 'json'
     }
     # make the http GET request to ASIN Data API
-    response = requests.get(ASIN_DATA_API_URL, params)
+    response = requests.get(api_url, params, timeout=30)
     response.raise_for_status()  # Raise HTTPError for bad responses (4xx and 5xx)
 
     catalog_data = response.json()

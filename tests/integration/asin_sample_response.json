@@ -1,0 +1,601 @@
+{
+  "request_info": {
+    "success": true,
+    "topup_credits_remaining": 9445,
+    "credits_used_this_request": 1
+  },
+  "request_parameters": {
+    "amazon_domain": "amazon.com",
+    "asin": "1509540857",
+    "type": "product"
+  },
+  "request_metadata": {
+    "created_at": "2025-04-12T23:43:05.416Z",
+    "processed_at": "2025-04-12T23:43:12.540Z",
+    "total_time_taken": 7.12,
+    "amazon_url": "https://www.amazon.com/dp/1509540857?th=1&psc=1"
+  },
+  "product": {
+    "title": "Reacher Said Nothing: Lee Child and the Making of Make Me",
+    "search_alias": {
+      "title": "Books",
+      "value": "stripbooks"
+    },
+    "keywords": "Reacher,Said,Nothing:,Lee,Child,and,the,Making,of,Make,Me",
+    "keywords_list": [
+      "Reacher",
+      "Said",
+      "Nothing:",
+      "Child",
+      "Making",
+      "Make"
+    ],
+    "is_collection": false,
+    "asin": "1509540857",
+    "link": "https://www.amazon.com/Reacher-Said-Nothing-Child-Making/dp/1509540857",
+    "read_sample": {
+      "read_sample_exists": true,
+      "read_sample_asin": "1509540857",
+      "read_sample_link": "https://www.amazon.com/dp/1509540857?asin=1509540857&revisionId=106zlbY3&format=1&depth=1"
+    },
+    "sell_on_amazon": false,
+    "variants": [
+      {
+        "title": "Kindle",
+        "link": "https://www.amazon.com/Reacher-Said-Nothing-Child-Making-ebook/dp/B086B8R3Y2/ref=tmm_kin_swatch_0?th=1&psc=1",
+        "asin": "B086B8R3Y2",
+        "price": {
+          "symbol": "$",
+          "value": 16,
+          "currency": "USD",
+          "raw": "$16.00"
+        },
+        "is_current_product": false
+      },
+      {
+        "title": "Hardcover",
+        "link": "https://www.amazon.com/Reacher-Said-Nothing-Child-Making/dp/1509540849/ref=tmm_hrd_swatch_0?th=1&psc=1",
+        "asin": "1509540849",
+        "price_lower": {
+          "symbol": "$",
+          "value": 39.05,
+          "currency": "USD",
+          "raw": "$39.05"
+        },
+        "price_upper": {
+          "symbol": "$",
+          "value": 49.08,
+          "currency": "USD",
+          "raw": "$49.08"
+        },
+        "price": {
+          "symbol": "$",
+          "value": 39.05,
+          "currency": "USD",
+          "raw": "$39.05 - $49.08"
+        },
+        "is_current_product": false
+      },
+      {
+        "title": "Paperback",
+        "link": "https://www.amazon.com/Reacher-Said-Nothing-Child-Making/dp/1509540857?th=1&psc=1",
+        "asin": "1509540857",
+        "price": {
+          "symbol": "$",
+          "value": 15.78,
+          "currency": "USD",
+          "raw": "$15.78"
+        },
+        "is_current_product": true
+      }
+    ],
+    "variant_asins_flat": "B086B8R3Y2,1509540849,1509540857",
+    "proposition_65_warning": true,
+    "authors": [
+      {
+        "name": "Andy Martin",
+        "link": "https://www.amazon.com/Andy-Martin/e/B001KC66V4/ref=dp_byline_cont_book_1",
+        "asin": "B001KC66V4"
+      }
+    ],
+    "format": "Paperback",
+    "has_size_guide": false,
+    "categories": [
+      {
+        "name": "Books",
+        "link": "https://www.amazon.com/books-used-books-textbooks/b/ref=dp_bc_1?ie=UTF8&node=283155",
+        "category_id": "283155"
+      },
+      {
+        "name": "Literature & Fiction",
+        "link": "https://www.amazon.com/Literature-Fiction-Books/b/ref=dp_bc_2?ie=UTF8&node=17",
+        "category_id": "17"
+      },
+      {
+        "name": "History & Criticism",
+        "link": "https://www.amazon.com/History-Criticism-Literature-Fiction-Books/b/ref=dp_bc_3?ie=UTF8&node=10204",
+        "category_id": "10204"
+      },
+      {
+        "name": "Regional & Cultural",
+        "link": "https://www.amazon.com/Regional-Cultural-Literary-Criticism/b/ref=dp_bc_4?ie=UTF8&node=10159358011",
+        "category_id": "10159358011"
+      },
+      {
+        "name": "European",
+        "link": "https://www.amazon.com/European-Literary-History-Criticism/b/ref=dp_bc_5?ie=UTF8&node=271602011",
+        "category_id": "271602011"
+      },
+      {
+        "name": "British & Irish",
+        "link": "https://www.amazon.com/British-Irish-Literary-Criticism/b/ref=dp_bc_6?ie=UTF8&node=10159367011",
+        "category_id": "10159367011"
+      }
+    ],
+    "categories_flat": "Books > Literature & Fiction > History & Criticism > Regional & Cultural > European > British & Irish",
+    "sub_title": {
+      "text": "by         Andy Martin        (Author)",
+      "link": "https://www.amazon.com/gp/help/customer/display.html?nodeId=GKM69DUUYKQWKWX7&ref_=dp_ret_policy"
+    },
+    "marketplace_id": "ATVPDKIKX0DER",
+    "rating": 4,
+    "rating_breakdown": {
+      "five_star": {
+        "percentage": 48,
+        "count": 114
+      },
+      "four_star": {
+        "percentage": 23,
+        "count": 54
+      },
+      "three_star": {
+        "percentage": 14,
+        "count": 33
+      },
+      "two_star": {
+        "percentage": 9,
+        "count": 21
+      },
+      "one_star": {
+        "percentage": 6,
+        "count": 14
+      }
+    },
+    "ratings_total": 239,
+    "book_description": "It had never been attempted before, and might never be done again. One man watching another man write a novel from beginning to end. On September 1, 2014, in an 11th floor apartment in New York, Lee Child embarked on the twentieth book in his globally successful Jack Reacher series. Andy Martin was there to see him do it, sitting a couple of yards behind him, peering over his shoulder as the writer took another drag of a Camel cigarette and tapped out the first sentence: “Moving a guy as big as Keever wasn’t easy.” Miraculously, Child and Martin stuck with it, in tandem, for the next 8 months, right through to the bitter-sweet end and the last word, “needle”.  Reacher Said Nothing is a one-of-a-kind meta-book, an uncompromising account in real time of the genesis, evolution and completion of a single work, Make Me. While unveiling the art of writing a thriller Martin also gives us a unique insight into the everyday life of an exemplary writer. From beginning to end, Martin captures all the sublime confidence, stumbling uncertainty, omniscience, cluelessness, ecstasy, despair, and heart-thumping suspense that go into writing a number-one bestseller.",
+    "editorial_reviews": [
+      {
+        "title": "Review",
+        "body": "Love Jack Reacher? You'll have to enjoy this... [Andy Martin] revels in the minutiae you didn't realize you wanted to know. ShortlistIt's fascinating to watch the process of writing unfolding in real time... it shouldn't work - after all writing is a predominantly mental activity - and yet it does in a way that makes you wonder why no-one's thought of doing this before... Andy Martin has created something new here: a fusion of literary criticism, biography and fly-on-the-wall meta-novel which serves as a remarkable insight into the creative process.SpectatorVery entertaining. Until Child can be persuaded to publish his own version of Stephen King's On Writing, I think it will be a wise investment for anybody who wants to write popular fiction.Jake Kerridge, Daily Telegraph"
+      },
+      {
+        "title": "Review",
+        "body": "Love Jack Reacher? You'll have to enjoy this... [Andy Martin] revels in the minutiae you didn't realize you wanted to know. ShortlistIt's fascinating to watch the process of writing unfolding in real time... it shouldn't work - after all writing is a predominantly mental activity - and yet it does in a way that makes you wonder why no-one's thought of doing this before... Andy Martin has created something new here: a fusion of literary criticism, biography and fly-on-the-wall meta-novel which serves as a remarkable insight into the creative process.SpectatorVery entertaining. Until Child can be persuaded to publish his own version of Stephen King's On Writing, I think it will be a wise investment for anybody who wants to write popular fiction.Jake Kerridge, Daily Telegraph"
+      },
+      {
+        "title": "About the Author",
+        "body": "Andy Martin is the author ofWith Child: Lee Child and the Readers of Jack Reacher. He writes forThe IndependentandThe New York Times and teaches at the University of Cambridge. His book on surfing,Walking on Water, is a cult classic."
+      }
+    ],
+    "editorial_reviews_flat": "Review\nLove Jack Reacher? You'll have to enjoy this... [Andy Martin] revels in the minutiae you didn't realize you wanted to know. ShortlistIt's fascinating to watch the process of writing unfolding in real time... it shouldn't work - after all writing is a predominantly mental activity - and yet it does in a way that makes you wonder why no-one's thought of doing this before... Andy Martin has created something new here: a fusion of literary criticism, biography and fly-on-the-wall meta-novel which serves as a remarkable insight into the creative process.SpectatorVery entertaining. Until Child can be persuaded to publish his own version of Stephen King's On Writing, I think it will be a wise investment for anybody who wants to write popular fiction.Jake Kerridge, Daily Telegraph\n\n\nReview\nLove Jack Reacher? You'll have to enjoy this... [Andy Martin] revels in the minutiae you didn't realize you wanted to know. ShortlistIt's fascinating to watch the process of writing unfolding in real time... it shouldn't work - after all writing is a predominantly mental activity - and yet it does in a way that makes you wonder why no-one's thought of doing this before... Andy Martin has created something new here: a fusion of literary criticism, biography and fly-on-the-wall meta-novel which serves as a remarkable insight into the creative process.SpectatorVery entertaining. Until Child can be persuaded to publish his own version of Stephen King's On Writing, I think it will be a wise investment for anybody who wants to write popular fiction.Jake Kerridge, Daily Telegraph\n\n\nAbout the Author\nAndy Martin is the author ofWith Child: Lee Child and the Readers of Jack Reacher. He writes forThe IndependentandThe New York Times and teaches at the University of Cambridge. His book on surfing,Walking on Water, is a cult classic.\n\n\n",
+    "main_image": {
+      "link": "https://m.media-amazon.com/images/I/713jnQWrTvL.jpg"
+    },
+    "images": [
+      {
+        "link": "https://m.media-amazon.com/images/I/713jnQWrTvL._SL1500_.jpg",
+        "variant": "MAIN"
+      }
+    ],
+    "images_count": 1,
+    "images_flat": "https://m.media-amazon.com/images/I/713jnQWrTvL._SL1500_.jpg",
+    "has_360_view": false,
+    "is_bundle": false,
+    "top_reviews": [
+      {
+        "id": "R3JK51DEXST2N9",
+        "title": "Exciting and erudite",
+        "body": "A thinking person's thoughts, and feelings, of another at work. I don't know Martin's exact relationship to Child, nor should I, but it certainly is not, as some other reviewers here have assumed, simply that of a reporter to an author he doesn't really know beforehand, or have much dealing with after. Not possible, as I don't think that Child would grant this kind of precious opportunity to someone he didn't trust both with his private life, yes, but also with his words, which to a swordsmith, are more important than, well, everything. Certainly, Martin is no tyro nor should he have to pretend to be. His is an intimate yet also scholarly tour de force that takes no prisoners and makes no apologies, and yes, the author is very articulate and well-read (it is his profession, after all) and is not trying to please the reader or anybody other than himself, to get this done as right as he can do it, in the way only he can do it. He is by no means pandering to the crowd or, horror of horrors, dumb-ifying his text to accommodate the paperback Instagram Tweeters, which is his choice and ultimately my breath of fresh air, push come to shove. This is not a Reacher book, it's a Child book, and Martin does a great job of blending in with the wallpaper when needed, but also of bringing himself firmly into the equation when needs, or subject matter, must. So yes, this is an intensely personal, and yes, at times seemingly whimsical work, but it actually contains the pretty much bang-on-the-money commentary that must by definition stand aside, take a smoke break, ruminate with a seeming stranger and then arrive at the heart and soul of it all, that moves this piece from mere reportage \"give me Reacher!\" to something both more lyrical and also far more profound. Bravo, and hoy paloy be darned, RSN delivers the goods. Read more",
+        "asin": "1509540857",
+        "body_html": "<script>   (function() {    P.when(&apos;cr-A&apos;, &apos;ready&apos;).execute(function(A) {     if(typeof A.toggleExpanderAriaLabel === &apos;function&apos;) {      A.toggleExpanderAriaLabel(&apos;review_text_read_more&apos;, &apos;Read more of this review&apos;, &apos;Read less of this review&apos;);     }    });   })();  </script>  <style>   .review-text-read-more-expander:focus-visible {    outline: 2px solid #2162a1;    outline-offset: 2px;    border-radius: 5px;   }  </style> <div data-a-expander-name=\"review_text_read_more\" data-a-expander-collapsed-height=\"300\" class=\"a-expander-collapsed-height a-row a-expander-container a-expander-partial-collapse-container review-text-read-more-expander\" style=\"max-height:300px\"><div data-hook=\"review-collapsed\" data-expanded=\"false\" class=\"a-expander-content reviewText review-text-content a-expander-partial-collapse-content\">             <span>A thinking person&apos;s thoughts, and feelings, of another at work. I don&apos;t know Martin&apos;s exact relationship to Child, nor should I, but it certainly is not, as some other reviewers here have assumed, simply that of a reporter to an author he doesn&apos;t really know beforehand, or have much dealing with after.<br/>Not possible, as I don&apos;t think that Child would grant this kind of precious opportunity to someone he didn&apos;t trust both with his private life, yes, but also with his words, which to a swordsmith, are more important than, well, everything.<br/>Certainly, Martin is no tyro nor should he have to pretend to be. His is an intimate yet also scholarly tour de force that takes no prisoners and makes no apologies, and yes, the author is very articulate and well-read (it is his profession, after all) and is not trying to please the reader or anybody other than himself, to get this done as right as he can do it, in the way only he can do it. He is by no means pandering to the crowd or, horror of horrors, dumb-ifying his text to accommodate the paperback Instagram Tweeters, which is his choice and ultimately my breath of fresh air, push come to shove.<br/>This is not a Reacher book, it&apos;s a Child book, and Martin does a great job of blending in with the wallpaper when needed, but also of bringing himself firmly into the equation when needs, or subject matter, must.<br/>So yes, this is an intensely personal, and yes, at times seemingly whimsical work, but it actually contains the pretty much bang-on-the-money commentary that must by definition stand aside, take a smoke break, ruminate with a seeming stranger and then arrive at the heart and soul of it all, that moves this piece from mere reportage &quot;give me Reacher!&quot; to something both more lyrical and also far more profound.<br/>Bravo, and hoy paloy be darned, RSN delivers the goods.<br/></span>   </div><div class=\"a-expander-header a-expander-partial-collapse-header\"><div class=\"a-expander-content-fade\"/><a href=\"javascript:void(0)\" data-hook=\"expand-collapse-read-more-less\" aria-label=\"Read more of this review\" aria-expanded=\"false\" role=\"button\" data-action=\"a-expander-toggle\" class=\"a-declarative\" data-a-expander-toggle=\"{&quot;allowLinkDefault&quot;:true, &quot;expand_prompt&quot;:&quot;Read more&quot;, &quot;collapse_prompt&quot;:&quot;Read less&quot;}\"><i class=\"a-icon a-icon-extender-expand\"/><span class=\"a-expander-prompt\">Read more</span></a></div></div>",
+        "link": "https://www.amazon.com/gp/customer-reviews/R3JK51DEXST2N9/ref=cm_cr_dp_d_rvw_ttl?ie=UTF8&ASIN=1509540857",
+        "rating": 5,
+        "date": {
+          "raw": "Reviewed in the United States on August 6, 2016",
+          "utc": "2016-08-06T00:00:00.000Z"
+        },
+        "profile": {
+          "name": "Chris Ross Leong",
+          "link": "https://www.amazon.com/gp/profile/amzn1.account.AG3HLB33EDQNRRQHNCD2K7EGFKDQ/ref=cm_cr_dp_d_gw_tr?ie=UTF8",
+          "id": "AG3HLB33EDQNRRQHNCD2K7EGFKDQ",
+          "image": "https://m.media-amazon.com/images/S/amazon-avatars-global/5b844580-6d57-4b52-bc4d-d73df1c38896._CR0%2C0%2C375%2C375_UX460_.jpg"
+        },
+        "vine_program": false,
+        "verified_purchase": true,
+        "review_country": "us",
+        "is_global_review": false
+      },
+      {
+        "id": "R3JH7ZZ2ZBVZXD",
+        "title": "Lee Child at Work: The Making of \"Make Me\"",
+        "body": "On September 1, 1994, an aspiring author went to the store and bought the paper on which he would write Killing Floor, the first novel to feature the protagonist who would become the legendary Jack Reacher.  Oh, what a difference a couple of decades can make. On that date in 1994, Jim Grant had been recently fired from British television and was virtually broke. Hoping desperately that he might find something he could do to support himself and his family, he sat down with a pencil and a pad of paper, attempting to reinvent himself as a novelist. Twenty years later, having created one of the most successful franchises in the history of thriller novels, \"Lee Child\" sat down at his sleek Apple computer in his very expensive home in New York City (one of several that he has around the world) to begin the twentieth book in the series.  In this case, he was accompanied by Andy Martin, a literary scholar from the University of Cambridge who also happens to be a huge fan of both Jack Reacher and the man who created him. From the first line to the last, Martin would shadow Child through the process of writing the book that became Make Me.  I came to this book, immediately after reading Make Me, both as a fan of the Reacher series and as a writer who was very interested to see how someone much more successful than I at this business approached his craft. It's both encouraging and at the same time very frustrating to see that Lee Child and I work in much the same way, although he obviously makes it work much better than I.  It's nice to see, for example, that his work habits are at least as loose as my own--actually maybe even worse. He allows himself to be constantly distracted, especially in the early stages of the process. There's always email to check, coffee to drink, and a fair amount of time spent doing things totally unrelated to the project at hand.  Like me, and like most other writers, I suspect, Child would argue that even when he's watching soccer or doing something equally mindless, the novel is constantly working itself out somewhere in the subconscious regions of his mind. As with most of us, that's probably true some of the time and not so much true at others.  Fledgling writers who've gone out and bought five or six of those books that purport to tell you the formula for writing a novel, will probably be gravely disappointed to learn that one of the most commercially successful writers of the modern age does virtually none of the things that those books advise: He doesn't outline; he doesn't create complex biographies for each of his characters; he doesn't post notes all over the place tracking the plot; the man just sits down and starts writing without the slightest idea where the book might be going. He figures that it will all work itself out somehow, and so far it has, for the most part brilliantly.  It's a lot of fun to watch the new Reacher novel take shape but certainly no fan of the series would want to read this book without first reading Make Me. There are way too many spoilers, which is no doubt inevitable in a book like this. One might argue that Martin sometimes gets carried away discussing literary theory and other such matters that might be of interest principally to academics like himself, but that's a fairly small complaint.  Martin devotes one chapter of the book to a trip on which he accompanied Child to the 2014 Bouchercon Convention in Long Beach, California. Bouchercon is a Major Deal--a huge convention that annually brings together several hundred crime fiction writers and fans.  Child was still in the process of promoting Personal, the nineteenth of the Reacher novels, and he was very much in evidence as the convention progressed. I remember that we had a drink together in the hotel bar at that Bouchercon--along with about eight thousand other people, of course. As always, there were a lot of other big names in attendance--people like Michael Connelly, for example--but watching Child and the crowd of writers and fans orbiting around him, I remember thinking that Child was something like a supernova while the rest of us, especially people like me, were rank pretenders who had drifted in from some galaxy far, far away.  I doubt very much that reading this book is going to make me a better or more successful writer. But in the several times I have seen him, Lee Child has always impressed me as a genuinely nice guy, and it's good to see that someone who, like so many of the rest of us, was once down on his luck and only dreaming of being a hugely successful author was smart enough--and lucky enough--to make it work. Reacher Said Nothing is a very interesting book that should appeal to large numbers of \"Reacher Creatures\" and other writers as well. Read more",
+        "asin": "1509540857",
+        "body_html": "<div data-a-expander-name=\"review_text_read_more\" data-a-expander-collapsed-height=\"300\" class=\"a-expander-collapsed-height a-row a-expander-container a-expander-partial-collapse-container review-text-read-more-expander\" style=\"max-height:300px\"><div data-hook=\"review-collapsed\" data-expanded=\"false\" class=\"a-expander-content reviewText review-text-content a-expander-partial-collapse-content\">             <span>On September 1, 1994, an aspiring author went to the store and bought the paper on which he would write Killing Floor, the first novel to feature the protagonist who would become the legendary Jack Reacher.<br/><br/>Oh, what a difference a couple of decades can make. On that date in 1994, Jim Grant had been recently fired from British television and was virtually broke. Hoping desperately that he might find something he could do to support himself and his family, he sat down with a pencil and a pad of paper, attempting to reinvent himself as a novelist. Twenty years later, having created one of the most successful franchises in the history of thriller novels, &quot;Lee Child&quot; sat down at his sleek Apple computer in his very expensive home in New York City (one of several that he has around the world) to begin the twentieth book in the series.<br/><br/>In this case, he was accompanied by Andy Martin, a literary scholar from the University of Cambridge who also happens to be a huge fan of both Jack Reacher and the man who created him. From the first line to the last, Martin would shadow Child through the process of writing the book that became Make Me.<br/><br/>I came to this book, immediately after reading Make Me, both as a fan of the Reacher series and as a writer who was very interested to see how someone much more successful than I at this business approached his craft. It&apos;s both encouraging and at the same time very frustrating to see that Lee Child and I work in much the same way, although he obviously makes it work much better than I.<br/><br/>It&apos;s nice to see, for example, that his work habits are at least as loose as my own--actually maybe even worse. He allows himself to be constantly distracted, especially in the early stages of the process. There&apos;s always email to check, coffee to drink, and a fair amount of time spent doing things totally unrelated to the project at hand.<br/><br/>Like me, and like most other writers, I suspect, Child would argue that even when he&apos;s watching soccer or doing something equally mindless, the novel is constantly working itself out somewhere in the subconscious regions of his mind. As with most of us, that&apos;s probably true some of the time and not so much true at others.<br/><br/>Fledgling writers who&apos;ve gone out and bought five or six of those books that purport to tell you the formula for writing a novel, will probably be gravely disappointed to learn that one of the most commercially successful writers of the modern age does virtually none of the things that those books advise: He doesn&apos;t outline; he doesn&apos;t create complex biographies for each of his characters; he doesn&apos;t post notes all over the place tracking the plot; the man just sits down and starts writing without the slightest idea where the book might be going. He figures that it will all work itself out somehow, and so far it has, for the most part brilliantly.<br/><br/>It&apos;s a lot of fun to watch the new Reacher novel take shape but certainly no fan of the series would want to read this book without first reading Make Me. There are way too many spoilers, which is no doubt inevitable in a book like this. One might argue that Martin sometimes gets carried away discussing literary theory and other such matters that might be of interest principally to academics like himself, but that&apos;s a fairly small complaint.<br/><br/>Martin devotes one chapter of the book to a trip on which he accompanied Child to the 2014 Bouchercon Convention in Long Beach, California. Bouchercon is a Major Deal--a huge convention that annually brings together several hundred crime fiction writers and fans.<br/><br/>Child was still in the process of promoting Personal, the nineteenth of the Reacher novels, and he was very much in evidence as the convention progressed. I remember that we had a drink together in the hotel bar at that Bouchercon--along with about eight thousand other people, of course. As always, there were a lot of other big names in attendance--people like Michael Connelly, for example--but watching Child and the crowd of writers and fans orbiting around him, I remember thinking that Child was something like a supernova while the rest of us, especially people like me, were rank pretenders who had drifted in from some galaxy far, far away.<br/><br/>I doubt very much that reading this book is going to make me a better or more successful writer. But in the several times I have seen him, Lee Child has always impressed me as a genuinely nice guy, and it&apos;s good to see that someone who, like so many of the rest of us, was once down on his luck and only dreaming of being a hugely successful author was smart enough--and lucky enough--to make it work. Reacher Said Nothing is a very interesting book that should appeal to large numbers of &quot;Reacher Creatures&quot; and other writers as well.<br/></span>   </div><div class=\"a-expander-header a-expander-partial-collapse-header\"><div class=\"a-expander-content-fade\"/><a href=\"javascript:void(0)\" data-hook=\"expand-collapse-read-more-less\" aria-label=\"Read more of this review\" aria-expanded=\"false\" role=\"button\" data-action=\"a-expander-toggle\" class=\"a-declarative\" data-a-expander-toggle=\"{&quot;allowLinkDefault&quot;:true, &quot;expand_prompt&quot;:&quot;Read more&quot;, &quot;collapse_prompt&quot;:&quot;Read less&quot;}\"><i class=\"a-icon a-icon-extender-expand\"/><span class=\"a-expander-prompt\">Read more</span></a></div></div>",
+        "link": "https://www.amazon.com/gp/customer-reviews/R3JH7ZZ2ZBVZXD/ref=cm_cr_dp_d_rvw_ttl?ie=UTF8&ASIN=1509540857",
+        "rating": 4,
+        "date": {
+          "raw": "Reviewed in the United States on December 11, 2015",
+          "utc": "2015-12-11T00:00:00.000Z"
+        },
+        "profile": {
+          "name": "James L. Thane",
+          "link": "https://www.amazon.com/gp/profile/amzn1.account.AFR34VATA3I43FGP3RQVEBA6TO4A/ref=cm_cr_dp_d_gw_tr?ie=UTF8",
+          "id": "AFR34VATA3I43FGP3RQVEBA6TO4A",
+          "image": "https://m.media-amazon.com/images/S/amazon-avatars-global/0ed0b860-fb4f-41de-bd28-6d9ecf2bdf3a._CR0%2C0%2C386%2C386_UX460_.jpg"
+        },
+        "vine_program": false,
+        "verified_purchase": true,
+        "helpful_votes": 11,
+        "review_country": "us",
+        "is_global_review": false
+      },
+      {
+        "id": "R1P2L2Y9AR311W",
+        "title": "Great Book - Perfect for the Reacher audience",
+        "body": "The first thing about buying a book like this is to know exactly why and what you are buying it for. This is a book first and foremost for those who are interested in Jack Reacher, Lee Child, and/or how Lee Child writes or approaches fiction and the job/experiences of being a famous novelist. It is not a book on Writing. It is not even a book on Writing like Lee Child or even Writing Reacher. It's not really about Reacher, per se. But, it touches on all of those things and I enjoyed every single page and every single word. You see I am interested in all of those things and it didn't bother me one iota that is wasn't any of those things specifically or completely.  This is a biography of a specific novel: \"Make Me\" and how/what was happening when it was written. And contrary to some reviews, that process IS laid bare here. It is not a biography of Lee Child, but I think you get a pretty complete picture of who he is (or at least who he becomes when he sits down at a typewriter and becomes Lee Child writing a Reacher Novel). I felt at the end of it that I understood what Lee Child (and alternately the author Andy Martin) went through in the 220 or so days that passed from the first sentence to the last one.  This was an interesting idea and it something that I found fascinating and hard to put down. I have read all the Reacher books and this, in its own way, is a Reacher book, too. As Martin skillfully points out: Reacher is alive. He exists. Child is channeling him in a way like a reporter so we can live in his world. It reads at times like a buddy story and Martin is a fanboy, but so what. I enjoyed that, too. Jim Grant is both Lee Child AND Jack Reacher. Buy this book if you are needing a Reacher fix, or want to know more about how Jim Grant became Lee Child. Buy it if you want to understand how Child conceives of plots and stories (or rather doesn't) and how he is able to write a new Reacher novel every year. This book surpassed everything I anticipated and it was a great read. If you are expecting a Writers Workshop, get Stephen King's On Writing. This isn't that at all. Read more",
+        "asin": "1509540857",
+        "body_html": "<div data-a-expander-name=\"review_text_read_more\" data-a-expander-collapsed-height=\"300\" class=\"a-expander-collapsed-height a-row a-expander-container a-expander-partial-collapse-container review-text-read-more-expander\" style=\"max-height:300px\"><div data-hook=\"review-collapsed\" data-expanded=\"false\" class=\"a-expander-content reviewText review-text-content a-expander-partial-collapse-content\">             <span>The first thing about buying a book like this is to know exactly why and what you are buying it for. This is a book first and foremost for those who are interested in Jack Reacher, Lee Child, and/or how Lee Child writes or approaches fiction and the job/experiences of being a famous novelist. It is not a book on Writing. It is not even a book on Writing like Lee Child or even Writing Reacher. It&apos;s not really about Reacher, per se. But, it touches on all of those things and I enjoyed every single page and every single word. You see I am interested in all of those things and it didn&apos;t bother me one iota that is wasn&apos;t any of those things specifically or completely.<br/><br/>This is a biography of a specific novel: &quot;Make Me&quot; and how/what was happening when it was written. And contrary to some reviews, that process IS laid bare here. It is not a biography of Lee Child, but I think you get a pretty complete picture of who he is (or at least who he becomes when he sits down at a typewriter and becomes Lee Child writing a Reacher Novel). I felt at the end of it that I understood what Lee Child (and alternately the author Andy Martin) went through in the 220 or so days that passed from the first sentence to the last one.<br/><br/>This was an interesting idea and it something that I found fascinating and hard to put down. I have read all the Reacher books and this, in its own way, is a Reacher book, too. As Martin skillfully points out: Reacher is alive. He exists. Child is channeling him in a way like a reporter so we can live in his world. It reads at times like a buddy story and Martin is a fanboy, but so what. I enjoyed that, too. Jim Grant is both Lee Child AND Jack Reacher. Buy this book if you are needing a Reacher fix, or want to know more about how Jim Grant became Lee Child. Buy it if you want to understand how Child conceives of plots and stories (or rather doesn&apos;t) and how he is able to write a new Reacher novel every year. This book surpassed everything I anticipated and it was a great read. If you are expecting a Writers Workshop, get Stephen King&apos;s On Writing. This isn&apos;t that at all.<br/></span>   </div><div class=\"a-expander-header a-expander-partial-collapse-header\"><div class=\"a-expander-content-fade\"/><a href=\"javascript:void(0)\" data-hook=\"expand-collapse-read-more-less\" aria-label=\"Read more of this review\" aria-expanded=\"false\" role=\"button\" data-action=\"a-expander-toggle\" class=\"a-declarative\" data-a-expander-toggle=\"{&quot;allowLinkDefault&quot;:true, &quot;expand_prompt&quot;:&quot;Read more&quot;, &quot;collapse_prompt&quot;:&quot;Read less&quot;}\"><i class=\"a-icon a-icon-extender-expand\"/><span class=\"a-expander-prompt\">Read more</span></a></div></div>",
+        "link": "https://www.amazon.com/gp/customer-reviews/R1P2L2Y9AR311W/ref=cm_cr_dp_d_rvw_ttl?ie=UTF8&ASIN=1509540857",
+        "rating": 5,
+        "date": {
+          "raw": "Reviewed in the United States on July 23, 2018",
+          "utc": "2018-07-23T00:00:00.000Z"
+        },
+        "profile": {
+          "name": "TLAG",
+          "link": "https://www.amazon.com/gp/profile/amzn1.account.AGQK234FL5GYNEKTEJLFO6UEFOJQ/ref=cm_cr_dp_d_gw_tr?ie=UTF8",
+          "id": "AGQK234FL5GYNEKTEJLFO6UEFOJQ"
+        },
+        "vine_program": false,
+        "verified_purchase": true,
+        "helpful_votes": 2,
+        "review_country": "us",
+        "is_global_review": false
+      },
+      {
+        "id": "R2AMY7HU4YQ50P",
+        "title": "A brilliant idea brilliantly executed.",
+        "body": "A literary breakthrough in recording the life of a writer. Martin takes you inside Child's mind with all the acuity of a psychiatrist. He sits on his shoulder - or rather, back on the couch, Boswell to his companion's Johnson - and watches the genesis of Child's 20th novel with a wry smile, and not a little bewilderment. It is a risky exercise, but Martin pulls it off brilliantly as he prods away, extracting from the author the nuts and bolt of his method. Child is amazingly open, admitting he knows not a thing about the plot until he starts writing - and always on the same day every year. He has turned himself into a hugely successful writing machine; whether or not you are fan of the Jack Reacher saga, Martin's book reveals more about Child than any number of interviews have done in his rise to major celebrity, from his Midlands roots to New York City. Child would love to be Reacher; I'm not sure Martin would love to be Child - but the result of this complicated chemistry is a unique and thoroughly enjoyable experiment. Read more",
+        "body_html": "<script>   (function() {    P.when(&apos;cr-A&apos;, &apos;ready&apos;).execute(function(A) {     if(typeof A.toggleExpanderAriaLabel === &apos;function&apos;) {      A.toggleExpanderAriaLabel(&apos;review_text_read_more&apos;, &apos;Read more of this review&apos;, &apos;Read less of this review&apos;);     }    });   })();  </script>  <style>   .review-text-read-more-expander:focus-visible {    outline: 2px solid #2162a1;    outline-offset: 2px;    border-radius: 5px;   }  </style> <div data-a-expander-name=\"review_text_read_more\" data-a-expander-collapsed-height=\"300\" class=\"a-expander-collapsed-height a-row a-expander-container a-expander-partial-collapse-container review-text-read-more-expander\" style=\"max-height:300px\"><div data-hook=\"review-collapsed\" data-expanded=\"false\" class=\"a-expander-content reviewText review-text-content a-expander-partial-collapse-content\">             <span>A literary breakthrough in recording the life of a writer. Martin takes you inside Child&apos;s mind with all the acuity of a psychiatrist. He sits on his shoulder - or rather, back on the couch, Boswell to his companion&apos;s Johnson - and watches the genesis of Child&apos;s 20th novel with a wry smile, and not a little bewilderment. It is a risky exercise, but Martin pulls it off brilliantly as he prods away, extracting from the author the nuts and bolt of his method. Child is amazingly open, admitting he knows not a thing about the plot until he starts writing - and always on the same day every year. He has turned himself into a hugely successful writing machine; whether or not you are fan of the Jack Reacher saga, Martin&apos;s book reveals more about Child than any number of interviews have done in his rise to major celebrity, from his Midlands roots to New York City. Child would love to be Reacher; I&apos;m not sure Martin would love to be Child - but the result of this complicated chemistry is a unique and thoroughly enjoyable experiment.<br/></span>   </div><div class=\"a-expander-header a-expander-partial-collapse-header\"><div class=\"a-expander-content-fade\"/><a href=\"javascript:void(0)\" data-hook=\"expand-collapse-read-more-less\" aria-label=\"Read more of this review\" aria-expanded=\"false\" role=\"button\" data-action=\"a-expander-toggle\" class=\"a-declarative\" data-a-expander-toggle=\"{&quot;allowLinkDefault&quot;:true, &quot;expand_prompt&quot;:&quot;Read more&quot;, &quot;collapse_prompt&quot;:&quot;Read less&quot;}\"><i class=\"a-icon a-icon-extender-expand\"/><span class=\"a-expander-prompt\">Read more</span></a></div></div>",
+        "rating": 5,
+        "date": {
+          "raw": "Reviewed in the United Kingdom on December 4, 2015",
+          "utc": "2015-12-04T00:00:00.000Z"
+        },
+        "profile": {
+          "name": "Kevin Mitchell"
+        },
+        "vine_program": false,
+        "verified_purchase": true,
+        "review_country": "gb",
+        "is_global_review": true
+      },
+      {
+        "id": "R2Y21BPOTFZXHE",
+        "title": "Great behind the scenes look at Reacher",
+        "body": "Great behind the scenes look at Reacher. Andy Martin sneaks in so much more about writers and writing. A must read for all Jack fans. Read more",
+        "body_html": "<div data-a-expander-name=\"review_text_read_more\" data-a-expander-collapsed-height=\"300\" class=\"a-expander-collapsed-height a-row a-expander-container a-expander-partial-collapse-container review-text-read-more-expander\" style=\"max-height:300px\"><div data-hook=\"review-collapsed\" data-expanded=\"false\" class=\"a-expander-content reviewText review-text-content a-expander-partial-collapse-content\">             <span>Great behind the scenes look at Reacher. Andy Martin sneaks in so much more about writers and writing. A must read for all Jack fans.<br/></span>   </div><div class=\"a-expander-header a-expander-partial-collapse-header\"><div class=\"a-expander-content-fade\"/><a href=\"javascript:void(0)\" data-hook=\"expand-collapse-read-more-less\" aria-label=\"Read more of this review\" aria-expanded=\"false\" role=\"button\" data-action=\"a-expander-toggle\" class=\"a-declarative\" data-a-expander-toggle=\"{&quot;allowLinkDefault&quot;:true, &quot;expand_prompt&quot;:&quot;Read more&quot;, &quot;collapse_prompt&quot;:&quot;Read less&quot;}\"><i class=\"a-icon a-icon-extender-expand\"/><span class=\"a-expander-prompt\">Read more</span></a></div></div>",
+        "rating": 5,
+        "date": {
+          "raw": "Reviewed in Canada on January 2, 2017",
+          "utc": "2017-01-02T00:00:00.000Z"
+        },
+        "profile": {
+          "name": "Icarus"
+        },
+        "vine_program": false,
+        "verified_purchase": true,
+        "review_country": "ca",
+        "is_global_review": true
+      },
+      {
+        "id": "R3QIHX3FIIHA6N",
+        "title": "Enthüllungsjournalismus auf angenehmste Weise",
+        "body": "Man kann mich zu der Kategorie Reacher-fans zählen, die sich das Buch kaufen, sobald es (als handliches Taschenbuch - ich lese gerne im Liegen) erscheint und es sich dann mitunter bis zu einem halben Jahr \"von den Augen absparen\", um sich dann damit zu belohnen. Jeder \"Reacher\" war für mich höchster Lesegenuß und ich habe mich auch schon gefragt, wie der Autor seine zum Teil hochkomplexen Geschichten konstruiert. Im vorliegenden Metabuch von Andy Martin erfährt man nicht nur, wie die Geschichten entstehen (wurde völlig überrascht!) und viel Hintergrund zur ganzen Serie, sondern auch interessante Details über Lee Child. Besonders aufschlußreich fand ich die Ausführungen zur sprachliche Finesse der Reacher-Bände, die man bei der rein inhaltsorientierten Lektüre leicht überliest. Die Seitenhiebe auf Baldacci fand ich mehr als berechtigt (dessen erste Bücher fand ich noch interessant - dann wurde es reine Masche, was ich bei Child nie empfand). Auch die Problematik der schauspielerischen Fehlbesetzung der Verfilmungen mit Tom Cruise wird thematisiert. In einzelnen Kapiteln fordert der Autor, vermutlich aufgrund seines akademischen Hintergrundes, die Sprachkenntnisse eines Nicht-Muttersprachlers heraus, aber das erhöht vielleicht sogar den Reiz. Es ist übrigens ein Buch geworden, dass in meinen Augen auch für sich genommen unterhaltsame und bisweilgen tiefgründige Lektüre bedeutet, von der ungewöhnlichen Idee, die Entstehung eines Buches quasi live zu verfolgen, mal ganz abgesehen. In der Widmung entschuldigt sich der Autor bei allen, die das Buch versehentlich gekauft haben und stattdessen einen Reacher erwartet haben. Ich glaube, dass echte Reacher-fans auch dann nicht enttäuscht wären. Fazit: Im Anschluß habe ich \"Make me\" gleich nochmal gelesen, obwohl ich normalerweise zwei, drei Jahre warte, ehe ich mir mit einem bereits gelesenen \"Reacher\" wieder einen ganz besonderen Lesegenuss gönne... :-) Read more",
+        "body_html": "<div data-a-expander-name=\"review_text_read_more\" data-a-expander-collapsed-height=\"300\" class=\"a-expander-collapsed-height a-row a-expander-container a-expander-partial-collapse-container review-text-read-more-expander\" style=\"max-height:300px\"><div data-hook=\"review-collapsed\" data-expanded=\"false\" class=\"a-expander-content reviewText review-text-content a-expander-partial-collapse-content\">           <span class=\"cr-original-review-content\">Man kann mich zu der Kategorie Reacher-fans z&#xE4;hlen, die sich das Buch kaufen, sobald es (als handliches Taschenbuch - ich lese gerne im Liegen) erscheint und es sich dann mitunter bis zu einem halben Jahr &quot;von den Augen absparen&quot;, um sich dann damit zu belohnen. Jeder &quot;Reacher&quot; war f&#xFC;r mich h&#xF6;chster Lesegenu&#xDF; und ich habe mich auch schon gefragt, wie der Autor seine zum Teil hochkomplexen Geschichten konstruiert. Im vorliegenden Metabuch von Andy Martin erf&#xE4;hrt man nicht nur, wie die Geschichten entstehen (wurde v&#xF6;llig &#xFC;berrascht!) und viel Hintergrund zur ganzen Serie, sondern auch interessante Details &#xFC;ber Lee Child. Besonders aufschlu&#xDF;reich fand ich die Ausf&#xFC;hrungen zur sprachliche Finesse der Reacher-B&#xE4;nde, die man bei der rein inhaltsorientierten Lekt&#xFC;re leicht &#xFC;berliest. Die Seitenhiebe auf Baldacci fand ich mehr als berechtigt (dessen erste B&#xFC;cher fand ich noch interessant - dann wurde es reine Masche, was ich bei Child nie empfand). Auch die Problematik der schauspielerischen Fehlbesetzung der Verfilmungen mit Tom Cruise wird thematisiert. In einzelnen Kapiteln fordert der Autor, vermutlich aufgrund seines akademischen Hintergrundes, die Sprachkenntnisse eines Nicht-Muttersprachlers heraus, aber das erh&#xF6;ht vielleicht sogar den Reiz. Es ist &#xFC;brigens ein Buch geworden, dass in meinen Augen auch f&#xFC;r sich genommen unterhaltsame und bisweilgen tiefgr&#xFC;ndige Lekt&#xFC;re bedeutet, von der ungew&#xF6;hnlichen Idee, die Entstehung eines Buches quasi live zu verfolgen, mal ganz abgesehen. In der Widmung entschuldigt sich der Autor bei allen, die das Buch versehentlich gekauft haben und stattdessen einen Reacher erwartet haben. Ich glaube, dass echte Reacher-fans auch dann nicht entt&#xE4;uscht w&#xE4;ren. Fazit: Im Anschlu&#xDF; habe ich &quot;Make me&quot; gleich nochmal gelesen, obwohl ich normalerweise zwei, drei Jahre warte, ehe ich mir mit einem bereits gelesenen &quot;Reacher&quot; wieder einen ganz besonderen Lesegenuss g&#xF6;nne... :-)<br/></span><span class=\"cr-translated-review-content aok-hidden\"/>     </div><div class=\"a-expander-header a-expander-partial-collapse-header\"><div class=\"a-expander-content-fade\"/><a href=\"javascript:void(0)\" data-hook=\"expand-collapse-read-more-less\" aria-label=\"Read more of this review\" aria-expanded=\"false\" role=\"button\" data-action=\"a-expander-toggle\" class=\"a-declarative\" data-a-expander-toggle=\"{&quot;allowLinkDefault&quot;:true, &quot;expand_prompt&quot;:&quot;Read more&quot;, &quot;collapse_prompt&quot;:&quot;Read less&quot;}\"><i class=\"a-icon a-icon-extender-expand\"/><span class=\"a-expander-prompt\">Read more</span></a></div></div>",
+        "rating": 5,
+        "date": {
+          "raw": "Reviewed in Germany on October 10, 2016",
+          "utc": "2016-10-10T00:00:00.000Z"
+        },
+        "profile": {
+          "name": "drl"
+        },
+        "vine_program": false,
+        "verified_purchase": true,
+        "review_country": "de",
+        "is_global_review": true
+      },
+      {
+        "id": "RB1XJEZ55XOBT",
+        "title": "I was very disappointed as I have read all the Jack Reacher books ...",
+        "body": "Could not get into this mode of writing. I am only half way through and put it down. I was very disappointed as I have read all the Jack Reacher books and loved them and every thing else by Lee Child I have read. Please write the next book in the can't put down style of your other books and wanting more. Read more",
+        "body_html": "<div data-a-expander-name=\"review_text_read_more\" data-a-expander-collapsed-height=\"300\" class=\"a-expander-collapsed-height a-row a-expander-container a-expander-partial-collapse-container review-text-read-more-expander\" style=\"max-height:300px\"><div data-hook=\"review-collapsed\" data-expanded=\"false\" class=\"a-expander-content reviewText review-text-content a-expander-partial-collapse-content\">             <span>Could not get into this mode of writing. I am only half way through and put it down. I was very disappointed as I have read all the Jack Reacher books and loved them and every thing else by Lee Child I have read. Please write the next book in the can&apos;t put down style of your other books and wanting more.<br/></span>   </div><div class=\"a-expander-header a-expander-partial-collapse-header\"><div class=\"a-expander-content-fade\"/><a href=\"javascript:void(0)\" data-hook=\"expand-collapse-read-more-less\" aria-label=\"Read more of this review\" aria-expanded=\"false\" role=\"button\" data-action=\"a-expander-toggle\" class=\"a-declarative\" data-a-expander-toggle=\"{&quot;allowLinkDefault&quot;:true, &quot;expand_prompt&quot;:&quot;Read more&quot;, &quot;collapse_prompt&quot;:&quot;Read less&quot;}\"><i class=\"a-icon a-icon-extender-expand\"/><span class=\"a-expander-prompt\">Read more</span></a></div></div>",
+        "rating": 2,
+        "date": {
+          "raw": "Reviewed in Australia on January 2, 2016",
+          "utc": "2016-01-02T00:00:00.000Z"
+        },
+        "profile": {
+          "name": "Bobby B"
+        },
+        "vine_program": false,
+        "verified_purchase": true,
+        "review_country": "au",
+        "is_global_review": true
+      },
+      {
+        "id": "R33ESNYEUV1RKW",
+        "title": "I enjoyed reading this a chapter at a time",
+        "body": "I enjoyed reading this a chapter at a time. It doesn't flow like a novel, and in places it goes a bit surreal (in my opinion!) as the author is an academic. However it did do what it said it would and offered insight into the creative process of Lee Child writing a Jack Reacher novel - which was interesting to read. However, if you haven't read many Jack Reacher novels and you haven't read Make Me, then you won't get as much out of this and may not persevere to the end. But over all, I liked it. Read more",
+        "body_html": "<div data-a-expander-name=\"review_text_read_more\" data-a-expander-collapsed-height=\"300\" class=\"a-expander-collapsed-height a-row a-expander-container a-expander-partial-collapse-container review-text-read-more-expander\" style=\"max-height:300px\"><div data-hook=\"review-collapsed\" data-expanded=\"false\" class=\"a-expander-content reviewText review-text-content a-expander-partial-collapse-content\">             <span>I enjoyed reading this a chapter at a time. It doesn&apos;t flow like a novel, and in places it goes a bit surreal (in my opinion!) as the author is an academic. However it did do what it said it would and offered insight into the creative process of Lee Child writing a Jack Reacher novel - which was interesting to read. However, if you haven&apos;t read many Jack Reacher novels and you haven&apos;t read Make Me, then you won&apos;t get as much out of this and may not persevere to the end. But over all, I liked it.<br/></span>   </div><div class=\"a-expander-header a-expander-partial-collapse-header\"><div class=\"a-expander-content-fade\"/><a href=\"javascript:void(0)\" data-hook=\"expand-collapse-read-more-less\" aria-label=\"Read more of this review\" aria-expanded=\"false\" role=\"button\" data-action=\"a-expander-toggle\" class=\"a-declarative\" data-a-expander-toggle=\"{&quot;allowLinkDefault&quot;:true, &quot;expand_prompt&quot;:&quot;Read more&quot;, &quot;collapse_prompt&quot;:&quot;Read less&quot;}\"><i class=\"a-icon a-icon-extender-expand\"/><span class=\"a-expander-prompt\">Read more</span></a></div></div>",
+        "rating": 4,
+        "date": {
+          "raw": "Reviewed in the United Kingdom on March 2, 2017",
+          "utc": "2017-03-02T00:00:00.000Z"
+        },
+        "profile": {
+          "name": "K. Went"
+        },
+        "vine_program": false,
+        "verified_purchase": true,
+        "review_country": "gb",
+        "is_global_review": true
+      }
+    ],
+    "buybox_winner": {
+      "maximum_order_quantity": {
+        "value": 17,
+        "hard_maximum": true
+      },
+      "mixed_offers_count": 18,
+      "mixed_offers_from": {
+        "symbol": "$",
+        "value": 10.99,
+        "currency": "USD",
+        "raw": "$10.99"
+      },
+      "is_prime": true,
+      "is_prime_exclusive_deal": false,
+      "is_amazon_fresh": false,
+      "condition": {
+        "is_new": true
+      },
+      "availability": {
+        "type": "in_stock",
+        "raw": "Only 17 left in stock - order soon.",
+        "dispatch_days": 1,
+        "stock_level": 17
+      },
+      "fulfillment": {
+        "type": "1p",
+        "standard_delivery": {
+          "date": "Thursday, April 17",
+          "name": "FREE"
+        },
+        "fastest_delivery": {
+          "date": "Wednesday, April 16",
+          "name": "Or fastest delivery Wednesday, April 16. Order within 5 hrs 16 mins"
+        },
+        "is_sold_by_amazon": true,
+        "amazon_seller": {
+          "name": "Amazon"
+        },
+        "is_fulfilled_by_amazon": true,
+        "is_fulfilled_by_third_party": false,
+        "is_sold_by_third_party": false
+      },
+      "price": {
+        "symbol": "$",
+        "value": 15.78,
+        "currency": "USD",
+        "raw": "$15.78"
+      },
+      "rrp": {
+        "symbol": "$",
+        "value": 19.95,
+        "currency": "USD",
+        "raw": "$19.95"
+      },
+      "shipping": {
+        "raw": "FREE"
+      }
+    },
+    "specifications": [
+      {
+        "name": "Publisher",
+        "value": "Polity; 1st edition (April 13, 2020)"
+      },
+      {
+        "name": "Language",
+        "value": "English"
+      },
+      {
+        "name": "Paperback",
+        "value": "280 pages"
+      },
+      {
+        "name": "Hardcover",
+        "value": "280 pages"
+      },
+      {
+        "name": "ISBN-10",
+        "value": "1509540857"
+      },
+      {
+        "name": "ISBN-13",
+        "value": "978-1509540853"
+      },
+      {
+        "name": "Item Weight",
+        "value": "2.31 pounds"
+      },
+      {
+        "name": "Dimensions",
+        "value": "5 x 0.9 x 7.7 inches"
+      },
+      {
+        "name": "Best Sellers Rank",
+        "value": "See Top 100 in Books"
+      }
+    ],
+    "specifications_flat": "Best Sellers Rank: See Top 100 in Books. Dimensions: 5 x 0.9 x 7.7 inches. Item Weight: 2.31 pounds. ISBN-13: 978-1509540853. ISBN-10: 1509540857. Paperback: 280 pages. Language: English. Publisher: Polity; 1st edition (April 13, 2020).",
+    "publication_date": "April 13, 2020",
+    "bestsellers_rank": [
+      {
+        "category": "Books",
+        "rank": 994583,
+        "link": "https://www.amazon.com/gp/bestsellers/books/ref=pd_zg_ts_books"
+      },
+      {
+        "category": "Mystery & Detective Literary Criticism",
+        "rank": 230,
+        "link": "https://www.amazon.com/gp/bestsellers/books/10159340011/ref=pd_zg_hrsr_books"
+      },
+      {
+        "category": "British & Irish Literary Criticism (Books)",
+        "rank": 1051,
+        "link": "https://www.amazon.com/gp/bestsellers/books/10159367011/ref=pd_zg_hrsr_books"
+      },
+      {
+        "category": "Authorship Reference",
+        "rank": 1232,
+        "link": "https://www.amazon.com/gp/bestsellers/books/11892/ref=pd_zg_hrsr_books"
+      }
+    ],
+    "publisher": "Polity; 1st edition",
+    "isbn_10": "1509540857",
+    "isbn_13": "978-1509540853",
+    "language": "English",
+    "weight": "2.31 pounds",
+    "bestsellers_rank_flat": "Category: Books | Rank: 994583, Category: Mystery & Detective Literary Criticism | Rank: 230, Category: British & Irish Literary Criticism (Books) | Rank: 1051, Category: Authorship Reference | Rank: 1232"
+  },
+  "frequently_bought_together": {
+    "total_price": {
+      "symbol": "$",
+      "value": 38.11,
+      "currency": "USD",
+      "raw": "$38.11"
+    },
+    "products": [
+      {
+        "asin": "1509540857",
+        "title": "Reacher Said Nothing: Lee Child and the Making of Make Me",
+        "link": "https://www.amazon.com/dp/1509540857",
+        "image": "https://images-na.ssl-images-amazon.com/images/I/713jnQWrTvL._AC_UL116_SR116,116_.jpg",
+        "price": {
+          "symbol": "$",
+          "value": 10.99,
+          "currency": "USD",
+          "raw": "$10.99"
+        }
+      },
+      {
+        "asin": "1250758793",
+        "title": "Orphan X (Orphan X, 1)",
+        "link": "https://www.amazon.com/dp/1250758793",
+        "image": "https://images-na.ssl-images-amazon.com/images/I/81XXwBb2arL._AC_UL116_SR116,116_.jpg",
+        "price": {
+          "symbol": "$",
+          "value": 12.34,
+          "currency": "USD",
+          "raw": "$12.34"
+        }
+      },
+      {
+        "asin": "1953165400",
+        "title": "New Think (1)",
+        "link": "https://www.amazon.com/dp/1953165400",
+        "image": "https://images-na.ssl-images-amazon.com/images/I/81M26pjNrJL._AC_UL116_SR116,116_.jpg",
+        "price": {
+          "symbol": "$",
+          "value": 9.99,
+          "currency": "USD",
+          "raw": "$9.99"
+        }
+      }
+    ]
+  },
+  "also_bought": [
+    {
+      "title": "Orphan X (Orphan X, 1)",
+      "asin": "1250758793",
+      "link": "https://www.amazon.com/Orphan-X-Novel-Gregg-Hurwitz/dp/1250758793/ref=pd_sbs_d_sccl_2_1/134-3222399-5861725?pd_rd_w=EfGTF&content-id=amzn1.sym.fbe92a2b-08cd-4430-befc-3cdfe2b8175d&pf_rd_p=fbe92a2b-08cd-4430-befc-3cdfe2b8175d&pf_rd_r=C71ZTJYSSP0CEHFJY1YN&pd_rd_wg=KKnG9&pd_rd_r=f85137fc-29a1-480a-9603-00e06855ba11&pd_rd_i=1250758793&psc=1",
+      "image": "https://images-na.ssl-images-amazon.com/images/I/81XXwBb2arL._AC_UL165_SR165,165_.jpg",
+      "rating": 4.4,
+      "ratings_total": 22724,
+      "price": {
+        "symbol": "$",
+        "value": 12.34,
+        "currency": "USD",
+        "raw": "$12.34"
+      }
+    },
+    {
+      "title": "New Think (1)",
+      "asin": "1953165400",
+      "link": "https://www.amazon.com/New-Think-1-Gregg-Hurwitz/dp/1953165400/ref=pd_sbs_d_sccl_2_2/134-3222399-5861725?pd_rd_w=EfGTF&content-id=amzn1.sym.fbe92a2b-08cd-4430-befc-3cdfe2b8175d&pf_rd_p=fbe92a2b-08cd-4430-befc-3cdfe2b8175d&pf_rd_r=C71ZTJYSSP0CEHFJY1YN&pd_rd_wg=KKnG9&pd_rd_r=f85137fc-29a1-480a-9603-00e06855ba11&pd_rd_i=1953165400&psc=1",
+      "image": "https://images-na.ssl-images-amazon.com/images/I/81M26pjNrJL._AC_UL165_SR165,165_.jpg",
+      "rating": 3.9,
+      "ratings_total": 15,
+      "price": {
+        "symbol": "$",
+        "value": 9.99,
+        "currency": "USD",
+        "raw": "$9.99"
+      }
+    },
+    {
+      "title": "With Child: Lee Child and the Readers of Jack Reacher",
+      "asin": "1509538216",
+      "link": "https://www.amazon.com/Child-Lee-Readers-Jack-Reacher/dp/1509538216/ref=pd_sbs_d_sccl_2_3/134-3222399-5861725?pd_rd_w=EfGTF&content-id=amzn1.sym.fbe92a2b-08cd-4430-befc-3cdfe2b8175d&pf_rd_p=fbe92a2b-08cd-4430-befc-3cdfe2b8175d&pf_rd_r=C71ZTJYSSP0CEHFJY1YN&pd_rd_wg=KKnG9&pd_rd_r=f85137fc-29a1-480a-9603-00e06855ba11&pd_rd_i=1509538216&psc=1",
+      "image": "https://images-na.ssl-images-amazon.com/images/I/714rOccqG6L._AC_UL165_SR165,165_.jpg",
+      "rating": 3.8,
+      "ratings_total": 71,
+      "price": {
+        "symbol": "$",
+        "value": 62.09,
+        "currency": "USD",
+        "raw": "$62.09"
+      }
+    },
+    {
+      "title": "The Enemy (Jack Reacher)",
+      "asin": "0440245990",
+      "link": "https://www.amazon.com/Enemy-Jack-Reacher-Lee-Child/dp/0440245990/ref=pd_sbs_d_sccl_2_4/134-3222399-5861725?pd_rd_w=EfGTF&content-id=amzn1.sym.fbe92a2b-08cd-4430-befc-3cdfe2b8175d&pf_rd_p=fbe92a2b-08cd-4430-befc-3cdfe2b8175d&pf_rd_r=C71ZTJYSSP0CEHFJY1YN&pd_rd_wg=KKnG9&pd_rd_r=f85137fc-29a1-480a-9603-00e06855ba11&pd_rd_i=0440245990&psc=1",
+      "image": "https://images-na.ssl-images-amazon.com/images/I/71hLYL-tGAL._AC_UL165_SR165,165_.jpg",
+      "rating": 4.5,
+      "ratings_total": 42971,
+      "price": {
+        "symbol": "$",
+        "value": 7.99,
+        "currency": "USD",
+        "raw": "$7.99"
+      }
+    },
+    {
+      "title": "In Too Deep: A Reacher Novel (Jack Reacher)",
+      "asin": "0593725808",
+      "link": "https://www.amazon.com/Too-Deep-Jack-Reacher-Novel/dp/0593725808/ref=pd_sbs_d_sccl_2_5/134-3222399-5861725?pd_rd_w=EfGTF&content-id=amzn1.sym.fbe92a2b-08cd-4430-befc-3cdfe2b8175d&pf_rd_p=fbe92a2b-08cd-4430-befc-3cdfe2b8175d&pf_rd_r=C71ZTJYSSP0CEHFJY1YN&pd_rd_wg=KKnG9&pd_rd_r=f85137fc-29a1-480a-9603-00e06855ba11&pd_rd_i=0593725808&psc=1",
+      "image": "https://images-na.ssl-images-amazon.com/images/I/81ztdruUg1L._AC_UL165_SR165,165_.jpg",
+      "rating": 4.2,
+      "ratings_total": 37638,
+      "price": {
+        "symbol": "$",
+        "value": 12,
+        "currency": "USD",
+        "raw": "$12.00"
+      }
+    }
+  ]
+}

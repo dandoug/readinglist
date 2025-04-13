@@ -38,11 +38,12 @@ class Config:
     MAIL_USERNAME = os.getenv("MAIL_USERNAME")
     MAIL_PASSWORD = os.getenv("MAIL_PASSWORD")
 
-    # Generate a good salt for password hashing using: secrets.SystemRandom().getrandbits(128), put in env
+    # Generate a good salt for password hashing using: secrets.SystemRandom().getrandbits(128)
     SECURITY_PASSWORD_SALT = os.environ.get("SECURITY_PASSWORD_SALT")
 
     # API key for ASIN service
     ASIN_DATA_API_KEY = os.environ.get("ASIN_DATA_API_KEY")
+    ASIN_DATA_API_URL = os.environ.get("ASIN_DATA_API_URL", 'https://api.asindataapi.com/request')
 
     # have session and remember cookie be samesite (flask/flask_login)
     REMEMBER_COOKIE_SAMESITE = "strict"

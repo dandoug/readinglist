@@ -1,8 +1,14 @@
+"""
+This module defines the primary routes for the Flask application, providing endpoints
+for rendering templates, searching, managing books, downloading data, and offering
+application metadata. The routes include role-based access control, validation of 
+user inputs, and interaction with both the database and external services as required.
+"""
 import csv
 import io
 
-from flask import current_app as app, render_template, request, jsonify, flash, redirect, url_for, make_response, \
-    Request
+from flask import (current_app as app, render_template, request, jsonify,
+                   flash, redirect, url_for, make_response, Request)
 from flask_security import roles_required, current_user, auth_required
 
 from app.services import fetch_product_details, build_about_info, \
@@ -35,6 +41,20 @@ def index():  # put application's code here
 @app.route('/about')
 @roles_required('admin')
 def about():
+    """
+    Handles the rendering of the 'About' page for administrators.
+
+    This function is accessed via the '/about' route and is restricted to users
+    with the 'admin' role. It gathers the necessary information for the 'About'
+    page and passes it to the template for rendering.
+
+    :parameters: None
+
+    :raises: None
+
+    :returns: Rendered HTML template of the 'About' page including the application
+              information.
+    """
     about_info = build_about_info()
 
     return render_template('about.html', about_info=about_info)
@@ -79,11 +99,6 @@ def library_searches():
     Handles library search requests by constructing and returning URLs for
     searching library databases. The endpoint requires both 'author' and
     'title' query parameters to be provided in the request.
-
-    :param author: The author used as a search parameter, retrieved as a query parameter.
-    :type author: str, optional
-    :param title: The title used as a search parameter, retrieved as a query parameter.
-    :type title: str, optional
 
     :return: A JSON response with constructed library search URLs or an error
         message if required query parameters are missing.
@@ -146,8 +161,6 @@ def add_book():
     referrer. In case of a valid submission, it adds a new book to the database and redirects
     the user. If it fails, an appropriate error message is flashed.
 
-    :param form: BookForm
-        Form instance used to collect and validate book data.
     :raises Exception:
         If an unanticipated error occurs during the addition of the new book or database operation.
     :return:
@@ -165,7 +178,7 @@ def add_book():
             book = add_new_book(form)  # Attempt to add the book
             flash(f"Book id:{book.id} title:'{book.title}' added successfully!", "success")
             return redirect(form.next.data if form.next.data else url_for("index"))
-        except Exception as e:  # General fallback for any unanticipated exceptions
+        except Exception as e:  # pylint: disable=broad-except
             flash(f"An error occurred while adding the book: {e}", "danger")
     return render_template("add_book.html", book_form=form)
 
@@ -212,7 +225,7 @@ def edit_book():
                 flash(f"Book id:{book.id} title:'{book.title}' updated successfully!", "success")
                 # on successful update, go to next
                 return redirect(form.next.data if form.next.data else url_for("index"))
-            except Exception as e:  # General fallback for any unanticipated exceptions
+            except Exception as e:  # pylint: disable=broad-except
                 flash(f"An error occurred while updating the book: {e}", "danger")
     else:
         # fill in book from database
@@ -221,7 +234,7 @@ def edit_book():
             if not book:
                 flash(f"Book with ID {form.id.data} not found.", "warning")
                 return redirect(form.next.data if form.next.data else url_for("index"))
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-except
             flash(f"Failed to get the book with ID {form.id.data}: {e}", "danger")
             return redirect(form.next.data if form.next.data else url_for("index"))
 
@@ -243,10 +256,6 @@ def fill_by_asin():
 
     If the 'asin' parameter is missing or cannot be found, appropriate error responses
     are returned to the client.
-
-    :param asin: The Amazon Standard Identification Number (ASIN) provided in the
-        query string of the GET request.
-    :type asin: str
 
     :return: A JSON response containing either the product details fetched using the
         ASIN or an error message. If successful, the response contains the product
@@ -282,8 +291,6 @@ def delete_book():
 
     :raises Exception: On encountering any unhandled issue during book deletion
 
-    :param book_id: Identifier of the book to be deleted. Must be a valid digit.
-
     :return: A JSON response indicating the success of the operation, or an error
         message and HTTP status code in the event of a failure.
     """
@@ -298,7 +305,7 @@ def delete_book():
 
         flash(f"Book id:{book_id} deleted successfully!", "success")
         return jsonify({"message": f"Book id:{book_id} deleted successfully!"}), 200
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-except
         flash(f"Unhandled exception: {str(e)}")
         return jsonify({"error": "An unexpected error occurred"}), 500
 
@@ -312,13 +319,6 @@ def change_status():
     the allowed values, and updates the status of the specified book in the user's
     profile. It then returns the new status as a response. Only authenticated
     users are allowed to access this route.
-
-    :param book_id: The unique identifier of the book whose status is to be updated,
-        retrieved from the request's form data. Must be a numeric value.
-    :type book_id: str
-    :param status: The new status for the book, retrieved from the request's form.
-        It must be one of the allowed values ('read', 'up_next', 'none').
-    :type status: str
 
     :raises ValueError: If the `book_id` parameter is missing or not a valid digit.
     :raises ValueError: If the `status` parameter is missing.
@@ -340,7 +340,9 @@ def change_status():
     # Validate if status is supported
     allowed_statuses = ['read', 'up_next', 'none']
     if status not in allowed_statuses:
-        return jsonify({"error": f"Invalid 'status' value. Allowed values: {', '.join(allowed_statuses)}"}), 400
+        allowed = ', '.join(allowed_statuses)
+        return jsonify(
+            {"error": f"Invalid 'status' value. Allowed values: {allowed}"}), 400
 
     user_id = current_user.id
     set_book_status(book_id, status, user_id)
@@ -355,14 +357,6 @@ def change_feedback():
     input parameters, including `book_id` and `feedback`, ensures that the feedback
     value is within the allowed list of feedback states, and then updates the feedback
     for the given user and book in the system.
-
-    :param book_id: The ID of the book for which the feedback is being changed. Must be
-        a numeric value.
-    :type book_id: Optional[str]
-
-    :param fb: The feedback to be updated for the book. Expected values are 'like',
-        'dislike', or 'none'.
-    :type fb: Optional[str]
 
     :return: JSON object containing the updated feedback, or an error message in case
         of invalid input and the corresponding HTTP status code.
@@ -381,7 +375,9 @@ def change_feedback():
     # Validate if feedback is supported
     allowed_feedback = ['like', 'dislike', 'none']
     if fb not in allowed_feedback:
-        return jsonify({"error": f"Invalid 'feedback' value. Allowed values: {', '.join(allowed_feedback)}"}), 400
+        return jsonify({
+            "error":
+                f"Invalid 'feedback' value. Allowed values: {', '.join(allowed_feedback)}"}), 400
 
     user_id = current_user.id
     set_book_feedback(book_id, fb, user_id)
@@ -390,16 +386,17 @@ def change_feedback():
 
 def _check_for_required_book(req):
     """
-    Checks for the required book based on the 'id' parameter provided in the request and returns appropriate
-    responses in cases of an invalid or missing ID, or if the book with the given ID does not exist.
+    Validates the presence and format of the 'id' parameter in the request and retrieves the
+    associated book object. If the 'id' is missing or invalid, or if the book does not exist, 
+    an appropriate error response is returned.
 
-    :param req: Flask request object containing request arguments.
-    :type req: flask.request.Request
-    :return:
-        A tuple containing three values:
-            - A JSON response object with an error message or None.
-            - HTTP status code (400 or 404 in case of errors, None if successful).
-            - The book object if it exists, otherwise None.
+    :param req: The Flask request object containing query parameters.
+                Expects the 'id' parameter in the request arguments.
+    :type req: flask.Request
+    :return: A tuple containing:
+             - An error response (if applicable) or None,
+             - The corresponding HTTP status code,
+             - The retrieved book object or None.
     :rtype: tuple
     """
     book_id = req.args.get('id')
@@ -414,21 +411,9 @@ def _check_for_required_book(req):
 
     return None, 200, book
 
+
 def _perform_search_base_on_args(req: Request):
     """
-    Executes a search operation based on the provided request arguments. Depending on the presence of
-    specific query arguments in the request, this function determines the search method to use
-    and retrieves a collection of books accordingly.
-
-    :param req: The incoming HTTP request object encapsulating query parameters for the search operation.
-                Specific query parameters include:
-                    - 'author': String denoting the author's name to search for.
-                    - 'title': String specifying the title to search for.
-                    - 'cat': List of category identifiers, which will be mapped to full path strings.
-                    - 'status': Optional string filter for the status of books.
-                    - 'feedback': Optional string filter for feedback on books.
-    :return: A collection of books retrieved based on the search criteria or None if input is invalid.
-    :rtype: Optional[Any]
     """
     author = req.args.get('author')
     title = req.args.get('title')
@@ -446,7 +431,8 @@ def _perform_search_base_on_args(req: Request):
         bks = search_by_title(title, status_filter, feedback_filter)
     elif categories:
         # Decode encoded categories to full path strings before searching
-        bks = search_by_categories([id_to_fullpath(category) for category in categories], status_filter, feedback_filter)
+        bks = search_by_categories(
+            [id_to_fullpath(category) for category in categories], status_filter, feedback_filter)
     else:
         return None
 
@@ -458,7 +444,7 @@ def _perform_search_base_on_args(req: Request):
         if sort_order not in ['asc', 'desc']:
             return None  # invalid input
         # sort the books
-        reverse_order = (sort_order == 'desc')
+        reverse_order = sort_order == 'desc'
         bks = sorted(bks, key=lambda bk: getattr(bk, sort_column, ''), reverse=reverse_order)
 
     return bks
