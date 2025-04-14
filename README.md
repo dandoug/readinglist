@@ -30,9 +30,9 @@ There a file called [.env.sample](.env.sample) in the project root.  You should 
 
 ### Database schema
 
-The DDL to create the database tables is in [books.sql](database/books.sql), [security.sql](database/security.sql), and [favorites.sql](database/favorites.sql).  The should be run to create the necessary tables in that order.
+The DDL to create the database tables is in [create-tables.sql](database/create-tables.sql). It should be run to create the necessary tables.
 
-There's also a script [initial_book_load](database/initial_book_load.sql) that can load up about 200 books that I used to start.  You can use it or not to boot strap your collection.
+There's also a script [initial-books-load.sql](database/initial-books-load.sql) that can load up about 200 books that I used to start.  You can use it or not to boot strap your collection.
 
 ### Users and Roles
 
