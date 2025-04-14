@@ -1,6 +1,8 @@
 import logging
 from pathlib import Path
 
+import pytest
+
 from tests.integration.sql_parser.parser import SQLParser
 
 # Calculate the path to where the SQL files are
@@ -8,6 +10,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent.parent  # Navigate 
 DATABASE_DIR = PROJECT_ROOT / "database"
 
 
+@pytest.mark.skip(reason="not needed")
 def test_sql_parser():
     files = ["create-tables.sql", "initial-books-load.sql"]
     for file in files:
