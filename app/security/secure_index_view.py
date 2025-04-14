@@ -38,7 +38,7 @@ class SecureAdminIndexView(AdminIndexView):
 
     @expose('/')
     def index(self):
-        # Check if user is authenticated and has the 'admin' role
-        if not current_user.is_authenticated or current_user.has_role('admin') is not True:
-            abort(403)  # Return a 403 Forbidden error if not authorized
+        # Check if user is authenticated
+        if not current_user.is_authenticated:  # Still require authentication
+            abort(403)
         return self.render("admin/booklist_index.html")

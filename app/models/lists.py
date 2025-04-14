@@ -55,13 +55,9 @@ class List(db.Model):
     owner: Mapped["User"] = relationship("User", back_populates="lists")  # type: ignore
 
     # Many-to-many relationship with books
-    books: Mapped[list["Book"]] = relationship(    # type: ignore
-        "Book",
-        secondary="list_books",
-        primaryjoin="List.id == ListBook.list_id",
-        secondaryjoin="Book.id == ListBook.book_id",
-        back_populates="lists"
-    )
+    books: Mapped[list['ListBook']] = relationship('ListBook',
+                                                   back_populates='list',
+                                                   cascade='all, delete-orphan')
 
     def __repr__(self) -> str:
         return (
@@ -97,6 +93,11 @@ class ListBook(db.Model):
 
     # Foreign key linking to Book
     book_id: Mapped[int] = mapped_column(ForeignKey("books.id", ondelete="CASCADE"), nullable=False)
+
+    # Relationship linking ListBook to the List model
+    list = relationship('List', back_populates='books')
+    # Relationship assuming a Book model for book-specific information
+    book = relationship('Book', back_populates='lists')
 
     # Unique constraint on (list_id, book_id) pair
     __table_args__ = (UniqueConstraint("list_id", "book_id", name="unique_list_book_pair"),)

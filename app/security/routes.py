@@ -78,10 +78,46 @@ def register_admin_views(db: SQLAlchemy, admin: Admin):
     :type admin: Admin
     :return: None
     """
-    admin.add_link(MenuLink(name='About', url='/about'))
+    admin.add_link(RoleBasedMenuLink(name='About', url='/about', roles=['admin']))
     admin.add_link(MenuLink(name='Home', url='/'))
     admin.add_view(UserModelView(User, db.session))
     admin.add_view(RoleModelView(Role, db.session))
+
+    from app.models import List  # pylint: disable=import-outside-toplevel
+    from app.security.list_views import UserListModelView  # pylint: disable=import-outside-toplevel
+    # Add List and ListBook model views with restrictions for logged-in users
+    admin.add_view(UserListModelView(List, db.session, name="My Lists"))
+
+
+# Custom MenuLink with role-based access
+class RoleBasedMenuLink(MenuLink):
+    """
+    Represents a role-based menu link.
+
+    This class extends a standard menu link providing role-based access control.
+    It allows defining menu links that are visible and accessible only to users
+    having specific roles. This can be useful in applications where some parts of
+    the navigation menu should be restricted to specific user groups.
+
+    :ivar roles: List of roles required to access the menu link. If empty, the link
+                 is accessible to all authenticated users.
+    :type roles: list[str]
+    """
+    def __init__(self, name, url=None, endpoint=None, roles=None, **kwargs):
+        super().__init__(name, url, endpoint, **kwargs)
+        self.roles = roles or []
+
+    def is_accessible(self):
+        """Check if the link is accessible to the current user."""
+        # pylint: disable=import-outside-toplevel
+        from flask_login import current_user
+
+        if not current_user.is_authenticated:
+            return False
+        if not self.roles:  # If no roles specified, allow access
+            return True
+        # Check if user has any of the required roles
+        return any(role.name in self.roles for role in current_user.roles)
 
 
 @registration_bp.route('/register', methods=['GET', 'POST'])
