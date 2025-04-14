@@ -4,6 +4,8 @@ The parser in this module is generated using [ANTLR](https://www.antlr.org/index
 
 Besides, ANTLR is fun to learn about.
 
+It took me awhile to get it right, even using the official MySQL grammar, but I finally made a parser with it that can use the SQL scripts generated straight out of MySqlWorkbench.  So, I'm happy.
+
 ## Setup
 
 ### Java
@@ -20,7 +22,7 @@ Java and .jar file are required at runtime to use the parser that ANTLR produces
 ```bash
 pip install antlr4-python3-runtime   
 ```
-That's been done for this project and the result has been included in the [requirements.txt](../../requirements.txt) file already.  So, if you've setup your environment using that, your runtime is all ready.
+That's been done for this project and the result has been included in the [requirements.txt](../../../requirements.txt) file already.  So, if you've setup your environment using that, your runtime is all ready.
 
 ## Obtain the MySQL Grammar Files
 
@@ -61,5 +63,67 @@ java -jar antlr-4.x-complete.jar -Dlanguage=Python3 -o antlr_generated MySQLLexe
 ```
 Assumes `java` is in your path somewhere.  Remember to replace `antlr-4.x-complete.jar` with the most recent ANTLR jar (downloaded separately).  This command will generate the lexer and parser Python files into the `antlr_generated` directory.
 
+## Customization
+
+I ran into an issue with the scripts I was using.  MySql has this funky "version comment" syntax like this
+
+```sql
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+```
+For my purposes, I don't need the version comment statemnts parsed and skipping them is fine.  However, the semicolon on the end of the lines gets flagged as an "extra" character.   I didn't want to try and hack the grammar in case I downloaded it again later, so I made my own ANTLR error handler to supress the extra `;` issues I was facing.  That looks like this.
+
+```python
+class _MySQLErrorStrategy(DefaultErrorStrategy):
+    """
+    When this method is called, the parser has already decided that it can
+    recover by just ignoring the extra token.  In our case, we want to skip the
+    big error reporting message if it's only a single semicolon.
+    """
+    def reportUnwantedToken(self, recognizer: Parser):
+        # If the unwanted token is a single semicolon just quietly keep recovering
+        if recognizer.getCurrentToken().text == ';':
+            return
+
+        # Otherwise generate the big error message
+        super().reportUnwantedToken(recognizer)
+
+    def singleTokenDeletion(self, recognizer: Parser):
+        # Aggressively delete ; and skip over them.  This handles cases like
+        #
+        #  /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+        #  /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+        #
+        # where a file might start with multiple version comments.
+        current_token = recognizer.getCurrentToken()
+        if current_token.text == ';':
+            # consume and discard successive : to get to the next token, i.e. treat
+            # multiple semicolons as a single one to delete
+            semicolon_token_type = current_token.type
+            # while the next token is also a semicolon
+            while recognizer.getTokenStream().LA(2) == semicolon_token_type:
+                # keep bumping up
+                recognizer.consume()
+            # At this point, the next token is NOT a semicolon, the current token
+            # is a semicolon and the default singleTokenDeletion recovery can handle it
+
+        # Either the current token wasn't a semicolon or we've skipped over repeated semicolons
+        return super().singleTokenDeletion(recognizer)
+```
+
+The rest of the customizations were straightforward wrapper things and you can find them in [parser.py](parser.py).
+
 ## Usage
 
+The parser is used in the [integration test setup](../conftest.py), like this
+
+```python
+def execute_sql_file(db_session, file_path):
+    parser = SQLParser(file_path)
+    with db_session.cursor() as cursor:  # Use a cursor from the connection
+        for statement in parser.statements():
+            cursor.execute(statement)
+            
+    db_session.commit()  # Remember to commit changes
+```
+and does what I want by executing the statements in a `*.sql` file to setup the database for integration testing.

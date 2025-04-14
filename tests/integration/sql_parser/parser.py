@@ -83,6 +83,7 @@ class SQLParser:  # pylint: disable=too-few-public-methods
         """
         return self.error_listener.get_errors()
 
+
 class _QueryExtractorListener(ParseTreeListener):
     def __init__(self, token_stream: CommonTokenStream):
         self.queries: List[str] = []
