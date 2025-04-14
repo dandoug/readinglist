@@ -15,6 +15,7 @@ from bs4 import BeautifulSoup
 
 import app
 from app import create_app
+from tests.integration.sql_parser.parser import SQLParser
 
 # Calculate the path to where the SQL files are
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent  # Navigate to the project root
@@ -103,16 +104,13 @@ def load_initial_data(db_connection):
     """
     Load test data from the SQL script 
     """
-    TABLE_CREATION_SCRIPTS = [
-        "books.sql",
-        "security.sql",
-        "favorites.sql"
+    TABLE_SCRIPTS = [
+        "create-tables.sql",
+        "initial-books-load.sql"
     ]
-    for script_name in TABLE_CREATION_SCRIPTS:
+    for script_name in TABLE_SCRIPTS:
         sql_file_path = DATABASE_DIR / script_name
         execute_sql_file(db_connection, sql_file_path)
-    # Now, load the book data... has embedded ; characters, but the statements are all on single lines
-    execute_sql_file(db_connection, INTEGRATION_DIR / "integration_test_initial_book_load.sql", split_char="\n")
 
 
 @pytest.fixture(scope="session")
@@ -213,7 +211,7 @@ def logged_in_client(flask_app):
     return client
 
 
-def execute_sql_file(db_session, file_path, split_char=";"):
+def execute_sql_file(db_session, file_path):
     """
     Execute SQL commands from a file against the given database session.
 
@@ -221,17 +219,15 @@ def execute_sql_file(db_session, file_path, split_char=";"):
         db_session: PyMySQL connection object.
         file_path: Path to the SQL script file.
     """
-    with open(file_path, "r") as file:
-        sql_script = file.read()
+    assert file_path.exists()
+
+    print(f"\n\nParsing {file_path}...")
+    parser = SQLParser(file_path)
+    assert parser.has_errors() is False
 
     with db_session.cursor() as cursor:  # Use a cursor from the connection
-        # Execute SQL script (handles multiple statements separated by ;)
-        for statement in sql_script.split(split_char):
-            stmt = statement.strip()
-            if stmt and not stmt.startswith('/*'):  # Skip empty statements
-                if stmt.endswith(";"):  # Remove trailing semicolon if present
-                    stmt = stmt[:-1]
-                #print("Executing SQL:", stmt)
-                cursor.execute(stmt)
+        # Execute SQL script
+        for statement in parser.statements():
+            cursor.execute(statement)
 
     db_session.commit()  # Remember to commit changes

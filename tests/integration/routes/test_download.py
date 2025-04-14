@@ -10,7 +10,7 @@ def test_author_download(client):
 
     data = _receive_csv_file(response)
 
-    assert len(data) == 4
+    assert len(data) == 3
 
     response = client.get('/download', query_string={'author': 'rand', 'sortColumn': 'description'})
     assert response.status_code == 400
@@ -20,7 +20,7 @@ def test_author_download(client):
     response = client.get('/download', query_string={'author': 'rand', 'sortColumn': 'author', 'sortOrder': 'desc'})
     assert response.status_code == 200
     data = _receive_csv_file(response)
-    assert len(data) == 4
+    assert len(data) == 3
     bk = data[0]
     assert bk['Author'] == 'Laura Hillenbrand'
 
@@ -47,12 +47,12 @@ def test_category_download(client):
 
     data = _receive_csv_file(response)
 
-    assert len(data) == 4
+    assert len(data) == 3
 
     response = client.get('/download', query_string={'cat': ['Q2xhc3NpY3M*', 'RmFudGFzeQ**'], 'sortColumn': 'rating', 'sortOrder': 'desc'})
     assert response.status_code == 200
     data = _receive_csv_file(response)
-    assert len(data) == 4
+    assert len(data) == 3
     bk = data[0]
     assert bk['Title'] == 'The Hobbit: 75th Anniversary Edition'
 

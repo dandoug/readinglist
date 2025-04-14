@@ -6,4 +6,4 @@ def test_sample_query(db_connection):
         book = cursor.fetchone()
 
     assert book is not None
-    assert book["title"] == "The Art of War (Deluxe Hardbound Edition) (Fingerprint! Classics)"
+    assert book["title"] == "The Art of War"
