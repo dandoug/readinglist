@@ -1,6 +1,6 @@
 import sys
 from readchar import readchar
-from SqlMode import SqlMode
+from .SqlMode import SqlMode
 
 class SqlModes:
 
