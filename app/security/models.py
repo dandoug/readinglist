@@ -72,6 +72,11 @@ class User(db.Model, fsqla.FsUserMixin):
         """
         return relationship("Feedback", back_populates="user")
 
+    # Relationship to lists owned by the user
+    @declared_attr
+    def lists(self):
+        return relationship("List", back_populates="owner")
+
     def __repr__(self) -> str:
         return f"{self.email}"
 

@@ -199,3 +199,33 @@ CREATE TABLE `reading_status` (
 
 
 -- Dump completed on 2025-04-13 19:52:32
+
+--
+-- Table structure for table `lists`
+--
+
+CREATE TABLE `lists` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `owner_id` int NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_name_per_owner` (`name`, `owner_id`),
+  KEY `fk_lists_owner_idx` (`owner_id`),
+  CONSTRAINT `fk_lists_owner` FOREIGN KEY (`owner_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Table structure for table `list_books`
+--
+
+CREATE TABLE `list_books` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `list_id` int NOT NULL,
+  `book_id` int NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_list_book_pair` (`list_id`, `book_id`),
+  KEY `fk_list_books_list_idx` (`list_id`),
+  KEY `fk_list_books_book_idx` (`book_id`),
+  CONSTRAINT `fk_list_books_list` FOREIGN KEY (`list_id`) REFERENCES `lists` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_list_books_book` FOREIGN KEY (`book_id`) REFERENCES `books` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .reading_status import ReadingStatus
 from .feedback import Feedback
+from .lists import List
 from app import db
 
 
@@ -68,11 +69,16 @@ class Book(db.Model):
     reading_statuses: Mapped[list["ReadingStatus"]] = relationship(back_populates="book")
     feedbacks: Mapped[list["Feedback"]] = relationship(back_populates="book")
 
+    # Many-to-many relationship with lists
+    lists: Mapped[list["List"]] = relationship(
+        "List", secondary="list_books", back_populates="books"
+    )
+
     def to_dict(self) -> dict:
         """Converts the model instance into a dictionary."""
         result =  {column.name: getattr(self, column.name) for column in self.__table__.columns}
         if result.get('book_description'):
-            # some descriptions have &nbsp; and these need to be rendered as just space... no markup allowed here
+            # some descriptions have &nbsp; and these need to be rendered as just space
             result['book_description'] = result['book_description'].replace('\u00A0', '\u0020')
         return result
 
