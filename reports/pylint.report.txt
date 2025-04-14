@@ -1,9 +1,11 @@
+************* Module app.models.__init__
+app/models/__init__.py:6:0: C0301: Line too long (102/100) (line-too-long)
 ************* Module app.models
 app/models/__init__.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+app/models/__init__.py:6:85: E0604: Invalid object 'List' in __all__, must contain only strings (invalid-all-object)
 ************* Module app.models.book
-app/models/book.py:75:0: C0301: Line too long (113/100) (line-too-long)
 app/models/book.py:1:0: C0114: Missing module docstring (missing-module-docstring)
-app/models/book.py:4:0: C0411: first party import "app.db" should be placed before local imports "reading_status.ReadingStatus", "feedback.Feedback" (wrong-import-order)
+app/models/book.py:5:0: C0411: first party import "app.db" should be placed before local imports "reading_status.ReadingStatus", "feedback.Feedback", "lists.List" (wrong-import-order)
 ************* Module app.models.feedback
 app/models/feedback.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 app/models/feedback.py:8:0: C0115: Missing class docstring (missing-class-docstring)
@@ -37,7 +39,8 @@ app/security/models.py:12:0: C0115: Missing class docstring (missing-class-docst
 app/security/models.py:17:0: C0115: Missing class docstring (missing-class-docstring)
 app/security/models.py:19:4: C0116: Missing function or method docstring (missing-function-docstring)
 app/security/models.py:23:4: C0116: Missing function or method docstring (missing-function-docstring)
-app/security/models.py:30:0: C0115: Missing class docstring (missing-class-docstring)
+app/security/models.py:28:4: C0116: Missing function or method docstring (missing-function-docstring)
+app/security/models.py:35:0: C0115: Missing class docstring (missing-class-docstring)
 app/security/models.py:3:0: C0412: Imports from package flask_security are not grouped (ungrouped-imports)
 ************* Module app.security.routes
 app/security/routes.py:1:0: C0301: Line too long (101/100) (line-too-long)
@@ -95,5 +98,5 @@ run.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 .ebextensions/fetch_secrets.py:1:0: R0401: Cyclic import (app.security -> app.security.routes) (cyclic-import)
 
 -----------------------------------
-Your code has been rated at 8.72/10
+Your code has been rated at 8.68/10
 
