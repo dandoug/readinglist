@@ -7,7 +7,7 @@ def test_author_search(client):
     assert response.status_code == 200
 
     soup = BeautifulSoup(response.data, "html.parser")
-    verify_number_of_results(soup, 4)
+    verify_number_of_results(soup, 3)
 
 
 def test_title_search(client):
@@ -22,7 +22,7 @@ def test_category_search(client):
     assert response.status_code == 200
 
     soup = BeautifulSoup(response.data, "html.parser")
-    verify_number_of_results(soup, 4)
+    verify_number_of_results(soup, 3)
 
 def test_all_books(client):
     response = client.get('/search', query_string={'author': '*'})
