@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 
 from tests.integration.sql_parser.parser import SQLParser
@@ -19,5 +20,5 @@ def test_sql_parser():
         cnt = 0
         for statement in parser.statements():
             cnt += 1
-            print(f">>> {statement}")
+            logging.debug(">>> %s", statement)
         assert cnt > 0
