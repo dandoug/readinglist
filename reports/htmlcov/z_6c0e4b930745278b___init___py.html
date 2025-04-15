@@ -67,7 +67,7 @@
             <a id="nextFileLink" class="nav" href="z_6c0e4b930745278b_book_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.8.0">coverage.py v7.8.0</a>,
-            created at 2025-04-15 04:25 +0000
+            created at 2025-04-15 23:55 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"></button>
@@ -82,12 +82,16 @@
     </div>
 </header>
 <main id="source">
-    <p class="run"><span class="n"><a id="t1" href="#t1">1</a></span><span class="t"><span class="key">from</span> <span class="op">.</span><span class="nam">book</span> <span class="key">import</span> <span class="nam">Book</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t2" href="#t2">2</a></span><span class="t"><span class="key">from</span> <span class="op">.</span><span class="nam">feedback</span> <span class="key">import</span> <span class="nam">Feedback</span><span class="op">,</span> <span class="nam">FeedbackEnum</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t3" href="#t3">3</a></span><span class="t"><span class="key">from</span> <span class="op">.</span><span class="nam">reading_status</span> <span class="key">import</span> <span class="nam">ReadingStatus</span><span class="op">,</span> <span class="nam">ReadingStatusEnum</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t4" href="#t4">4</a></span><span class="t"><span class="key">from</span> <span class="op">.</span><span class="nam">lists</span> <span class="key">import</span> <span class="nam">List</span><span class="op">,</span> <span class="nam">ListBook</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t5" href="#t5">5</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t6" href="#t6">6</a></span><span class="t"><span class="nam">__all__</span> <span class="op">=</span> <span class="op">[</span><span class="str">"Book"</span><span class="op">,</span> <span class="str">"Feedback"</span><span class="op">,</span> <span class="str">"ReadingStatus"</span><span class="op">,</span> <span class="str">"FeedbackEnum"</span><span class="op">,</span> <span class="str">"ReadingStatusEnum"</span><span class="op">,</span> <span class="nam">List</span><span class="op">,</span> <span class="str">"ListBook"</span><span class="op">]</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t1" href="#t1">1</a></span><span class="t"><span class="str">"""</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t2" href="#t2">2</a></span><span class="t"><span class="str">This module provides model imports for managing books, feedback, lists, and reading statuses.</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t3" href="#t3">3</a></span><span class="t"><span class="str">"""</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t4" href="#t4">4</a></span><span class="t"><span class="key">from</span> <span class="nam">app</span><span class="op">.</span><span class="nam">models</span><span class="op">.</span><span class="nam">book</span> <span class="key">import</span> <span class="nam">Book</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t5" href="#t5">5</a></span><span class="t"><span class="key">from</span> <span class="nam">app</span><span class="op">.</span><span class="nam">models</span><span class="op">.</span><span class="nam">feedback</span> <span class="key">import</span> <span class="nam">Feedback</span><span class="op">,</span> <span class="nam">FeedbackEnum</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t6" href="#t6">6</a></span><span class="t"><span class="key">from</span> <span class="nam">app</span><span class="op">.</span><span class="nam">models</span><span class="op">.</span><span class="nam">reading_status</span> <span class="key">import</span> <span class="nam">ReadingStatus</span><span class="op">,</span> <span class="nam">ReadingStatusEnum</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t7" href="#t7">7</a></span><span class="t"><span class="key">from</span> <span class="nam">app</span><span class="op">.</span><span class="nam">models</span><span class="op">.</span><span class="nam">tags</span> <span class="key">import</span> <span class="nam">Tag</span><span class="op">,</span> <span class="nam">TagBook</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t8" href="#t8">8</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t9" href="#t9">9</a></span><span class="t"><span class="nam">__all__</span> <span class="op">=</span> <span class="op">[</span><span class="str">"Book"</span><span class="op">,</span> <span class="str">"Feedback"</span><span class="op">,</span> <span class="str">"ReadingStatus"</span><span class="op">,</span> <span class="str">"FeedbackEnum"</span><span class="op">,</span> <span class="str">"ReadingStatusEnum"</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t10" href="#t10">10</a></span><span class="t">           <span class="str">"Tag"</span><span class="op">,</span> <span class="str">"TagBook"</span><span class="op">]</span>&nbsp;</span><span class="r"></span></p>
 </main>
 <footer>
     <div class="content">
@@ -97,7 +101,7 @@
             <a class="nav" href="z_6c0e4b930745278b_book_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.8.0">coverage.py v7.8.0</a>,
-            created at 2025-04-15 04:25 +0000
+            created at 2025-04-15 23:55 +0000
         </p>
     </div>
 </footer>

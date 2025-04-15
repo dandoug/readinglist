@@ -1,36 +1,5 @@
-************* Module app.models.__init__
-app/models/__init__.py:6:0: C0301: Line too long (102/100) (line-too-long)
-************* Module app.models
-app/models/__init__.py:1:0: C0114: Missing module docstring (missing-module-docstring)
-app/models/__init__.py:6:85: E0604: Invalid object 'List' in __all__, must contain only strings (invalid-all-object)
-************* Module app.models.book
-app/models/book.py:1:0: C0114: Missing module docstring (missing-module-docstring)
-app/models/book.py:5:0: C0411: first party import "app.db" should be placed before local imports "reading_status.ReadingStatus", "feedback.Feedback", "lists.ListBook" (wrong-import-order)
-************* Module app.models.feedback
-app/models/feedback.py:1:0: C0114: Missing module docstring (missing-module-docstring)
-app/models/feedback.py:8:0: C0115: Missing class docstring (missing-class-docstring)
-app/models/feedback.py:9:4: C0103: Class constant name "like" doesn't conform to UPPER_CASE naming style (invalid-name)
-app/models/feedback.py:10:4: C0103: Class constant name "dislike" doesn't conform to UPPER_CASE naming style (invalid-name)
-app/models/feedback.py:13:0: C0115: Missing class docstring (missing-class-docstring)
-app/models/feedback.py:22:4: C0116: Missing function or method docstring (missing-function-docstring)
-app/models/feedback.py:13:0: R0903: Too few public methods (1/2) (too-few-public-methods)
-app/models/feedback.py:3:0: C0411: standard import "enum.Enum" should be placed before third party imports "sqlalchemy.ForeignKey", "sqlalchemy.orm.Mapped" (wrong-import-order)
-************* Module app.models.reading_status
-app/models/reading_status.py:1:0: C0114: Missing module docstring (missing-module-docstring)
-app/models/reading_status.py:8:0: C0115: Missing class docstring (missing-class-docstring)
-app/models/reading_status.py:9:4: C0103: Class constant name "up_next" doesn't conform to UPPER_CASE naming style (invalid-name)
-app/models/reading_status.py:10:4: C0103: Class constant name "read" doesn't conform to UPPER_CASE naming style (invalid-name)
-app/models/reading_status.py:13:0: C0115: Missing class docstring (missing-class-docstring)
-app/models/reading_status.py:22:4: C0116: Missing function or method docstring (missing-function-docstring)
-app/models/reading_status.py:13:0: R0903: Too few public methods (1/2) (too-few-public-methods)
-app/models/reading_status.py:3:0: C0411: standard import "enum.Enum" should be placed before third party imports "sqlalchemy.ForeignKey", "sqlalchemy.orm.Mapped" (wrong-import-order)
-************* Module app.security.list_views
-app/security/list_views.py:51:34: E1102: func.count is not callable (not-callable)
-app/security/list_views.py:19:0: W0611: Unused joinedload imported from sqlalchemy.orm (unused-import)
-app/security/list_views.py:21:0: W0611: Unused List imported from app.models (unused-import)
-app/security/list_views.py:21:0: W0611: Unused ListBook imported from app.models (unused-import)
-************* Module app.security.models
-app/security/models.py:77:4: C0116: Missing function or method docstring (missing-function-docstring)
+************* Module app.models.tags
+app/models/tags.py:6:0: C0301: Line too long (105/100) (line-too-long)
 ************* Module app.services.book_service
 app/services/book_service.py:277:0: C0301: Line too long (102/100) (line-too-long)
 app/services/book_service.py:278:0: C0301: Line too long (101/100) (line-too-long)
@@ -46,5 +15,5 @@ app/services/book_service.py:180:8: W0707: Consider explicitly re-raising using 
 app/services/book_service.py:7:0: C0411: first party import "app.models.Book" should be placed before local import "forms.BookForm" (wrong-import-order)
 
 -----------------------------------
-Your code has been rated at 9.33/10
+Your code has been rated at 9.81/10
 
