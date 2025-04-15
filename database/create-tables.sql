@@ -19,7 +19,7 @@
 -- Table structure for table `user`
 --
 
---DROP TABLE IF EXISTS `user`;
+-- DROP TABLE IF EXISTS `user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user` (
@@ -94,7 +94,7 @@ CREATE TABLE `webauthn` (
 -- Table structure for table `role`
 --
 
---DROP TABLE IF EXISTS `role`;
+-- DROP TABLE IF EXISTS `role`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `role` (
@@ -112,7 +112,7 @@ CREATE TABLE `role` (
 -- Table structure for table `roles_users`
 --
 
---DROP TABLE IF EXISTS `roles_users`;
+-- DROP TABLE IF EXISTS `roles_users`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `roles_users` (
@@ -130,7 +130,7 @@ CREATE TABLE `roles_users` (
 -- Table structure for table `books`
 --
 
---DROP TABLE IF EXISTS `books`;
+-- DROP TABLE IF EXISTS `books`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `books` (
@@ -160,7 +160,7 @@ CREATE TABLE `books` (
 -- Table structure for table `feedback`
 --
 
---DROP TABLE IF EXISTS `feedback`;
+-- DROP TABLE IF EXISTS `feedback`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `feedback` (
@@ -180,7 +180,7 @@ CREATE TABLE `feedback` (
 -- Table structure for table `reading_status`
 --
 
---DROP TABLE IF EXISTS `reading_status`;
+-- DROP TABLE IF EXISTS `reading_status`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `reading_status` (
@@ -201,7 +201,7 @@ CREATE TABLE `reading_status` (
 -- Table structure for table `tags`
 --
 
---DROP TABLE IF EXISTS `tags`;
+-- DROP TABLE IF EXISTS `tags`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `tags` (
@@ -220,7 +220,7 @@ CREATE TABLE `tags` (
 -- Table structure for table `tag_books`
 --
 
---DROP TABLE IF EXISTS `tag_books`;
+-- DROP TABLE IF EXISTS `tag_books`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `tag_books` (
