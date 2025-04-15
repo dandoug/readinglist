@@ -1,0 +1,30 @@
+// Colors to use for tag badges and their names
+$badge-colors: (
+  blackcurrant: ("color": #413344, "contrast_color": #bdbbbd),
+  salt-box: ("color": #614c65, "contrast_color": #bebabf),
+  rum: ("color": #806485, "contrast_color": #f6e3f9),
+  trendy-pink: ("color": #936397, "contrast_color": #ffebff),
+  violet-purple: ("color": #a662a8, "contrast_color": #fff4ff),
+  cyber-grape: ("color": #664972, "contrast_color": #c1b9c4),
+  mulled-wine: ("color": #463c57, "contrast_color": #bdbbc0),
+  bermuda-gray: ("color": #6e8da9, "contrast_color": #ffffff),
+  morning-glory: ("color": #91bcdd, "contrast_color": #445a6b),
+  horizon: ("color": #567d99, "contrast_color": #f1ffff),
+  william: ("color": #395e77, "contrast_color": #adbfce),
+  casal: ("color": #305662, "contrast_color": #b7bcbe),
+  plantation: ("color": #264d4d, "contrast_color": #b8bdbc),
+  stromboli: ("color": #315c45, "contrast_color": #b4beb8),
+  avocado: ("color": #8a9a65, "contrast_color": #ffffff),
+  misty-moss: ("color": #b6b975, "contrast_color": #57592c),
+  giants-club: ("color": #b65d54, "contrast_color": #ffebdf),
+  monza: ("color": #b60033, "contrast_color": #e1afb7),
+  monarch: ("color": #98062d, "contrast_color": #d8b2b8),
+  burgundy: ("color": #800022, "contrast_color": #d3b4b9)
+);
+// Generate the CSS class for each color
+@each $name, $properties in $badge-colors {
+  .badge-#{$name} {
+    background-color: map-get($properties, "color");
+    color: map-get($properties, "contrast_color");
+  }
+}
