@@ -67,7 +67,7 @@
             <a id="nextFileLink" class="nav" href="z_22fcaecc76accd99_user_session_cache_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.8.0">coverage.py v7.8.0</a>,
-            created at 2025-04-15 04:06 +0000
+            created at 2025-04-15 04:25 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"></button>
@@ -122,9 +122,9 @@
     <p class="pln"><span class="n"><a id="t38" href="#t38">38</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t39" href="#t39">39</a></span><span class="t">    <span class="op">@</span><span class="nam">expose</span><span class="op">(</span><span class="str">'/'</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t40" href="#t40">40</a></span><span class="t">    <span class="key">def</span> <span class="nam">index</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t41" href="#t41">41</a></span><span class="t">        <span class="com"># Check if user is authenticated and has the 'admin' role</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t42" href="#t42">42</a></span><span class="t">        <span class="key">if</span> <span class="key">not</span> <span class="nam">current_user</span><span class="op">.</span><span class="nam">is_authenticated</span> <span class="key">or</span> <span class="nam">current_user</span><span class="op">.</span><span class="nam">has_role</span><span class="op">(</span><span class="str">'admin'</span><span class="op">)</span> <span class="key">is</span> <span class="key">not</span> <span class="key">True</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t43" href="#t43">43</a></span><span class="t">            <span class="nam">abort</span><span class="op">(</span><span class="num">403</span><span class="op">)</span>  <span class="com"># Return a 403 Forbidden error if not authorized</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t41" href="#t41">41</a></span><span class="t">        <span class="com"># Check if user is authenticated</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t42" href="#t42">42</a></span><span class="t">        <span class="key">if</span> <span class="key">not</span> <span class="nam">current_user</span><span class="op">.</span><span class="nam">is_authenticated</span><span class="op">:</span>  <span class="com"># Still require authentication</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t43" href="#t43">43</a></span><span class="t">            <span class="nam">abort</span><span class="op">(</span><span class="num">403</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis show_mis"><span class="n"><a id="t44" href="#t44">44</a></span><span class="t">        <span class="key">return</span> <span class="nam">self</span><span class="op">.</span><span class="nam">render</span><span class="op">(</span><span class="str">"admin/booklist_index.html"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
 </main>
 <footer>
@@ -135,7 +135,7 @@
             <a class="nav" href="z_22fcaecc76accd99_user_session_cache_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.8.0">coverage.py v7.8.0</a>,
-            created at 2025-04-15 04:06 +0000
+            created at 2025-04-15 04:25 +0000
         </p>
     </div>
 </footer>
