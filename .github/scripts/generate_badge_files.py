@@ -31,13 +31,13 @@ def write_json_files(coverage_percentage: str, pylint_score: str):
 
 
 def _pylint_badge_color(pylint_score):
-    if float(pylint_score) < 3:
+    if float(pylint_score) < 6:
         return BADGE_COLORS[0]
-    elif float(pylint_score) < 5:
-        return BADGE_COLORS[1]
-    elif float(pylint_score) < 6:
-        return BADGE_COLORS[2]
     elif float(pylint_score) < 7:
+        return BADGE_COLORS[1]
+    elif float(pylint_score) < 8:
+        return BADGE_COLORS[2]
+    elif float(pylint_score) < 9:
         return BADGE_COLORS[3]
     else:
         return BADGE_COLORS[4]
