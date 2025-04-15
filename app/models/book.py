@@ -1,8 +1,17 @@
+"""
+This module defines the Book model, representing book records in the database.
+
+The Book class includes fields for storing details such as title, author, rating,
+description, and relationships to other entities like reading statuses, feedbacks,
+and lists. It supports converting an instance to a dictionary for easier
+manipulation and provides a clean string representation.
+"""
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from .reading_status import ReadingStatus
-from .feedback import Feedback
-from .lists import ListBook
+
 from app import db
+from app.models.feedback import Feedback
+from app.models.lists import ListBook
+from app.models.reading_status import ReadingStatus
 
 
 class Book(db.Model):
@@ -76,7 +85,7 @@ class Book(db.Model):
 
     def to_dict(self) -> dict:
         """Converts the model instance into a dictionary."""
-        result =  {column.name: getattr(self, column.name) for column in self.__table__.columns}
+        result = {column.name: getattr(self, column.name) for column in self.__table__.columns}
         if result.get('book_description'):
             # some descriptions have &nbsp; and these need to be rendered as just space
             result['book_description'] = result['book_description'].replace('\u00A0', '\u0020')

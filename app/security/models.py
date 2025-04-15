@@ -75,9 +75,28 @@ class User(db.Model, fsqla.FsUserMixin):
     # Relationship to lists owned by the user
     @declared_attr
     def lists(self):
+        """
+        Provides a declared attribute for relationship with the 'List' model.
+
+        This attribute enables the establishment of a relationship between the current
+        model and the 'List' model, defining how they are interconnected in the database
+        or ORM (Object-Relational Mapping) structure.
+
+        :return: A SQLAlchemy relationship between this model and the 'List' model.
+        :rtype: sqlalchemy.orm.relationship
+        """
         return relationship("List", back_populates="owner")
 
     def __repr__(self) -> str:
+        """
+        Provides a string representation of the instance for debugging
+        and logging purposes. The returned string is a concise,
+        format that includes the email attribute.
+
+        :return: A string representing the instance, primarily including
+            the email attribute.
+        :rtype: str
+        """
         return f"{self.email}"
 
 
