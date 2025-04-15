@@ -72,9 +72,9 @@ class User(db.Model, fsqla.FsUserMixin):
         """
         return relationship("Feedback", back_populates="user")
 
-    # Relationship to lists owned by the user
+    # Relationship to tags owned by the user
     @declared_attr
-    def lists(self):
+    def tags(self):
         """
         Provides a declared attribute for relationship with the 'List' model.
 
@@ -85,7 +85,7 @@ class User(db.Model, fsqla.FsUserMixin):
         :return: A SQLAlchemy relationship between this model and the 'List' model.
         :rtype: sqlalchemy.orm.relationship
         """
-        return relationship("List", back_populates="owner")
+        return relationship("Tag", back_populates="owner")
 
     def __repr__(self) -> str:
         """

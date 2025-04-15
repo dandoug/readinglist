@@ -83,10 +83,10 @@ def register_admin_views(db: SQLAlchemy, admin: Admin):
     admin.add_view(UserModelView(User, db.session))
     admin.add_view(RoleModelView(Role, db.session))
 
-    from app.models import List  # pylint: disable=import-outside-toplevel
-    from app.security.list_views import UserListModelView  # pylint: disable=import-outside-toplevel
-    # Add List and ListBook model views with restrictions for logged-in users
-    admin.add_view(UserListModelView(List, db.session, name="My Lists"))
+    from app.models import Tag  # pylint: disable=import-outside-toplevel
+    from app.security.tag_views import UserTagModelView  # pylint: disable=import-outside-toplevel
+    # Add Tag model view with restrictions for logged-in users
+    admin.add_view(UserTagModelView(Tag, db.session, name="My Tags"))
 
 
 # Custom MenuLink with role-based access

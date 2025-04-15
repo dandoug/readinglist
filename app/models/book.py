@@ -10,7 +10,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app import db
 from app.models.feedback import Feedback
-from app.models.lists import ListBook
+from app.models.tags import TagBook
 from app.models.reading_status import ReadingStatus
 
 
@@ -78,10 +78,10 @@ class Book(db.Model):
     reading_statuses: Mapped[list["ReadingStatus"]] = relationship(back_populates="book")
     feedbacks: Mapped[list["Feedback"]] = relationship(back_populates="book")
 
-    # Relationship to ListBook, connects with ListBook.book
-    lists: Mapped[list['ListBook']] = relationship('ListBook',
-                                                   back_populates='book',
-                                                   cascade='all, delete-orphan')
+    # Relationship to TagBook, connects with ListBook.book
+    tags: Mapped[list['TagBook']] = relationship('TagBook',
+                                                 back_populates='book',
+                                                 cascade='all, delete-orphan')
 
     def to_dict(self) -> dict:
         """Converts the model instance into a dictionary."""

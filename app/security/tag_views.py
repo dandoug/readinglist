@@ -18,18 +18,18 @@ from flask import abort
 from sqlalchemy import func
 
 
-class UserListModelView(ModelView):
+class UserTagModelView(ModelView):
     """
-    A customized Flask-Admin view to manage "lists" data, ensuring only the current user's
-    lists are accessible and editable.
+    A customized Flask-Admin view to manage "tags" data, ensuring only the current user's
+    tags are accessible and editable.
     """
     form_excluded_columns = ['owner', 'books']
     column_exclude_list = ['owner', 'books']
     can_edit = True  # Allow editing lists
     can_delete = True  # Allow deleting lists
     # Explicitly specify columns to display in the admin view
-    column_list = ["name"]  # Columns to show in the list view
-    form_columns = ["name"]  # Columns to show in creation/edit forms
+    column_list = ["name", "color"]  # Columns to show in the list view
+    form_columns = ["name", "color"]  # Columns to show in creation/edit forms
 
     def is_accessible(self):
         """Ensure that only authenticated users can access this view."""
