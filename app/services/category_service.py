@@ -1,3 +1,10 @@
+"""
+This module provides tools for managing book categories and their hierarchy.
+
+It includes functionality to encode and decode category IDs, construct category
+trees, and fetch unique categories from the database. The module is designed for
+building Bootstrap-compatible tree structures for UI representations.
+"""
 import base64
 
 from app import db
@@ -6,16 +13,40 @@ from app.models import Book
 
 def get_category_bs_tree():
     """
-    Generates a bootstrap-compatible tree structure from a given category hierarchy.
-    This function first retrieves a category tree and then recursively converts it
-    into a tree structure that can be used in applications utilizing bootstrap tree views.
+    Constructs and returns a Bootstrap-formatted tree representation of categories.
 
-    :rtype: list
-    :return: A list representing the bootstrap-compatible tree structure,
-        where each element is a dictionary with keys "text" for the category name
-        and "nodes" containing any child categories in the same format.
+    The function retrieves a hierarchical category tree and processes it into a
+    format suitable for a Bootstrap UI component. Each item in the resulting tree
+    contains metadata such as the category name, a unique id based on its full path,
+    and a checked state.
+
+    :raises ValueError: If the category tree data is malformed.
+
+    :return: A list of dictionaries representing the category tree in a structure
+        compatible with Bootstrap frameworks.
+    :rtype: list[dict]
     """
     def _add_categories(cat, context, tree, children):
+        """
+        Adds a category and its subcategories to the tree representation.
+
+        The function recursively creates a tree structure, where each node represents
+        a category. Each category node is stored as a dictionary with information about 
+        the category's text, state (e.g., checked or unchecked), the full path to the 
+        category, and an identifier. If the category has children, they are also added 
+        to the tree recursively.
+
+        :param cat: The current category name being added.
+        :type cat: str
+        :param context: The current hierarchical path leading to the category.
+        :type context: str
+        :param tree: A list representing the current level of the tree structure.
+        :type tree: list
+        :param children: A dictionary of child categories, where the keys are child 
+            category names, and the values are their respective sub-children.
+        :type children: dict
+        :return: None
+        """
         fullpath = context + _SEPARATOR + cat if context else cat
         node = {
             "text": cat,
@@ -31,8 +62,8 @@ def get_category_bs_tree():
 
     categories = _get_category_tree()
     bs_tree = []
-    for category in categories:
-        _add_categories(category, '', bs_tree, categories[category])
+    for category, subcategories in categories.items():
+        _add_categories(category, '', bs_tree, subcategories)
     return bs_tree
 
 

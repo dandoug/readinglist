@@ -1,3 +1,10 @@
+"""
+This module provides utilities to manage user sessions and caching in a Flask application.
+
+It includes methods for loading users from caching or the datastore, handling logout events,
+and generating cache keys. These tools improve performance while supporting Flask-Security 
+integration.
+"""
 from flask import session
 from flask_login import AnonymousUserMixin
 from flask_security.utils import set_request_attr
@@ -6,7 +13,8 @@ from flask_security.utils import set_request_attr
 # Custom user loader that utilizes cache
 def custom_user_loader(user_id):
     """Load user, using SimpleCache to store and retrieve the user object."""
-    from .. import cache
+    # pylint: disable=import-outside-toplevel
+    from app import cache  # noqa: E402
 
     # Attempt to retrieve the user from the cache
     user = cache.get(_cache_key_from_string(user_id))
@@ -22,10 +30,13 @@ def custom_user_loader(user_id):
     return user
 
 
-def on_logout(sender, user):
+# noinspection PyUnusedLocal, PyUnusedParameter
+def on_logout(_sender, user):  # noqa
     """Callback for when a user logs out."""
-    from .. import cache
+    # pylint: disable=import-outside-toplevel
+    from app import cache
 
+    # '_sender' is unused but required by the signal callback API
     if user:
         # Invalidate the cache for the user
         cache.delete(_cache_key_from_user(user))
@@ -43,10 +54,14 @@ def _cache_key_from_user(user):
 
 
 def _load_user_from_datastore(user_id):
-    """Loads a user from the datastore if not already cached."""
-    from .. import user_datastore
+    """
+    Loads a user from the datastore if not already cached.
+    """
+    # pylint: disable=import-outside-toplevel
+    from app import user_datastore
 
-    user = user_datastore.find_user(fs_uniquifier=str(user_id))  # Assumes fs_uniquifier is used for user lookup
+    # Assumes fs_uniquifier is used for user lookup
+    user = user_datastore.find_user(fs_uniquifier=str(user_id))
     if user and user.active:
         return user
     return None
