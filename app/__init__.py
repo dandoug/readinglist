@@ -9,8 +9,9 @@ from flask_login import user_logged_out
 from flask_mailman import Mail
 from flask_security import SQLAlchemyUserDatastore, Security, hash_password
 from flask_sqlalchemy import SQLAlchemy
+from flask_assets import Bundle, Environment
 
-from app.config import configure_app_logging
+from app.config import configure_app_logging, PROJECT_ROOT
 from app.helpers import register_globals
 
 # Initial admin user.  Only create if db contains no admins
@@ -105,5 +106,24 @@ def create_app():
 
     from app.helpers import render_icon
     app.jinja_env.filters['render_icon'] = render_icon
+
+    # Define your SCSS file bundle
+    output_dir = PROJECT_ROOT / "app" / "static" / "gen" / "css"
+    os.makedirs(output_dir, exist_ok=True)
+    scss = Bundle(
+        'scss/badge-color.scss',
+        filters='libsass',
+        output='gen/css/badge-color.css'  # Compiled CSS file location
+    )
+
+    assets = Environment(app)
+    assets.register('badge-color', scss)
+
+    # Build assets during app initialization
+    # Programmatically build assets during application startup
+    with app.app_context():
+        for name, bundle in assets._named_bundles.items():
+            logging.info("Building asset bundle: %s", name)
+            bundle.build(force=True)  # The `force=True` ensures the bundle rebuilds every time
 
     return app
