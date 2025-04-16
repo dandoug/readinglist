@@ -28,3 +28,8 @@ $badge-colors: (
     color: map-get($properties, "contrast_color");
   }
 }
+.badge-pill {
+  font-size: 0.8rem;
+  padding: 8px 15px;
+  border-radius: 30rem;
+}
