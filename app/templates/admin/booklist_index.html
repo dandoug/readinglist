@@ -4,6 +4,7 @@
     <div class="container">
         <p>You are logged in as <span class="text-muted">{{ current_user.email }}</span>.</p>
         <p>From here you can</p>
+        {% if current_user.is_authenticated and 'admin' in current_user.roles %}
         <ul>
             <li><a href="/about">View information about the deployment</a></li>
         </ul>
@@ -11,6 +12,10 @@
             <li><a href="/register">Register a new user</a></li>
             <li><a href="/admin/user">Manage users</a></li>
             <li><a href="/admin/role">Manage roles</a></li>
+        </ul>
+        {% endif %}
+        <ul>
+            <li><a href="/admin/tag">Manage your tags</a></li>
         </ul>
     </div>
 {% endblock %}
