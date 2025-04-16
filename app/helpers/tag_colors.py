@@ -5,6 +5,7 @@ This module provides functionality to parse and cache color definitions from SCS
 available for use in tag-related features throughout the application.
 """
 import re
+import random
 from functools import lru_cache
 
 from app.helpers.buildinfo import PROJECT_ROOT
@@ -58,3 +59,23 @@ def _get_badge_colors_from_scss() -> dict[str, dict[str, str]]:
             badge_colors[name] = {"color": color, "contrast_color": contrast_color}
 
     return badge_colors
+
+
+def choose_random_color():
+    """
+    Randomly selects and returns the name of a color from a predefined list of colors.
+
+    The function retrieves a list of available color choices, each represented
+    as a tuple containing the name and potentially other attributes. It then
+    selects one random tuple from this list and returns the name of the color
+    from the first element of the selected tuple.
+
+    :raises IndexError: If the list of color choices is empty, attempting to
+                        access the first element of the tuple will raise an error.
+
+    :return: A string representing the name of the randomly selected color.
+    :rtype: str
+    """
+    choices = get_color_choices()
+    random_tuple = random.choice(choices)
+    return random_tuple[0]  # first element of tuple is name we want

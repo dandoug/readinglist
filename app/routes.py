@@ -8,19 +8,22 @@ import csv
 import io
 
 from flask import (current_app as app, render_template, request, jsonify,
-                   flash, redirect, url_for, make_response, Request)
+                   flash, redirect, url_for, make_response, Request, Response)
 from flask_security import roles_required, current_user, auth_required
 
-from app.services import fetch_product_details, build_about_info, \
-    search_by_categories, get_book_by_id, search_by_author, \
-    search_by_title, add_new_book, book_to_dict_with_status_and_feedback, \
-    set_book_status, set_book_feedback, update_book, del_book, get_category_bs_tree, id_to_fullpath
+from app.models import Tag, Book
+from app.services import (fetch_product_details, build_about_info, search_by_categories, get_book_by_id,
+                          search_by_author, get_tags_for_user, get_or_create_tag,
+                          tag_book, find_tag_for_user, get_tags_and_colors, remove_tag_from_book,
+                          get_tags_for_user_with_colors, search_by_title, add_new_book,
+                          book_to_dict_with_status_and_feedback, set_book_status, set_book_feedback,
+                          update_book, del_book, get_category_bs_tree, id_to_fullpath)
 from app.helpers import PLACEHOLDER, build_library_search_urls, compute_next_url
 from app.forms import BookForm
 
 
 @app.route('/')
-def index():  # put application's code here
+def index():
     """
     Handles the root endpoint and renders the main page of the application. This
     function establishes the setup required for the app's main page by retrieving
@@ -63,14 +66,14 @@ def about():
 @app.route('/search', methods=['GET'])
 def search():
     """
-    Search for books.  One of author, title or cat must be specified.
+    Search for books.  Author, title, or cat must be specified.
 
     :return:
     """
     bks = _perform_search_base_on_args(request)
 
     if bks is None:
-        # one of author, title or cat must be specified
+        # author, title, or cat must be specified
         return jsonify({"error": "Missing author, title, or cat search parameter"}), 400
 
     return render_template('results.html', books=bks, placeholder=PLACEHOLDER)
@@ -123,21 +126,21 @@ def download():
     """
     Handles the /download endpoint to perform a search operation and return results
     in CSV format based on provided query parameters. If no valid query parameters
-    are provided or if the search yields no results, responds with an error message.
+    are provided or if the search yields no results, then responds with an error message.
 
     :raises HTTPException: Responds with status code 400 if input arguments are
         missing or result in no search results.
 
     :return: A Flask `Response` object containing the data in CSV format if the
          query parameters are valid and yield results, otherwise, a JSON error
-         message with appropriate error status code.
+         message with the appropriate error status code.
     """
     # Perform search based on input args
     bks = _perform_search_base_on_args(request)
 
     # input arguments did not result in search
     if bks is None:
-        # one of author, title or cat must be specified
+        # author, title, or cat must be specified
         return jsonify({"error": "Missing author, title, or cat search parameter"}), 400
 
     response = _make_csv_response(bks)
@@ -173,7 +176,7 @@ def add_book():
     if not form.next.data:
         form.next.data = compute_next_url(request)
 
-    if form.validate_on_submit():  # Checks if form is submitted and valid
+    if form.validate_on_submit():  # Checks if the form is submitted and valid
         try:
             book = add_new_book(form)  # Attempt to add the book
             flash(f"Book id:{book.id} title:'{book.title}' added successfully!", "success")
@@ -204,7 +207,7 @@ def edit_book():
     :param: None
     :raises: Ensures any system exceptions are caught and appropriately managed
              (e.g., database-related issues during book retrieval or update). The
-             function does not re-raise exceptions, but instead uses user-visible
+             function does not re-raise exceptions but instead uses user-visible
              messages.
     :return: A rendered HTML page for editing a book in case of GET requests, or a
              redirection upon successful or failed form submission in POST requests.
@@ -219,16 +222,16 @@ def edit_book():
         return jsonify({"error": "Invalid or missing 'id' parameter"}), 400
 
     if request.method == "POST":  # Check if the request method is POST
-        if form.validate_on_submit():  # Checks if form is submitted and valid
+        if form.validate_on_submit():  # Checks if the form is submitted and valid
             try:
                 book = update_book(form)  # Attempt to update the book
                 flash(f"Book id:{book.id} title:'{book.title}' updated successfully!", "success")
-                # on successful update, go to next
+                # on a successful update, go to next
                 return redirect(form.next.data if form.next.data else url_for("index"))
             except Exception as e:  # pylint: disable=broad-except
                 flash(f"An error occurred while updating the book: {e}", "danger")
     else:
-        # fill in book from database
+        # fill in the book from the database
         try:
             book = get_book_by_id(form.id.data)
             if not book:
@@ -240,7 +243,7 @@ def edit_book():
 
         if book:
             form.fill_from_book(book)
-    # return to or show initial edit form
+    # return to or show the initial edit form
     return render_template("edit_book.html", book_form=form)
 
 
@@ -384,6 +387,123 @@ def change_feedback():
     return jsonify({'new_feedback': fb}), 200
 
 
+@app.route('/autocomplete_tags')
+@auth_required()
+def autocomplete_tags():
+    """
+    Provides an endpoint to fetch tag suggestions based on a query for the
+    authenticated user. The response contains matching tags and their associated
+    colors.
+    """
+    q = request.args.get('q', '').lower()
+    suggestions = get_tags_for_user(current_user.id, q)
+    tags_and_colors = [{'name': s.name, 'color': s.color} for s in suggestions]
+    return jsonify(tags_and_colors)
+
+
+@app.route('/add_tag', methods=['POST'])
+@auth_required()
+def add_tag():
+    """
+    Handles the addition of a tag to a book for the current user. The function expects
+    a JSON payload containing the tag name and the corresponding book ID. The user must
+    be authenticated to access this endpoint. If the specified tag or book ID is invalid
+    or missing, the function returns an error response. Otherwise, it ensures that the tag
+    exists for the user, associates it with the given book, and returns the updated list
+    of tags associated with the book.
+    """
+    tag, book, error, status = _check_for_required_tag_and_book(request, tag_create=True)
+    if error:
+        return error, status
+
+    new_set_of_tags = tag_book(book_id=book.id, tag_id=tag.id, user_id=current_user.id)
+    return jsonify({'success': True, 'tags': new_set_of_tags})
+
+
+@app.route('/get_tags', methods=['GET'])
+@auth_required()
+def get_tags():
+    """
+    Handles the GET request to retrieve tags and their associated colors for a specific book.
+
+    This function ensures the necessary book data is present and authenticated
+    before returning the requested tags and colors. If no valid book is found,
+    an error response is returned.
+    """
+    error, status, book = _check_for_required_book(request)
+    if error:
+        return error, status
+
+    return jsonify({'success': True, 'tags': get_tags_and_colors(book_id=book.id, user_id=current_user.id)})
+
+
+@app.route('/get_user_tags', methods=['GET'])
+@auth_required()
+def get_user_tags():
+    """
+    Handles the GET request to retrieve tags and their associated colors for a user.
+    """
+    return jsonify({'success': True, 'tags': get_tags_for_user_with_colors(user_id=current_user.id)})
+
+
+@app.route('/remove_tag', methods=['POST'])
+@auth_required()
+def remove_tag():
+    """
+    Handles the removal of a tag associated with a book for an authenticated user.
+
+    This function receives a JSON payload from an HTTP POST request, extracts
+    the tag name and book ID, and performs the following operations:
+    - Validates the presence and correctness of the input parameters.
+    - Checks the existence of the book with the given ID in the system.
+    - Verifies that the specified tag is associated with the authenticated user.
+    - If the tag exists and is associated with the user, removes the tag from
+      the book and returns the updated set of tags for the book.
+
+    If a validation or existence check fails, an appropriate error response is
+    returned.
+
+    :return: A JSON response indicating the success or failure of the operation.
+    :rtype: flask.Response
+    :raises ValueError: If the `book_id` is not a valid integer.
+    :raises KeyError: If `tag` or `book_id` is missing in the request payload.
+    """
+    tag, book, error, status = _check_for_required_tag_and_book(request)
+    if error:
+        return error, status
+
+    user_id = current_user.id
+    if not tag:
+        # if the tag doesn't exist, then it can't be assigned to a book
+        # just get the current set of tags and return them
+        return (
+            jsonify({'success': True,
+                     'tags': get_tags_and_colors(book_id=book.id, user_id=user_id)}))
+    # perform the removal and return the new set of tags
+    new_set_of_tags = remove_tag_from_book(tag_id=tag.id, book_id=book.id, user_id=user_id)
+    return jsonify({'success': True, 'tags': new_set_of_tags})
+
+
+def _check_for_required_tag_and_book(req, tag_create=False) -> (Tag, Book, Response, int):
+    tag_name = req.json.get('tag')
+    book_id = req.json.get('book_id')
+
+    if not tag_name or not book_id or not isinstance(book_id, int):
+        return None, None, jsonify({"error": "Missing or invalid parameters"}), 400
+    # check that book exists
+    book = get_book_by_id(book_id)
+    if not book:
+        return None, None, jsonify({"error": f"Book {book_id} not found"}), 400
+    # check if tag exists for user
+    tag_name = tag_name.lower()
+    if tag_create:
+        tag = get_or_create_tag(user_id=current_user.id, tag_name=tag_name)
+    else:
+        tag = find_tag_for_user(user_id=current_user.id, tag_name=tag_name)
+
+    return tag, book, None, 200
+
+
 def _check_for_required_book(req):
     """
     Validates the presence and format of the 'id' parameter in the request and retrieves the
@@ -414,6 +534,27 @@ def _check_for_required_book(req):
 
 def _perform_search_base_on_args(req: Request):
     """
+    Performs a search for books based on arguments provided in the request object. The search
+    can be filtered by author, title, or categories, with additional options such as status and
+    feedback filters. The result set can also be sorted based on the provided sort criteria.
+
+    :param req: A Request object containing search arguments and options. The following arguments
+        are handled:
+        - author (str): Author's name to filter books by.
+        - title (str): Book title to filter books by.
+        - cat (list[str]): List of category IDs to filter books by (decoded into full path
+            strings).
+        - status (Optional[str]): Status filter for books (e.g., available, checked-out).
+        - feedback (Optional[str]): Feedback filter for books (e.g., positive, negative).
+        - sortColumn (Optional[str]): Column to sort books by; valid values are 'title',
+            'author', or 'rating'.
+        - sortOrder (Optional[str]): Order to sort books; valid values are 'asc' (ascending) or
+            'desc' (descending).
+
+    :return: 
+        - A sorted list of books that match the search criteria if valid sorting and filtering
+            options are provided.
+        - None if no search criteria are provided or if invalid filter/sort options are supplied.
     """
     author = req.args.get('author')
     title = req.args.get('title')

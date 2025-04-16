@@ -188,6 +188,12 @@
                         ) }}
                     {% endif %}
                 </div>
+                {% if user_id  %}
+                <div class="form-group">
+                    <p><strong>Tags:</strong>
+                    <input id="tag-input" name="tags" placeholder="Add tags" autofocus></p>
+                </div>
+                {% endif %}
                 <p><strong>Title:</strong> <span id="modal-title"></span></p>
                 <p><strong>Author:</strong> <span id="modal-author"></span></p>
                 <p><strong>Description:</strong> <span id="modal-description"></span></p>
@@ -505,6 +511,32 @@
         });
     }
 
+    // global var to hold tagify instance
+    var tagify_control = null;
+    var suppressTagEvents = false;
+
+    function onModalClose(event) {
+            if (document.activeElement) {
+                document.activeElement.blur();
+            }
+            // clean up tagify_control
+            if (tagify_control) {
+                tagify_control.destroy();
+                tagify_control = null;
+                document.getElementById('tag-input').value = '';
+            }
+            // Set aria-hidden attribute
+            //document.getElementById('bookDetailsModal').setAttribute('aria-hidden', 'true');
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Listen for modal hidden event (Bootstrap 4/5)
+        $('#bookDetailsModal').on('hidden.bs.modal', onModalClose);
+
+        const closeButton = document.querySelector('.modal-header .close');
+        closeButton.addEventListener('click', onModalClose);
+    });
+
 
     // Populate modal with book and search data
     function populateModal(bookId, userId, bookData, searchData) {
@@ -522,9 +554,12 @@
         {% endif %}
 
         // Set the status and feedback radio buttons if user is logged in
+        // Also setup the tagify input fied for tags
         if (userId) {
             updateBookStatus(bookData, userId);
             updateFeedback(bookData, userId);
+
+            tagify_control = setup_tagify(userId, bookData.id)
         }
         document.getElementById('modal-title').textContent = bookData.title;
         document.getElementById('modal-author').textContent = bookData.author;
@@ -622,4 +657,5 @@
     {% endif %}
 
 </script>
+{% include 'tag_modal_result_js.html' %}
 {% endblock %}
