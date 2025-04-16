@@ -12,66 +12,34 @@ Classes:
 These views restrict access and query data based on the currently authenticated user,
 enforcing user-specific data visibility and preventing unauthorized modifications.
 """
-import re
 
 from flask_admin.contrib.sqla import ModelView
 from flask_security import current_user
 from flask import abort
+from markupsafe import Markup
 from sqlalchemy import func
 from wtforms.fields.choices import SelectField
 from wtforms.widgets import html_params
 
 
-from app.config import PROJECT_ROOT
-
-COLOR_SCSS_PATH = PROJECT_ROOT / 'app/static/scss/badge-color.scss'
+from app.helpers.tag_colors import get_color_choices
 
 
-def _get_badge_colors_from_scss() -> dict[str, dict[str, str]]:
+def tag_pill_markup(text, color):
     """
-    Extracts badge color mappings from a SCSS file. Parses defined color mappings
-    from SCSS `$badge-colors` map. The SCSS file is expected to have a `$badge-colors`
-    map definition that includes badge names and their respective "color" and
-    "contrast_color" properties.
+    Generates an HTML `span` element with bootstrap badge classes for a pill-styled badge.
+    This utility method is typically used to generate markup for styled text with a given 
+    color as part of a UI or web application.
+    
+    :param text: The text content that will appear inside the badge.
+    :type text: str
+    :param color: The color of the badge, determining the visual style. Assumed to
+                  be predefined so that badge-{color} forms a valid CSS class.
+    :type color: str
+    :return: A string containing the HTML for the pill badge element.
+    :rtype: str
     """
-    with open(COLOR_SCSS_PATH, 'r', encoding='utf-8') as file:
-        scss_content = file.read()
-
-    badge_colors_pattern = r"\$badge-colors:\s*\((.*?)\);\n"
-    match = re.search(badge_colors_pattern, scss_content, re.S)
-
-    if not match:
-        raise ValueError("Cannot find $badge-colors in the SCSS file")
-
-    map_body = match.group(1).strip()
-
-    color_pattern = re.compile(
-        r'([\w-]+):\s*\("color":\s*(#[0-9a-fA-F]+),\s*"contrast_color":\s*(#[0-9a-fA-F]+)\)')
-    badge_colors = {}
-
-    for line in map_body.splitlines():
-        match = color_pattern.search(line)
-        if match:
-            name, color, contrast_color = match.groups()
-            badge_colors[name] = {"color": color, "contrast_color": contrast_color}
-
-    return badge_colors
-
-
-def _get_color_choices() -> list[tuple[str, str]]:
-    """
-    Generates a list of color choices derived from SCSS badge colors.
-
-    This function extracts badge colors from SCSS and formats them as a list
-    of tuples. Each tuple contains the raw name of the color and a user-friendly
-    formatted version of the name.
-    """
-    colors = _get_badge_colors_from_scss()
-    result = []
-    for name in colors:
-        readable_name = name.replace("_", " ").title()
-        result.append((name, readable_name))
-    return result
+    return f"<span class='badge badge-pill badge-{color}'>{text}</span>"
 
 
 # pylint: disable=too-few-public-methods
@@ -82,7 +50,7 @@ class BootstrapSelectWidget:
     This class provides a styled dropdown widget compatible with Bootstrap's
     `selectpicker` component. It ensures proper integration with Bootstrap's
     styling and additional optional attributes like `data-live-search`. The
-    widget allows customization and renders options with badges for better
+    widget allows customization and renders options with badges for a better
     UI experience.
     """
     def __call__(self, field, **kwargs):
@@ -97,17 +65,34 @@ class BootstrapSelectWidget:
 
         # Loop through the 2-tuple (value, label) choices
         for value, label in field.choices:
-            data_content = f"<span class='badge badge-pill badge-{value}'>{label}</span>"
+            data_content = tag_pill_markup(text=label, color=value)
 
             # Check if this choice is the current/selected value
             selected_html = 'selected' if field.data == value else ''
 
             # Render the `<option>` tag with `data-content` and selection logic
-            html.append(f'<option value="{value}" data-content="{data_content}"' +
-                        f' {selected_html}>{label}</option>')
+            html.append(
+                f'<option value="{value}" data-content="{data_content}" {selected_html}>'
+                f'{label}</option>'
+            )
 
         html.append('</select>')
         return ''.join(html)  # Return the constructed HTML as a string
+
+
+def _color_list_formatter(_view, _context, model, name):
+    """
+    :param _view: current administrative view
+    :param _context: instance of jinja2.runtime.Context
+    :param model: model instance
+    :param name: property name
+    :return: rendering for the column in a list view
+    """
+    if name == 'color' and model.color:
+        return Markup(
+            tag_pill_markup(text=model.color.title(), color=model.color)
+        )
+    return ''
 
 
 class UserTagModelView(ModelView):
@@ -126,9 +111,12 @@ class UserTagModelView(ModelView):
     }
     form_args = {
         'color': {
-            'choices': _get_color_choices(),  # Dynamically provide choices
+            'choices': get_color_choices(),  # Dynamically provide choices
             'widget': BootstrapSelectWidget()  # Use the custom widget for badge-pill rendering
         }
+    }
+    column_formatters = {
+        'color': _color_list_formatter
     }
 
     can_edit = True  # Allow editing lists
@@ -136,11 +124,10 @@ class UserTagModelView(ModelView):
     edit_template = 'tag_edit.html'
 
     def on_form_prefill(self, form, _id):
-        # Dynamically set choices for color field
-        form.color.choices = _get_color_choices()
+        form.color.choices = get_color_choices()
 
     def validate_form(self, form):
-        form.color.choices = _get_color_choices()
+        form.color.choices = get_color_choices()
         return super().validate_form(form)
 
     def is_accessible(self):

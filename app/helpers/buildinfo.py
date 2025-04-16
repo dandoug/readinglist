@@ -215,7 +215,7 @@ def _get_commit_target_branch(repo: Repo) -> str:
 
 
 __all__ = ["check_and_generate_build_info", "read_build_info", "write_empty_build_info",
-           "remove_build_info", "BUILD_INFO_FILE"]
+           "remove_build_info", "BUILD_INFO_FILE", "PROJECT_ROOT"]
 
 if __name__ == "__main__":
     check_and_generate_build_info()
