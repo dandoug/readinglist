@@ -15,5 +15,5 @@ app/services/book_service.py:180:8: W0707: Consider explicitly re-raising using 
 app/services/book_service.py:7:0: C0411: first party import "app.models.Book" should be placed before local import "forms.BookForm" (wrong-import-order)
 
 -----------------------------------
-Your code has been rated at 9.81/10
+Your code has been rated at 9.83/10
 
