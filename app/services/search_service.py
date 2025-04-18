@@ -8,10 +8,10 @@ search results will include personalized status and feedback data.
 """
 from flask_security import current_user
 from sqlalchemy import asc
-from sqlalchemy.orm import contains_eager, noload
+from sqlalchemy.orm import contains_eager, noload, make_transient, load_only
 
 from app import db
-from app.models import Book, ReadingStatus, Feedback
+from app.models import Book, ReadingStatus, Feedback, TagBook, Tag
 
 
 def search_by_categories(categories, status_filter: str = None,
@@ -50,7 +50,11 @@ def search_by_categories(categories, status_filter: str = None,
     query = _add_status_and_feedback_filters(query, status_filter, feedback_filter)
 
     # execute the query
-    return query.all()
+    bks = query.all()
+    for book in bks:
+        make_transient(book)
+    db.session.expire_all()
+    return bks
 
 
 def search_by_author(author: str, status_filter: str, feedback_filter: str) -> list[Book]:
@@ -77,7 +81,7 @@ def _search_by_attribute(attribute: str, value: str, status_filter: str = None,
     or user feedback. When the value is "*", all books are returned sorted 
     by the attribute.
     
-    :param attribute: The book attribute to filter by, like 'title' or 'author'. 
+    :param attribute: The attribute to filter by, like 'title' or 'author'.
         Must be a valid attribute.
     :param value: The value for the attribute to be matched. Supports partial 
         case-insensitive matches.
@@ -112,6 +116,9 @@ def _search_by_attribute(attribute: str, value: str, status_filter: str = None,
 
     # execute the query
     books = query.all()
+    for book in books:
+        make_transient(book)
+    db.session.expire_all()  # expire all books to prevent stale data from being returned
 
     return books
 
@@ -138,7 +145,6 @@ def _add_user_status_and_feedback_joins(query):
     # Add user status and feedback if there is an authenticated user
     user_id = current_user.id if current_user.is_authenticated else None
     if user_id:
-        # Join feedback and status if user logged in
         query = (
             query
             .outerjoin(
@@ -157,16 +163,44 @@ def _add_user_status_and_feedback_joins(query):
                         | (Feedback.user_id.is_(None))
                 ),
             )
+            .outerjoin(
+                TagBook,
+                (TagBook.book_id == Book.id)
+            )
+            .outerjoin(
+                Tag,
+                (Tag.id == TagBook.tag_id)
+                & (Tag.owner_id == user_id)
+            )
             .options(
-                contains_eager(Book.reading_statuses),
-                contains_eager(Book.feedbacks),
+                contains_eager(Book.reading_statuses).load_only(
+                    ReadingStatus.id,
+                    ReadingStatus.status
+                ).noload(ReadingStatus.user),
+                contains_eager(Book.feedbacks).load_only(
+                    Feedback.id,
+                    Feedback.feedback
+                ).noload(Feedback.user),
+                contains_eager(Book.tags).contains_eager(TagBook.tag),
+                contains_eager(Book.tags).load_only(
+                    TagBook.id,
+                    TagBook.tag_id
+                ),
+                contains_eager(Book.tags).contains_eager(TagBook.tag).load_only(
+                    Tag.id,
+                    Tag.name,
+                    Tag.color
+                ),
+                contains_eager(Book.tags).noload(TagBook.book),
+                contains_eager(Book.tags).contains_eager(TagBook.tag).noload(Tag.owner)
             )
         )
     else:
-        # If no user logged in, status and feedback should be empty for all books, no joining
+        # If no user logged in, status, feedback, and tags should be empty for all books
         query = query.options(
-            # Don't try to populate status or feedbacks when there's no user
             noload(Book.reading_statuses),
             noload(Book.feedbacks),
+            noload(Book.tags)
         )
+
     return query

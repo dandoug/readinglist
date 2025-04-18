@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% from '_macros.html' import form_group, icon_class, icon %}
+{% from '_macros.html' import form_group, icon_class, icon, results_tags %}
 
 <!-- Title -->
 {% block title %} Search Results {% endblock %}
@@ -91,14 +91,24 @@
                 <tbody>
                     {% for book in books %}
                     <tr class="align-middle" data-id="{{ book.id }}">
-                        <td>
-                            <div style="display: flex; align-items: center;">
-                                <!-- Display the book cover image -->
-                                <a href="{{ book.link }}" target="_blank">
-                                <img src="{{ book.image }}" alt="Book Cover" style="height: 50px; margin-right: 10px;">
-                                </a>
-                                <!-- Display the title -->
-                                <span>{{ book.title }}</span>
+                        <td style="padding: 5px">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-1 d-flex align-items-center"><a
+                                        href="{{ book.link }}" target="_blank"><img
+                                            src="{{ book.image }}" alt="Book Cover" class="cover-thumbnail-constrained"></a></div>
+                                    <div class="col-11">
+                                        <div class="container">
+                                            <div class="row align-items-md-start">
+                                                <!-- Display the title -->
+                                                <span>{{ book.title }}</span>
+                                            </div>
+                                            <div id="book-tags-results-{{ book.id }}" class="row align-items-md-start">
+                                                {{ results_tags(book.tags) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </td>
                         <td class="align-middle"><span>{{ book.author }}</span></td>
@@ -450,7 +460,7 @@
             if (!searchData) return;
 
             // Populate modal data
-            populateModal(bookId, userId, bookData, searchData);
+            await populateModal(bookId, userId, bookData, searchData);
 
             // Show the modal
             $('#bookDetailsModal').modal('show');
@@ -539,7 +549,7 @@
 
 
     // Populate modal with book and search data
-    function populateModal(bookId, userId, bookData, searchData) {
+    async function populateModal(bookId, userId, bookData, searchData) {
         document.getElementById('modal-id').textContent = bookData.id;
 
         {% if current_user.is_authenticated and current_user.has_role('admin') %}
@@ -559,7 +569,9 @@
             updateBookStatus(bookData, userId);
             updateFeedback(bookData, userId);
 
-            tagify_control = setup_tagify(userId, bookData.id)
+            setup_tagify(userId, bookId).then(tagify => {
+                tagify_control = tagify;
+            });
         }
         document.getElementById('modal-title').textContent = bookData.title;
         document.getElementById('modal-author').textContent = bookData.author;

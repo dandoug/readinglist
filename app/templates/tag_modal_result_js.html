@@ -13,66 +13,49 @@
             }
         });
 
-        // synchronously fetch tags and colors for a book
-        function fetchTagsForBook(book_id) {
-            var initialTags;
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', '/get_tags?id=' + book_id, false);  // false makes it synchronous
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4) {
-                    if (xhr.status === 200) {
-                        var response_json  = JSON.parse(xhr.responseText);
-                        initialTags = response_json.tags;
-                    } else {
-                        console.error('Failed to fetch tags');
-                        initialTags = []
-                    }
-                }
-            };
+        // fetch tags and colors for a book
+        async function fetchTagsForBook(book_id) {
             try {
-                xhr.send();
-            } catch (e) {
-                console.error('Failed to fetch tags:', e);
-                initialTags = []
-            }
-            return initialTags;
+                const response = await fetch('/get_tags?id=' + book_id);
+                if (!response.ok) {
+                    console.error('Failed to fetch tags');
+                    return [];
+                }
+                const data = await response.json();
+                return data.tags;
+            } catch (e) {}
         }
 
-        // synchronously fetch tags and colors for a user
-        function fetchTagsForUser(user_id) {
-            var tagsForUser;
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', '/get_user_tags', false);  // false makes it synchronous
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4) {
-                    if (xhr.status === 200) {
-                        var response_json  = JSON.parse(xhr.responseText);
-                        tagsForUser = response_json.tags;
-                    } else {
-                        console.error('Failed to fetch tags');
-                        tagsForUser = []
-                    }
-                }
-            };
+        // fetch tags and colors for a user
+        async function fetchTagsForUser(user_id) {
             try {
-                xhr.send();
+                const response = await fetch('/get_user_tags');
+                if (!response.ok) {
+                    console.error('Failed to fetch tags');
+                    return [];
+                }
+                const data = await response.json();
+                return data.tags;
             } catch (e) {
                 console.error('Failed to fetch tags:', e);
-                tagsForUser = []
+                return [];
             }
-            return tagsForUser;
         }
+
 
         // set up tagify, return the tagify object so that modal dismissal can call destroy()
-        function setup_tagify(user_id, book_id) {
+        async function setup_tagify(user_id, book_id) {
 
             // Initialize Tagify on the input
             var input = document.getElementById('tag-input');
             input.setAttribute('data-book-id', book_id);
 
             // Get initial tags from the server
-            var initialTags = fetchTagsForBook(book_id);
-            var tagsForUser = fetchTagsForUser(user_id);
+            const [initialTags, tagsForUser] = await Promise.all([
+                fetchTagsForBook(book_id),
+                fetchTagsForUser(user_id)
+            ]);
+
             var tagify = new Tagify(input, {
                   templates: {
                     tag: function(tagData, tagify){
@@ -135,6 +118,7 @@
                     tagify.removeAllTags();
                     tagify.addTags(data.tags); // data.tags is the new complete array
                     suppressTagEvents = false;
+                    update_book_tags(book_id, data.tags); // update display in book results
                 });
             });
 
@@ -153,10 +137,22 @@
                     tagify.removeAllTags();
                     tagify.addTags(data.tags); // data.tags is the new complete array
                     suppressTagEvents = false;
+                    update_book_tags(book_id, data.tags); // update display in book results
                 });
             });
 
             return tagify;   // so that modal dismissal can call destroy()
+        }
+
+        function update_book_tags(book_id, tags) {
+            const div = document.getElementById('book-tags-results-' + book_id);
+            if (!div) return;
+
+            let newHTML = '';
+            for (const tag of tags) {
+                newHTML += `<span class='badge badge-pill badge-${tag.color}'>${tag.value}</span>`;
+            }
+            div.innerHTML = newHTML;
         }
 
     {% endif %}
