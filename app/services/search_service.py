@@ -7,8 +7,8 @@ sorted results, refined to meet various search criteria. If a user is authentica
 search results will include personalized status and feedback data.
 """
 from flask_security import current_user
-from sqlalchemy import asc
-from sqlalchemy.orm import contains_eager, noload, make_transient, load_only
+from sqlalchemy import asc, and_, exists, select, literal
+from sqlalchemy.orm import contains_eager, noload, make_transient
 
 from app import db
 from app.models import Book, ReadingStatus, Feedback, TagBook, Tag
@@ -142,35 +142,60 @@ def _add_status_and_feedback_filters(query, status_filter, feedback_filter):
 
 
 def _add_user_status_and_feedback_joins(query):
-    # Add user status and feedback if there is an authenticated user
     user_id = current_user.id if current_user.is_authenticated else None
     if user_id:
+        # Define a constant for EXISTS check
+        # pylint: disable=invalid-name
+        # noinspection PyPep8Naming 
+        EXISTS_CHECK = literal(1).label('exists_check')
+
+        # Define the subquery to check for user's tags
+        user_tag_exists = (
+            select(EXISTS_CHECK)
+            .select_from(Tag)
+            .where(
+                and_(
+                    Tag.id == TagBook.tag_id,
+                    Tag.owner_id == user_id
+                )
+            )
+            .correlate(TagBook)
+            .alias('user_tag_check')
+        )
+
         query = (
             query
+            # Join with ReadingStatus
             .outerjoin(
                 ReadingStatus,
-                (ReadingStatus.book_id == Book.id)
-                & (
-                        (ReadingStatus.user_id == user_id)
-                        | (ReadingStatus.user_id.is_(None))
-                ),
+                and_(
+                    ReadingStatus.book_id == Book.id,
+                    ReadingStatus.user_id == user_id
+                )
             )
+            # Join with Feedback
             .outerjoin(
                 Feedback,
-                (Feedback.book_id == Book.id)
-                & (
-                        (Feedback.user_id == user_id)
-                        | (Feedback.user_id.is_(None))
-                ),
+                and_(
+                    Feedback.book_id == Book.id,
+                    Feedback.user_id == user_id
+                )
             )
+            # Join with TagBook using the exists subquery
             .outerjoin(
                 TagBook,
-                (TagBook.book_id == Book.id)
+                and_(
+                    TagBook.book_id == Book.id,
+                    exists(user_tag_exists)
+                )
             )
+            # Join with Tag
             .outerjoin(
                 Tag,
-                (Tag.id == TagBook.tag_id)
-                & (Tag.owner_id == user_id)
+                and_(
+                    Tag.id == TagBook.tag_id,
+                    Tag.owner_id == user_id
+                )
             )
             .options(
                 contains_eager(Book.reading_statuses).load_only(
@@ -196,7 +221,7 @@ def _add_user_status_and_feedback_joins(query):
             )
         )
     else:
-        # If no user logged in, status, feedback, and tags should be empty for all books
+        # If no user logged in, load no relationships
         query = query.options(
             noload(Book.reading_statuses),
             noload(Book.feedbacks),
