@@ -124,10 +124,12 @@ class UserTagModelView(ModelView):
     edit_template = 'tag_edit.html'
 
     def on_form_prefill(self, form, _id):
-        form.color.choices = get_color_choices()
+        if hasattr(form, 'color'):
+            form.color.choices = get_color_choices()
 
     def validate_form(self, form):
-        form.color.choices = get_color_choices()
+        if hasattr(form, 'color'):
+            form.color.choices = get_color_choices()
         return super().validate_form(form)
 
     def is_accessible(self):

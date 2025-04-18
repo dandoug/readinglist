@@ -1,0 +1,163 @@
+<script>
+    {% set user_id = current_user.id if current_user.is_authenticated else None %}
+    {% if user_id  %}
+
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('tag-remove-x')) {
+                // Find the parent <tag> element
+                const tagElm = e.target.closest('tag');
+                if (tagElm) {
+                    // Tell Tagify to remove this tag
+                    tagify_control.removeTag(tagElm);
+                }
+            }
+        });
+
+        // synchronously fetch tags and colors for a book
+        function fetchTagsForBook(book_id) {
+            var initialTags;
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/get_tags?id=' + book_id, false);  // false makes it synchronous
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        var response_json  = JSON.parse(xhr.responseText);
+                        initialTags = response_json.tags;
+                    } else {
+                        console.error('Failed to fetch tags');
+                        initialTags = []
+                    }
+                }
+            };
+            try {
+                xhr.send();
+            } catch (e) {
+                console.error('Failed to fetch tags:', e);
+                initialTags = []
+            }
+            return initialTags;
+        }
+
+        // synchronously fetch tags and colors for a user
+        function fetchTagsForUser(user_id) {
+            var tagsForUser;
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/get_user_tags', false);  // false makes it synchronous
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        var response_json  = JSON.parse(xhr.responseText);
+                        tagsForUser = response_json.tags;
+                    } else {
+                        console.error('Failed to fetch tags');
+                        tagsForUser = []
+                    }
+                }
+            };
+            try {
+                xhr.send();
+            } catch (e) {
+                console.error('Failed to fetch tags:', e);
+                tagsForUser = []
+            }
+            return tagsForUser;
+        }
+
+        // set up tagify, return the tagify object so that modal dismissal can call destroy()
+        function setup_tagify(user_id, book_id) {
+
+            // Initialize Tagify on the input
+            var input = document.getElementById('tag-input');
+            input.setAttribute('data-book-id', book_id);
+
+            // Get initial tags from the server
+            var initialTags = fetchTagsForBook(book_id);
+            var tagsForUser = fetchTagsForUser(user_id);
+            var tagify = new Tagify(input, {
+                  templates: {
+                    tag: function(tagData, tagify){
+                      // Use the color class from tagData, fallback to a default if missing
+                        let colorClass =  `badge-${tagData.color}`;
+                        return `
+                          <tag title="${tagData.value}"
+                               contenteditable='false'
+                               spellcheck='false'
+                               tabIndex="0"
+                               class="${tagify.settings.classNames.tag}"
+                               ${tagify.getAttributes(tagData)}>
+                            <span class="badge badge-pill ${colorClass} ${tagify.settings.classNames.tagText}">
+                              ${tagData.value}
+                              <x title='' class="${tagify.settings.classNames.tagX} tag-remove-x ml-1" role='button' aria-label='remove tag'></x>
+                            </span>
+                          </tag>
+                      `;
+                    }
+                  },
+                whitelist: tagsForUser,
+                enforceWhitelist: false, // allow new tags
+                dropdown: {
+                    enabled: 1,
+                    maxItems: 10,
+                    classname: "tags-look",
+                    fuzzySearch: true,
+                    highlightFirst: true
+                }
+            });
+            
+
+            // Load initial tags
+            tagify.addTags(initialTags);
+
+            // Fetch autocomplete suggestions
+            tagify.on('input', function(e){
+                var value = e.detail.value;
+                fetch('/autocomplete_tags?q=' + encodeURIComponent(value))
+                    .then(RES => RES.json())
+                    .then(function(response){
+                        // Extract just the name values from the objects
+                        tagify.settings.whitelist = response.map(item => item.name);
+                        tagify.dropdown.show.call(tagify, value);
+                    });
+            });
+
+            // Add tag event (send to backend)
+            tagify.on('add', function(e){
+                if (suppressTagEvents) return; // Prevent loop
+                var tag = e.detail.data.value;
+                fetch('/add_tag', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({tag: tag, book_id: book_id})
+                })
+                .then(res => res.json())
+                .then(data => {
+                    suppressTagEvents = true;
+                    tagify.removeAllTags();
+                    tagify.addTags(data.tags); // data.tags is the new complete array
+                    suppressTagEvents = false;
+                });
+            });
+
+            // Remove tag event (send to backend)
+            tagify.on('remove', function(e){
+                if (suppressTagEvents) return; // Prevent loop
+                var tag = e.detail.data.value;
+                fetch('/remove_tag', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({tag: tag, book_id: book_id})
+                })
+                .then(res => res.json())
+                .then(data => {
+                    suppressTagEvents = true;
+                    tagify.removeAllTags();
+                    tagify.addTags(data.tags); // data.tags is the new complete array
+                    suppressTagEvents = false;
+                });
+            });
+
+            return tagify;   // so that modal dismissal can call destroy()
+        }
+
+    {% endif %}
+</script>

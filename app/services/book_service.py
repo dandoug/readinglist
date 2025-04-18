@@ -274,10 +274,10 @@ def set_book_status(book_id: int, status: str, user_id: int) -> dict:
 
 def set_book_feedback(book_id: int, fb: str, user_id: int) -> dict:
     """
-    Updates or removes feedback for a specific book and user. If a feedback entry exists for the given
-    user and book, it will be updated based on the provided feedback value. If the feedback is marked
-    as "none", the existing feedback will be removed. If no feedback exists, a new entry will be created.
-    Finally, the updated book details are fetched and returned.
+    Updates or removes feedback for a specific book and user. If a feedback entry exists for the given user
+    and book, it will be updated based on the provided feedback value. If the feedback is marked as "none",
+    the existing feedback will be removed. If no feedback exists, a new entry will be created. Finally,
+    the updated book details are fetched and returned.
 
     :param book_id: Identifier of the book for which the feedback is being set
     :type book_id: int
@@ -288,6 +288,7 @@ def set_book_feedback(book_id: int, fb: str, user_id: int) -> dict:
     :return: A dictionary containing updated details of the book along with status and feedback data
     :rtype: dict
     """
+    
     # Check if feedback already exists for this user_id and book_id
     existing_feedback = db.session.query(
         Feedback.id,

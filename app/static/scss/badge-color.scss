@@ -34,3 +34,25 @@ $badge-colors: (
   border-radius: 30rem;
   text-transform: none;
 }
+// Make the remove X larger and inherit badge text color
+.tag-remove-x {
+  font-size: 1.1em;
+  line-height: 1;
+  color: inherit;
+  background: none !important;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  vertical-align: middle;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+.tag-remove-x:hover {
+  opacity: 1;
+  text-decoration: none;
+}
+
+// Remove Tagify's default X styling
+.tagify__tag__removeBtn {
+  margin-inline-end: auto;
+}
