@@ -32,3 +32,11 @@
     margin-right: 10px; /* Add spacing between each term and definition */
 }
 
+.cover-thumbnail-constrained {
+    max-height: 50px;
+    max-width: 45px;
+    height: auto;
+    width: auto;
+    object-fit: contain;
+    margin-right: 10px;
+}

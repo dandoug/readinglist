@@ -74,7 +74,7 @@ def search():
 
     if bks is None:
         # author, title, or cat must be specified
-        return jsonify({"error": "Missing author, title, or cat search parameter"}), 400
+        return jsonify({"error": "bad search input"}), 400
 
     return render_template('results.html', books=bks, placeholder=PLACEHOLDER)
 
@@ -141,7 +141,7 @@ def download():
     # input arguments did not result in search
     if bks is None:
         # author, title, or cat must be specified
-        return jsonify({"error": "Missing author, title, or cat search parameter"}), 400
+        return jsonify({"error": "Bad search input parameter"}), 400
 
     response = _make_csv_response(bks)
 
@@ -488,7 +488,7 @@ def _check_for_required_tag_and_book(req, tag_create=False) -> (Tag, Book, Respo
     tag_name = req.json.get('tag')
     book_id = req.json.get('book_id')
 
-    if not tag_name or not book_id or not isinstance(book_id, int):
+    if not tag_name or not book_id:
         return None, None, jsonify({"error": "Missing or invalid parameters"}), 400
     # check that book exists
     book = get_book_by_id(book_id)
