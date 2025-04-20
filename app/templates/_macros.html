@@ -77,9 +77,20 @@
 {%- macro search_filters(filter_prefix) -%}
     {% set user_id = current_user.id if current_user.is_authenticated else None %}
     {% if user_id  %}
-        <div class="row">
-            <div class="col-md-3 d-flex justify-content-end mb-2">
-              <span class="font-weight-bold">Search Filters:</span>
+        <div class="row" id="{{ filter_prefix }}filters">
+            <div class="col-md-3 d-flex justify-content-start mb-2">
+                <div class="container">
+                    <div class="row col-md-12 justify-content-start">
+                        <span class="font-weight-bold">Search Filters:</span>
+                    </div>
+                    <div class="row col-md-12">
+                        <span id="{{ filter_prefix }}edit-filter-tags" class="clickable ml-2 mr-2"
+                              style="cursor: pointer;" data-filter-prefix="{{ filter_prefix }}"
+                              data-role="tag-editor" ><i
+                                class="fa fa-pencil"></i></span>
+                        <span>Tags:</span><span id="{{ filter_prefix }}tags-input" class="ml-2"></span>
+                    </div>
+                </div>
             </div>
             <!-- Reading Status -->
             {{ form_group(

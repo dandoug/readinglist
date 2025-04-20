@@ -139,6 +139,33 @@
         </div>
     </div>
 </div>
+
+<!-- Tag FilterModal -->
+<div class="modal fade" id="tagFilterModal" tabindex="-1" role="dialog"
+     data-keyboard="false" data-backdrop="static" aria-labelledby="tagFilterModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h5 class="modal-title" id="tagFilterModalLabel">Filter by tags</h5>
+                <span class="text-end">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span>&times;</span>
+                    </button>
+                </span>
+            </div>
+            <!-- Modal Body -->
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <span id="filter-tag-display"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
 
 <!-- Scripts -->
@@ -159,7 +186,29 @@
         }
     });
 
-    $(document).ready(function() {
+    let checkedTags = {
+        "byauthor-": [],
+        "bytitle-": [],
+        "bycategory-": []
+    }
+    function clearCheckedTags() {
+        for (t in checkedTags) {
+            checkedTags[t] = [];
+        }
+    }
+
+    function showCheckedTags(span, prefix) {
+        span.innerHTML = ``
+        for (let i = 0; i < checkedTags[prefix].length; i++) {
+            const badgeId = checkedTags[prefix][i].badgeId;
+            const tagId = checkedTags[prefix][i].id;
+            const tag = checkedTags[prefix][i].value;
+            tagHtml = `<span data-tag-id="${tagId}" class="badge badge-pill ${badgeId}">${tag}</span>`
+            span.innerHTML += tagHtml;
+        }
+    }
+
+    $(document).ready(async function() {
         // Initialize treeview for categories
         const treedata = {{ category_bs_tree | tojson }};
         $('#tree').treeview({
@@ -199,17 +248,161 @@
             // reset filter buttons functionality
             document.getElementById('byauthor-reset-btn').addEventListener('click', function() {
                 resetRadiosByPrefix('byauthor-');
+                resetTagFilterByPrefix('byauthor-');
+                uncheckAll('byauthor-');
             });
             document.getElementById('bytitle-reset-btn').addEventListener('click', function() {
                 resetRadiosByPrefix('bytitle-');
+                resetTagFilterByPrefix('bytitle-');
+                uncheckAll('bytitle-');
             });
             document.getElementById('bycategory-reset-btn').addEventListener('click', function() {
                 resetRadiosByPrefix('bycategory-');
+                resetTagFilterByPrefix('bycategory-');
+                uncheckAll('bycategory-');
             });
+
+
+            function resetTagFilterByPrefix(prefix) {
+                const tagFilter = document.getElementById(prefix + 'tags-input');
+                tagFilter.innerHTML = '';
+            }
+
+            function uncheckAll(prefix) {
+                checkedTags[prefix] = [];
+                document.querySelectorAll(`#${prefix}filters .custom-control-input:checked`)
+                    .forEach(checkbox => checkbox.checked = false);
+            }
+
+            function listensForTagFilterChange() {
+                document.addEventListener('change', (event) => {
+                    if (event.target.matches('.custom-control-input')) {
+                        const checkedIds = Array.from(
+                            document.querySelectorAll(`.custom-control-input:checked`))
+                            .map(checkbox => checkbox.id);
+                        const prefix = event.target.getAttribute('data-prefix');
+
+                        checkedTags[prefix] = [];
+                        for (let i = 0; i < checkedIds.length; i++) {
+                            input = document.getElementById(checkedIds[i]);
+                            tagobj = {'value': input.getAttribute('data-tag'),
+                                'badgeId': input.getAttribute('data-tag-badge-id'),
+                                'id': input.getAttribute('data-tag-id')}
+                            checkedTags[prefix].push(tagobj);
+                        }
+
+                        span = document.getElementById(prefix + 'tags-input');
+                        showCheckedTags(span, prefix);
+                   }
+                });
+            }
+
+            listensForTagFilterChange();
+
+
+            // show edit tag filter buttons functionality
+            document.getElementById('byauthor-edit-filter-tags').addEventListener('click', showTagFilter);
+            document.getElementById('bytitle-edit-filter-tags').addEventListener('click', showTagFilter);
+            document.getElementById('bycategory-edit-filter-tags').addEventListener('click', showTagFilter);
+
+            async function getUsersTags() {
+                try {
+                    const response = await fetch('/get_user_tags');
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch tags');
+                    }
+                    const data = await response.json();
+                    return data.tags;
+                } catch (error) {
+                    console.error('Error fetching tags:', error);
+                    return [];
+                }
+            }
+
+            async function showTagFilter(event) {
+                const cardClickSpan = event.currentTarget;
+                const prefix = cardClickSpan.getAttribute('data-filter-prefix');
+                const filterDisplay = document.getElementById('filter-tag-display');
+                const tags = await getUsersTags();
+
+                const createCheckboxBadge = (tag) => {
+                    const tagId = `${tag.value.replace(/\s+/g, '-')}`;
+                    const badgeId = `${prefix}tag-filter-${tagId}`;
+                    const isChecked = checkedTags[prefix].some(tag => tag.id === tagId);
+
+                    return `
+                        <div class="row">
+                        <div class="badge badge-pill badge-${tag.color} m-1">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="${badgeId}"
+                                        data-prefix="${prefix}"
+                                        data-tag-id="${tagId}"
+                                        data-tag-badge-id="badge-${tag.color}"
+                                        data-tag="${tag.value}"
+                                        ${isChecked ? 'checked' : ''}>
+                                <label class="custom-control-label" for="${badgeId}">${tag.value}</label>
+                            </div>
+                        </div>
+                        </div>
+                    `;
+                };
+
+                if (tags.length === 0) {
+                    filterDisplay.innerHTML = ``
+                } else if (tags.length === 1) {
+                    filterDisplay.innerHTML = `
+                        <div class="row">
+                            <div class="col-md-4">
+                                ${createCheckboxBadge(tags[0])}
+                            </div>
+                        </div>`;
+                } else if (tags.length === 2) {
+                    filterDisplay.innerHTML = `
+                        <div class="row">
+                            <div class="col-md-4">
+                                ${createCheckboxBadge(tags[0])}
+                            </div>
+                            <div class="col-md-4">
+                                ${createCheckboxBadge(tags[1])}
+                            </div>
+                        </div>`;
+                } else {
+                    // For 3 or more tags, split into three columns
+                    const itemsPerColumn = Math.ceil(tags.length / 3);
+                    const firstColumn = tags.slice(0, itemsPerColumn);
+                    const secondColumn = tags.slice(itemsPerColumn, itemsPerColumn * 2);
+                    const thirdColumn = tags.slice(itemsPerColumn * 2);
+
+                    filterDisplay.innerHTML = `
+                        <div class="row">
+                            <div class="col-md-4">
+                                ${firstColumn.map(createCheckboxBadge).join('')}
+                            </div>
+                            <div class="col-md-4">
+                                ${secondColumn.map(createCheckboxBadge).join('')}
+                            </div>
+                            <div class="col-md-4">
+                                ${thirdColumn.map(createCheckboxBadge).join('')}
+                            </div>
+                        </div>`;
+                }
+                $('#tagFilterModal').modal('show');
+            }
+
+
+            function onTagFilterModalClose(event) {
+                document.activeElement.blur();
+                document.getElementById('tagFilterModal').setAttribute('aria-hidden', 'true');
+            }
+
+            $('#tagFilterModal').on('hidden.bs.modal', onTagFilterModalClose);
+            const closeButton = document.querySelector('.modal-header .close');
+            closeButton.addEventListener('click', onTagFilterModalClose);
+
         {% endif %}
 
         /**
-         * Get URL parameters based on the prefix for radio buttons
+         * Get URL parameters based on the prefix for radio buttons and tags
          * @param {string} prefix - The prefix used for the radio button names.
          * @returns {string} - A concatenated string of URL parameters.
          */
@@ -228,7 +421,13 @@
                 feedbackParam = '';
             }
 
-            return statusParam + feedbackParam;
+            let tagsParam = '';
+            for (let i = 0; i < checkedTags[prefix].length; i++) {
+                const tagId = checkedTags[prefix][i].id;
+                tagsParam += '&tag=' + encodeURIComponent(tagId);
+            }
+
+            return statusParam + feedbackParam + tagsParam;
         }
 
         // Category search button functionality
@@ -236,13 +435,14 @@
             const tree = $('#tree').treeview(true);
             const checkedNodes = tree.getChecked();
             const checkedNodesIds = checkedNodes.map(node => node.id);
+            let additionalParams = ''
             if (checkedNodesIds.length !== 0) {
                 {% set user_id = current_user.id if current_user.is_authenticated else None %}
                 {% if user_id  %}
                     // Reuse the function for the 'byauthor-' prefix
-                    const additionalParams = getSearchParamsByPrefix('bycategory-');
+                    additionalParams = getSearchParamsByPrefix('bycategory-');
                 {% else %}
-                    const additionalParams = ''; // Default to no params if user is not authenticated
+                    additionalParams = ''; // Default to no params if user is not authenticated
                 {% endif %}
                 window.location.href = '/search?' + checkedNodesIds.map(id => 'cat=' + encodeURIComponent(id)).join('&')
                     + additionalParams;
@@ -254,13 +454,14 @@
         // Author search button functionality
         document.getElementById('author-search-btn').addEventListener('click', function() {
             const author = document.getElementById('author-search-input').value.trim();
+            let additionalParams = ''
             if (author) {
                 {% set user_id = current_user.id if current_user.is_authenticated else None %}
                 {% if user_id  %}
                     // Reuse the function for the 'byauthor-' prefix
-                    const additionalParams = getSearchParamsByPrefix('byauthor-');
+                    additionalParams = getSearchParamsByPrefix('byauthor-');
                 {% else %}
-                    const additionalParams = ''; // Default to no params if user is not authenticated
+                    additionalParams = ''; // Default to no params if user is not authenticated
                 {% endif %}
                 window.location.href = '/search?author=' + encodeURIComponent(author) + additionalParams;
             } else {
@@ -271,13 +472,14 @@
         // Title search button functionality
         document.getElementById('title-search-btn').addEventListener('click', function() {
             const title = document.getElementById('title-search-input').value.trim();
+            let additionalParams = ''
             if (title) {
                 {% set user_id = current_user.id if current_user.is_authenticated else None %}
                 {% if user_id  %}
                     // Reuse the function for the 'byauthor-' prefix
-                    const additionalParams = getSearchParamsByPrefix('bytitle-');
+                    additionalParams = getSearchParamsByPrefix('bytitle-');
                 {% else %}
-                    const additionalParams = ''; // Default to no params if user is not authenticated
+                    additionalParams = ''; // Default to no params if user is not authenticated
                 {% endif %}
                 window.location.href = '/search?title=' + encodeURIComponent(title) + additionalParams;
             } else {
