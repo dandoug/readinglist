@@ -563,17 +563,21 @@ def _perform_search_base_on_args(req: Request):
     status_filter = req.args.get('status', None)
     feedback_filter = req.args.get('feedback', None)
 
+    tag_filter = req.args.getlist('tag')
+    # make sure all lower case
+    tag_filter = [tag.lower() for tag in tag_filter]
+
     sort_column = req.args.get('sortColumn', None)
     sort_order = req.args.get('sortOrder', 'asc')
 
     if author:
-        bks = search_by_author(author, status_filter, feedback_filter)
+        bks = search_by_author(author, status_filter, feedback_filter, tag_filter)
     elif title:
-        bks = search_by_title(title, status_filter, feedback_filter)
+        bks = search_by_title(title, status_filter, feedback_filter, tag_filter)
     elif categories:
         # Decode encoded categories to full path strings before searching
         bks = search_by_categories(
-            [id_to_fullpath(category) for category in categories], status_filter, feedback_filter)
+            [id_to_fullpath(category) for category in categories], status_filter, feedback_filter, tag_filter)
     else:
         return None
 
@@ -626,9 +630,15 @@ def _make_csv_response(bks):
         "Amazon_Link",
         "Cover_Image",
         "Status",
+        "Tags",
         "Specifications"
     ])
     for bk in bks:
+        tags = bk.tags;
+        if tags:
+            tag_str = ', '.join(map(lambda t: t.tag.name.lower().replace(' ','-'), tags))
+        else:
+            tag_str = ''
         writer.writerow([
             bk.id,
             _safe_string(bk.title),
@@ -645,6 +655,7 @@ def _make_csv_response(bks):
             bk.link,
             bk.image,
             bk.reading_statuses[0].status.value if bk.reading_statuses else 'none',
+            tag_str,
             bk.specifications_flat
         ])
     # Get the CSV content from the buffer

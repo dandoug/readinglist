@@ -1,3 +1,15 @@
+"""
+Configuration module for the Flask application managing environment-specific settings.
+
+This module handles loading configuration settings from environment variables and provides
+different configuration classes for development, production, and testing environments.
+It includes settings for:
+- Database connections (MySQL/SQLAlchemy)
+- Security configurations (passwords, cookies, sessions)
+- Email settings
+- Logging configurations
+- API integrations
+"""
 import logging
 import os
 from pathlib import Path
@@ -6,7 +18,7 @@ from urllib.parse import quote_plus
 from dotenv import load_dotenv
 
 # Calculate the path to where the SQL files are
-PROJECT_ROOT = Path(__file__).resolve().parent.parent # Navigate to the project root
+PROJECT_ROOT = Path(__file__).resolve().parent.parent  # Navigate to the project root
 INTEGRATION_DIR = PROJECT_ROOT / "tests" / "integration"
 
 # Determine which environment file to load
@@ -16,6 +28,8 @@ dotenv_path = INTEGRATION_DIR / ".env.testing" if env in {"testing"} else PROJEC
 # Load the appropriate .env file
 load_dotenv(str(dotenv_path))
 
+
+# pylint: disable=too-few-public-methods
 class Config:
     """Base configuration with default settings."""
     SECRET_KEY = os.getenv("SECRET_KEY", "default-secret-key")
@@ -29,7 +43,7 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False  # Avoid overhead of tracking
 
     # Add any other app-wide default configurations here
-    DEBUG = os.getenv("DEBUG", False)
+    DEBUG = os.getenv("DEBUG", "False").lower() in ("true", "1", "t", "yes")
 
     #  Flask-Mailman settings
     MAIL_SERVER   = os.getenv("MAIL_SERVER")
@@ -51,10 +65,9 @@ class Config:
     SESSION_COOKIE_HTTPONLY = True
     REMEMBER_COOKIE_HTTPONLY = True
 
-
     SECURITY_USERNAME_ENABLE = False  # keep it simple, just email
     SECURITY_USE_REGISTER_V2 = True
-    SECURITY_REGISTERABLE = False  # we provide our own register view to only allow admin role to register
+    SECURITY_REGISTERABLE = False  # we provide our own register view
     SECURITY_POST_REGISTER_VIEW = "/admin/user/"
 
     SECURITY_EMAIL_SENDER = os.getenv("SECURITY_EMAIL_SENDER")
@@ -72,8 +85,14 @@ class Config:
 
     @classmethod
     def configure_logging(cls):
+        """
+        Configures logging for the application.
+
+        This method sets up global logging with the specified logging level. Additionally,
+        SQLAlchemy-specific logging is configured to the same level.
+        """
         # Global logging setup
-        logging.basicConfig(level=cls.LOGGING_LEVEL)  # Set logging level dynamically
+        logging.basicConfig(level=cls.LOGGING_LEVEL)  # Set the logging level dynamically
 
         # Configure SQLAlchemy specific logging
         logging.getLogger("sqlalchemy.engine").setLevel(cls.LOGGING_LEVEL)
@@ -83,8 +102,11 @@ class DevelopmentConfig(Config):
     """Development-specific configuration."""
     DEBUG = True
     LOGGING_LEVEL = logging.INFO
-    SQLALCHEMY_ECHO = False  # Log SQL queries for debugging, set logging config in configure_logging()
-    SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{Config.RDS_USERNAME}:{quote_plus(str(Config.RDS_PASSWORD))}@{Config.RDS_HOSTNAME}:{Config.RDS_PORT}/{Config.RDS_DB_NAME}"
+    SQLALCHEMY_ECHO = False  # Log SQL queries for debugging
+    SQLALCHEMY_DATABASE_URI = (f"mysql+pymysql://{Config.RDS_USERNAME}:" +
+                               f"{quote_plus(str(Config.RDS_PASSWORD))}@{Config.RDS_HOSTNAME}:" +
+                               f"{Config.RDS_PORT}/{Config.RDS_DB_NAME}")
+    TEMPLATES_AUTO_RELOAD = True
 
 
 class ProductionConfig(Config):
@@ -92,7 +114,9 @@ class ProductionConfig(Config):
     DEBUG = False
     LOGGING_LEVEL = logging.WARNING
     SQLALCHEMY_ECHO = False
-    SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{Config.RDS_USERNAME}:{quote_plus(str(Config.RDS_PASSWORD))}@{Config.RDS_HOSTNAME}:{Config.RDS_PORT}/{Config.RDS_DB_NAME}"
+    SQLALCHEMY_DATABASE_URI = (f"mysql+pymysql://{Config.RDS_USERNAME}:" +
+                               f"{quote_plus(str(Config.RDS_PASSWORD))}@{Config.RDS_HOSTNAME}:" +
+                               f"{Config.RDS_PORT}/{Config.RDS_DB_NAME}")
 
 
 class TestingConfig(Config):
@@ -101,23 +125,37 @@ class TestingConfig(Config):
     DEBUG = True
     LOGGING_LEVEL = logging.WARNING
     SERVER_NAME = '0.0.0.0:8000'
-    SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{Config.RDS_USERNAME}:{quote_plus(str(Config.RDS_PASSWORD))}@{Config.RDS_HOSTNAME}:{Config.RDS_PORT}/{Config.RDS_DB_NAME}"
+    SQLALCHEMY_DATABASE_URI = (f"mysql+pymysql://{Config.RDS_USERNAME}:" +
+                               f"{quote_plus(str(Config.RDS_PASSWORD))}@{Config.RDS_HOSTNAME}:" +
+                               f"{Config.RDS_PORT}/{Config.RDS_DB_NAME}")
 
+    # pylint: disable=invalid-name
     def __init__(self):
         super().__init__()
 
-        # Workaround for running tests in a container locally under act (https://github.com/nektos/act)
+        # Workaround for running tests in a container locally under act
+        # see(https://github.com/nektos/act)
         if os.getenv("ACT") and os.getenv("RDS_HOSTNAME") == "localhost":
             self.RDS_HOSTNAME = "host.docker.internal"
-            self.SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{Config.RDS_USERNAME}:{quote_plus(str(Config.RDS_PASSWORD))}@{self.RDS_HOSTNAME}:{Config.RDS_PORT}/{Config.RDS_DB_NAME}"
+            self.SQLALCHEMY_DATABASE_URI = (f"mysql+pymysql://{Config.RDS_USERNAME}:" +
+                                            f"{quote_plus(str(Config.RDS_PASSWORD))}" +
+                                            f"@{self.RDS_HOSTNAME}:" +
+                                            f"{Config.RDS_PORT}/{Config.RDS_DB_NAME}")
         if os.getenv("ACT") and os.getenv("mail_server") == "localhost":
             self.MAIL_SERVER = "host.docker.internal"
 
 
-
 # Automatically configure logging for the chosen environment
-def configure_app_logging(env="development"):
-    config_class = _config_by_name[env]
+def configure_app_logging(environment="development"):
+    """
+    Configures the application logging based on the given environment.
+
+    This function retrieves a configuration class corresponding to the provided
+    environment and applies its logging configuration. It is used to ensure that
+    the application's logging adheres to the desired environment-specific
+    settings.
+    """
+    config_class = _config_by_name[environment]
     config_class.configure_logging()
 
 
@@ -129,4 +167,5 @@ _config_by_name = {
 }
 
 
-__all__ = ["Config", "DevelopmentConfig", "ProductionConfig", "TestingConfig", "configure_app_logging", "PROJECT_ROOT"]
+__all__ = ["Config", "DevelopmentConfig", "ProductionConfig", "TestingConfig",
+           "configure_app_logging", "PROJECT_ROOT"]
