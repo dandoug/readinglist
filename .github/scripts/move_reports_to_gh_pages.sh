@@ -34,8 +34,8 @@ fi
   git config user.email "github-actions[bot]@users.noreply.github.com" && \
   git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/dandoug/readinglist.git && \
   git add . && \
-  git commit -m "Update reports" && \
-  git push origin gh-pages
+  git commit --amend --no-edit && \
+  git push --force origin gh-pages
 )
   
 # cleanup the /tmp/readinglist directory  
