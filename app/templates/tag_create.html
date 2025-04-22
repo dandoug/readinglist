@@ -1,11 +1,11 @@
-{% extends 'admin/model/edit.html' %}
+{% extends 'admin/model/create.html' %}
 
-{% block head_css %}
+{% block head %}
     {{ super() }}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta3/css/bootstrap-select.min.css">
 {% endblock %}
 
-{% block tail_js %}
+{% block tail %}
     {{ super() }}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta3/js/bootstrap-select.min.js"></script>
     <script>
