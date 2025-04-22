@@ -1,0 +1,114 @@
+{
+  "summary": {
+    "started": "2025-04-27 18:35:46.937019",
+    "libraries": [
+      "flask"
+    ],
+    "strictness": "medium",
+    "profiles": "default, strictness_medium, strictness_high, strictness_veryhigh, no_doc_warnings, no_test_warnings, no_member_warnings",
+    "tools": [
+      "dodgy",
+      "mccabe",
+      "profile-validator",
+      "pycodestyle",
+      "pyflakes"
+    ],
+    "message_count": 7,
+    "completed": "2025-04-27 18:35:49.294790",
+    "time_taken": "2.36",
+    "formatter": "json"
+  },
+  "messages": [
+    {
+      "source": "dodgy",
+      "code": "password",
+      "location": {
+        "path": "app/__init__.py",
+        "module": "home.runner.work.readinglist.readinglist.app.__init__",
+        "function": null,
+        "line": 27,
+        "character": 0
+      },
+      "message": "Possible hardcoded password",
+      "isFixable": false
+    },
+    {
+      "source": "pyflakes",
+      "code": "F401",
+      "location": {
+        "path": "app/__init__.py",
+        "module": null,
+        "function": null,
+        "line": 75,
+        "character": 5
+      },
+      "message": "'app.models.ReadingStatus' imported but unused",
+      "isFixable": false
+    },
+    {
+      "source": "pyflakes",
+      "code": "F401",
+      "location": {
+        "path": "app/__init__.py",
+        "module": null,
+        "function": null,
+        "line": 109,
+        "character": 9
+      },
+      "message": "'app.routes' imported but unused",
+      "isFixable": false
+    },
+    {
+      "source": "pyflakes",
+      "code": "F401",
+      "location": {
+        "path": "app/helpers/__init__.py",
+        "module": null,
+        "function": null,
+        "line": 16,
+        "character": 1
+      },
+      "message": "'app.helpers.utilities.build_library_search_urls' imported but unused",
+      "isFixable": false
+    },
+    {
+      "source": "pyflakes",
+      "code": "F401",
+      "location": {
+        "path": "app/helpers/__init__.py",
+        "module": null,
+        "function": null,
+        "line": 18,
+        "character": 1
+      },
+      "message": "'app.helpers.globals.register_globals' imported but unused",
+      "isFixable": false
+    },
+    {
+      "source": "pyflakes",
+      "code": "F401",
+      "location": {
+        "path": "app/helpers/__init__.py",
+        "module": null,
+        "function": null,
+        "line": 19,
+        "character": 1
+      },
+      "message": "'app.helpers.buildinfo.check_and_generate_build_info' imported but unused",
+      "isFixable": false
+    },
+    {
+      "source": "pyflakes",
+      "code": "F821",
+      "location": {
+        "path": "app/models/tags.py",
+        "module": null,
+        "function": null,
+        "line": 49,
+        "character": 19
+      },
+      "message": "undefined name 'User'",
+      "isFixable": false
+    }
+  ]
+}

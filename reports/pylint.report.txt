@@ -1,27 +1,4 @@
-************* Module app.models.tags
-app/models/tags.py:6:0: C0301: Line too long (105/100) (line-too-long)
-************* Module app.security.tag_views
-app/security/tag_views.py:107:4: C0116: Missing function or method docstring (missing-function-docstring)
-app/security/tag_views.py:110:4: W0237: Parameter 'row' has been renamed to 'model' in overriding 'SearchRowAction.render' method (arguments-renamed)
-************* Module app.services.__init__
-app/services/__init__.py:26:0: C0301: Line too long (102/100) (line-too-long)
-************* Module app.services.book_service
-app/services/book_service.py:277:0: C0301: Line too long (107/100) (line-too-long)
-app/services/book_service.py:278:0: C0301: Line too long (107/100) (line-too-long)
-app/services/book_service.py:279:0: C0301: Line too long (103/100) (line-too-long)
-app/services/book_service.py:291:0: C0303: Trailing whitespace (trailing-whitespace)
-app/services/book_service.py:1:0: C0114: Missing module docstring (missing-module-docstring)
-app/services/book_service.py:107:8: W0707: Consider explicitly re-raising using 'except IntegrityError as exc' and 'raise ValueError('A book with the same unique constraint already exists.') from exc' (raise-missing-from)
-app/services/book_service.py:110:8: W0707: Consider explicitly re-raising using 'raise RuntimeError(f'Database request error: {e}') from e' (raise-missing-from)
-app/services/book_service.py:113:8: W0707: Consider explicitly re-raising using 'raise RuntimeError(f'An unexpected error occurred: {e}') from e' (raise-missing-from)
-app/services/book_service.py:153:8: W0707: Consider explicitly re-raising using 'except IntegrityError as exc' and 'raise ValueError('A book with the same unique constraint already exists.') from exc' (raise-missing-from)
-app/services/book_service.py:156:8: W0707: Consider explicitly re-raising using 'raise RuntimeError(f'Database request error: {e}') from e' (raise-missing-from)
-app/services/book_service.py:159:8: W0707: Consider explicitly re-raising using 'raise RuntimeError(f'An unexpected error occurred: {e}') from e' (raise-missing-from)
-app/services/book_service.py:180:8: W0707: Consider explicitly re-raising using 'raise RuntimeError(f'An error occurred while deleting the book: {e}') from e' (raise-missing-from)
-app/services/book_service.py:7:0: C0411: first party import "app.models.Book" should be placed before local import "forms.BookForm" (wrong-import-order)
-************* Module app.services.search_service
-app/services/search_service.py:54:0: C0301: Line too long (106/100) (line-too-long)
 
------------------------------------
-Your code has been rated at 9.78/10
+------------------------------------
+Your code has been rated at 10.00/10
 

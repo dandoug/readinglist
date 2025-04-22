@@ -1,0 +1,24 @@
+{% comment %}
+Include this file in your markdown file to add a framed image.
+
+Usage:
+{% raw %}
+{% include framed_photo.liquid src="image.jpg" alt="Image description" class="additional-class"%}
+{% endraw %}
+
+This macro assumes that all images are in the "/assets/images/" folder, so
+the src= argument is a path relative to that folder.
+
+The alt= argument is optional, and if omitted, the src= argument minus the
+file extenstion will be used.
+
+The class= argument is optional, and will add additional classes to the img tag.
+{% endcomment %}
+{% capture image_block %}
+<div class="image-frame">
+  <img src="/assets/images/{{ include.src }}"
+       alt="{{ include.alt | default: include.src | split: '.' | first }}"
+       class="framed-img{{ include.class | prepend: ' ' | default: '' }}">
+</div>
+{% endcapture %}
+{{ image_block | strip }}

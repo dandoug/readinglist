@@ -9,12 +9,15 @@ url: "https://dandoug.github.io/readinglist/" # the base hostname & protocol for
 plugins:
   - jekyll-remote-theme
 
+kramdown:
+  parse_block_html: true
 
 # Build settings
 remote_theme: just-the-docs/just-the-docs
 
 # Set a path/url to a favicon that will be displayed by the browser
 favicon_ico: "/assets/images/favicon.ico"
+logo: "/assets/images/logo.png"
 
 defaults:
   -

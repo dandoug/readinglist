@@ -1,0 +1,28 @@
+.image-frame {
+  display: inline-block;
+  border: 1px solid #333;         /* 1px dark grey frame */
+  border-radius: 16px;
+  padding: 0;
+  background: #f8f8f8;            /* Off-white background */
+  width: fit-content;             /* Only as wide as needed */
+}
+
+.framed-img {
+  display: block;
+  border-radius: 15px;            /* Slightly less than parent */
+  border: 5px solid #f8f8f8;      /* Off-white border */
+  box-sizing: border-box;
+  margin: 0;                      /* Remove any margin */
+  max-width: 100%;               /* Allow shrinking but not enlarging */
+  width: auto;                   /* Use image's natural width */
+  height: auto;                  /* Maintain aspect ratio */
+}
+
+/* Ensure paragraphs inside image-frame don't add extra spacing */
+.image-frame p {
+  margin: 0;
+}
+
+p:has(img) {
+  margin: 0;
+}
