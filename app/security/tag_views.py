@@ -14,6 +14,7 @@ enforcing user-specific data visibility and preventing unauthorized modification
 """
 
 from flask_admin.contrib.sqla import ModelView
+from flask_admin.model.template import EndpointLinkRowAction
 from flask_security import current_user
 from flask import abort
 from markupsafe import Markup
@@ -95,6 +96,24 @@ def _color_list_formatter(_view, _context, model, name):
     return ''
 
 
+class SearchRowAction(EndpointLinkRowAction):
+    """
+    Represents a row action for searching items with a specific tag.
+    """
+    def __init__(self):
+        super().__init__('search', 'Search')
+
+    def get_url(self, model):
+        return f"/search?title=*&tag={model.name.lower().replace(' ','-')}"
+
+    def render(self, _context, _row_id, model):
+        return Markup(
+            f'<a href="{self.get_url(model)}" title="Search items with this tag" '
+            f'class="icon">'
+            f'<span class="fa fa-binoculars"></span></a>'
+        )
+
+
 class UserTagModelView(ModelView):
     """
     A customized Flask-Admin view to manage "tags" data, ensuring only the current user's
@@ -118,6 +137,8 @@ class UserTagModelView(ModelView):
     column_formatters = {
         'color': _color_list_formatter
     }
+    # Add a custom action to the list of actions
+    column_extra_row_actions = [SearchRowAction()]
 
     can_edit = True  # Allow editing lists
     can_delete = True  # Allow deleting lists
