@@ -81,7 +81,10 @@
                         {{ search_filters('byauthor-') }}
                         <div class="row mt-0">
                             <div class="col">
-                                <label for="author-search-input"></label><input type="text" id="author-search-input" class="form-control" placeholder="Author name or partial name or * to search all authors">
+                                <label for="author-search-input"
+                                    ></label><input type="search" id="author-search-input" class="form-control"
+                                                    placeholder="Author name or partial name or * to search all authors"
+                                                    enterkeyhint="search">
                             </div>
                         </div>
                     </div>
@@ -104,7 +107,10 @@
                         {{ search_filters('bytitle-') }}
                         <div class="row mt-1">
                             <div class="col">
-                                <label for="title-search-input"></label><input type="text" id="title-search-input" class="form-control" placeholder="Book title or partial title or * to search all titles">
+                                <label for="title-search-input"
+                                    ></label><input type="search" id="title-search-input" class="form-control"
+                                                    enterkeyhint="search"
+                                                    placeholder="Book title or partial title or * to search all titles">
                             </div>
                         </div>
                     </div>
@@ -469,6 +475,21 @@
             }
         });
 
+        // Add Enter key functionality to author search input
+        document.getElementById('author-search-input').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter' || event.keyCode === 13) {
+                event.preventDefault();
+                document.getElementById('author-search-btn').click();
+            }
+        });
+
+        // Also listen for the search event (triggered when using search type input's clear button or some mobile keyboards)
+        document.getElementById('author-search-input').addEventListener('search', function(event) {
+            document.getElementById('author-search-btn').click();
+        });
+
+
+
         // Title search button functionality
         document.getElementById('title-search-btn').addEventListener('click', function() {
             const title = document.getElementById('title-search-input').value.trim();
@@ -486,6 +507,20 @@
                 alert('Please enter a book title.');
             }
         });
+
+        // Add Enter key functionality to title search input
+        document.getElementById('title-search-input').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter' || event.keyCode === 13) {
+                event.preventDefault();
+                document.getElementById('title-search-btn').click();
+            }
+        });
+
+        // Also listen for the search event (triggered when using search type input's clear button or some mobile keyboards)
+        document.getElementById('title-search-input').addEventListener('search', function(event) {
+            document.getElementById('title-search-btn').click();
+        });
+
     });
 </script>
 {% endblock %}
