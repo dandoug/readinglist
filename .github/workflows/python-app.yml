@@ -44,7 +44,29 @@ jobs:
           COVERAGE=$(grep -oE 'line-rate="[0-9]+\.[0-9]+"' coverage.xml | grep -oE '[0-9]+\.[0-9]+' | head -n 1 | awk '{printf "%.2f\n", $1 * 100}')
           echo "PYTEST_COVERAGE=$COVERAGE" >> $GITHUB_ENV
 
+      - name: Run bandit
+        run: |  
+          bandit -r . -f html > bandit_output.html
+          bandit -r . -f json > bandit_output.json
+          SEV_HITS=$(python .github/scripts/parse_bandit_results.py bandit_output.json)
+          echo "BANDIT_SEVERE_HITS=$SEV_HITS" >> $GITHUB_ENV
+
+      - name: Run radon
+        run: |
+          radon cc --total-average . > radon_cc_report.txt
+          radon raw -s . > radon_raw_report.txt
+          COMPLEXITY=$(python .github/scripts/parse_radon_results.py --cc-report radon_cc_report.txt)
+          echo "RADON_CC=$COMPLEXITY" >> $GITHUB_ENV
+          LOC=$(python .github/scripts/parse_radon_results.py --raw-report radon_raw_report.txt)
+          echo "RADON_LOC=$LOC" >> $GITHUB_ENV
+
+      - name: Run prospector
+        run: |
+          prospector --uses flask --without-tool pylint -o json -s medium | tee prospector.json
+          PROS_MSGS=$(python .github/scripts/parse_prospector_results.py prospector.json)
+          echo "PROSPECTOR_MSGS=$PROS_MSGS" >> $GITHUB_ENV
+
       - name: Publish updated reports to github pages
         run: |
-          python .github/scripts/generate_badge_files.py ${{ env.PYTEST_COVERAGE }}  ${{ env.PYLINT_SCORE }}
+          python .github/scripts/generate_badge_files.py ${{ env.PYTEST_COVERAGE }}  ${{ env.PYLINT_SCORE }} ${{ env.BANDIT_SEVERE_HITS }} ${{ env.RADON_CC }} ${{ env.RADON_LOC }} ${{ env.PROSPECTOR_MSGS }}
           .github/scripts/move_reports_to_gh_pages.sh

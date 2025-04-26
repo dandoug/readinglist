@@ -10,3 +10,10 @@ pylint.json
 pylint.report.txt
 build-info.json
 app_package.zip
+bandit.json
+bandit_output.json
+bandit_output.html
+radon*report.txt
+radon*.json
+prospector.json
+prospector_msg_count.json

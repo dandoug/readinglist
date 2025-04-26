@@ -17,7 +17,7 @@ find /tmp/readinglist/reports -type d -empty -delete
 
 # Move the report files to /tmp/readinglist/reports
 mkdir -p /tmp/readinglist/reports
-REPORTS_TO_MOVE=("coverage.xml" "pylint.report.txt" "htmlcov" "coverage.json" "pylint.json" )
+REPORTS_TO_MOVE=("coverage.xml" "pylint.report.txt" "htmlcov" "coverage.json" "pylint.json" "bandit.json" "bandit_output.json" "bandit_output.html" "radon_cc_report.txt" "radon_raw_report.txt" "radon_cc.json" "radon_loc.json" "prospector.json" "prospector_msg_count.json")
 for REPORT in "${REPORTS_TO_MOVE[@]}"; do
   mv "$PROJECT_ROOT/$REPORT" /tmp/readinglist/reports/
 done

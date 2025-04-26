@@ -91,7 +91,7 @@ def _color_list_formatter(_view, _context, model, name):
     :return: rendering for the column in a list view
     """
     if name == 'color' and model.color:
-        return Markup(
+        return Markup(  # nosec B704
             tag_pill_markup(text=model.color.title(), color=model.color)
         )
     return ''
@@ -104,12 +104,27 @@ class SearchRowAction(EndpointLinkRowAction):
     def __init__(self):
         super().__init__('search', 'Search')
 
-    def get_url(self, model):
+    @staticmethod
+    def get_url(model):
+        """
+        Generates a search URL based on the provided model's name.
+
+        The function takes a model object and constructs a URL-encoded query
+        string using the lowercase name of the model. The generated URL is
+        in the format of a search endpoint where the model's name becomes a
+        filtering condition via its 'tag' parameter.
+
+        :param model: A model object containing the 'name' attribute used
+                      to generate the encoded query string.
+        :type model: Any object with a string `name` attribute
+        :return: A string representing the URL-encoded search query URL.
+        :rtype: str
+        """
         return f"/search?title=*&tag={quote(model.name.lower())}"
 
-    def render(self, _context, _row_id, model):
-        return Markup(
-            f'<a href="{self.get_url(model)}" title="Search items with this tag" '
+    def render(self, _context, _row_id, row):
+        return Markup(  # nosec B704
+            f'<a href="{self.get_url(row)}" title="Search items with this tag" '
             f'class="icon">'
             f'<span class="fa fa-binoculars"></span></a>'
         )
