@@ -39,11 +39,26 @@ def build_about_info() -> dict:
     about_info["python_version"] = sys.version
     about_info["platform"] = sys.platform
     about_info["app_filepath"] = os.path.abspath(PROJECT_ROOT)
-    about_info["installed_libraries"] = [
-        {"name": dist.metadata["Name"], "version": dist.version,
-         "homepage": dist.metadata["Home-Page"] if "Home-Page" in dist.metadata else "N/A"}
-        for dist in distributions()]
-    about_info["environment"] = {
+    about_info["installed_libraries"] = _installed_libs()
+    about_info["environment"] = _environment_info()
+    about_info["vars"] = _get_safe_environment_variables()
+    from app import db  # pylint: disable=import-outside-toplevel
+    about_info["database"] = _database_info(db)
+
+    return about_info
+
+
+def _environment_info() -> dict[str, str]:
+    """
+    Retrieves detailed information about the current execution environment, including
+    system-related and Python-specific details.
+
+    :return: A dictionary containing environment information such as the
+        system, release, version, machine architecture, processor, Python
+        implementation, and compiler details.
+    :rtype: dict
+    """
+    return {
         "system": platform.system(),
         "release": platform.release(),
         "version": platform.version(),
@@ -52,15 +67,35 @@ def build_about_info() -> dict:
         "python_implementation": platform.python_implementation(),
         "python_compiler": platform.python_compiler(),
     }
-    about_info["vars"] = _get_safe_environment_variables()
-    from app import db # pylint: disable=import-outside-toplevel
-    about_info["database"] = _database_info(db)
 
-    return about_info
+
+def _installed_libs() -> list[dict[str, str]]:
+    """
+    Retrieves a list of installed libraries and their metadata, including name, version,
+    and homepage. Libraries are sorted case-insensitively by their names.
+
+    The function gathers metadata for each installed library available through the
+    `distributions()` function, generating a list of dictionaries. Each dictionary
+    contains details about the library's name, version, and homepage, depending on
+    the availability of such attributes.
+
+    :return: A sorted list of dictionaries, where each dictionary contains
+        metadata about an installed library, such as the library's name, version,
+        and homepage. Libraries are sorted in ascending, case-insensitive order by
+        their names.
+    :rtype: list[dict[str, str]]
+    """
+    libs = [
+        {"name": dist.metadata["Name"], "version": dist.version,
+         "homepage": dist.metadata["Home-Page"] if "Home-Page" in dist.metadata else "N/A"}
+        for dist in distributions()]
+    # sort the list of libs by name, using case-insensitive ordering
+    libs = sorted(libs, key=lambda x: x["name"].lower())
+    return libs
 
 
 def _get_safe_environment_variables():
-    # List of environment variables to expose (whitelist)
+    # List of environment variables to expose
     allowed_env_vars = ["FLASK_ENV", "RDS_HOSTNAME", "RDS_PORT", "RDS_DB_NAME",
                         "MAIL_SERVER", "MAIL_PORT", "SECURITY_EMAIL_SENDER"]
 
@@ -94,8 +129,6 @@ def _database_info(db):
             # noinspection SqlResolve
             table_query = text("SELECT name FROM sqlite_master WHERE type='table';")
 
-
-
         db_platform_info = None
         if query is not None:
             result = connection.execute(query).fetchall()
@@ -120,7 +153,7 @@ def _database_info(db):
             "db_platform_info": db_platform_info if db_platform_info else "",
             "db_table_info": db_table_info if db_table_info else ""
         }
-    except Exception as e: # pylint: disable=broad-except
+    except Exception as e:  # pylint: disable=broad-except
         logging.error("Could not retrieve database info: %s", e, exc_info=True)
         return {}
 

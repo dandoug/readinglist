@@ -63,7 +63,14 @@
                                                 <dl class="inline-dl mb-0 ml-4">
                                                     {% for k, v in item.items() %}
                                                         <dt>{{ k }}</dt>
-                                                        <dd>{{ v }}</dd>
+                                                        <dd>
+                                                            {% if v is string and (v.lower().startswith('http://') or
+                                                                  v.lower().startswith('https://')) %}
+                                                                <a href="{{ v }}" target="_blank">{{ v }}</a>
+                                                            {% else %}
+                                                                {{ v }}
+                                                            {% endif %}
+                                                        </dd>
                                                     {% endfor %}
                                                 </dl>
                                             </li>
