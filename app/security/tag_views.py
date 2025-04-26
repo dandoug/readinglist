@@ -12,6 +12,7 @@ Classes:
 These views restrict access and query data based on the currently authenticated user,
 enforcing user-specific data visibility and preventing unauthorized modifications.
 """
+from urllib.parse import quote
 
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.model.template import EndpointLinkRowAction
@@ -104,7 +105,7 @@ class SearchRowAction(EndpointLinkRowAction):
         super().__init__('search', 'Search')
 
     def get_url(self, model):
-        return f"/search?title=*&tag={model.name.lower().replace(' ','-')}"
+        return f"/search?title=*&tag={quote(model.name.lower())}"
 
     def render(self, _context, _row_id, model):
         return Markup(

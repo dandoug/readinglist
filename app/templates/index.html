@@ -332,7 +332,7 @@
                 const tags = await getUsersTags();
 
                 const createCheckboxBadge = (tag) => {
-                    const tagId = `${tag.value.replace(/\s+/g, '-')}`;
+                    const tagId = `${tag.value}`;
                     const badgeId = `${prefix}tag-filter-${tagId}`;
                     const isChecked = checkedTags[prefix].some(tag => tag.id === tagId);
 
