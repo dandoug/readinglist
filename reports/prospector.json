@@ -1,6 +1,6 @@
 {
   "summary": {
-    "started": "2025-04-27 18:35:46.937019",
+    "started": "2026-01-26 03:25:22.116743",
     "libraries": [
       "flask"
     ],
@@ -13,9 +13,9 @@
       "pycodestyle",
       "pyflakes"
     ],
-    "message_count": 7,
-    "completed": "2025-04-27 18:35:49.294790",
-    "time_taken": "2.36",
+    "message_count": 9,
+    "completed": "2026-01-26 03:25:24.720038",
+    "time_taken": "2.60",
     "formatter": "json"
   },
   "messages": [
@@ -23,10 +23,23 @@
       "source": "dodgy",
       "code": "password",
       "location": {
+        "path": "app/config.py",
+        "module": "home.runner.work.readinglist.readinglist.app.config",
+        "function": null,
+        "line": 86,
+        "character": 0
+      },
+      "message": "Possible hardcoded password",
+      "isFixable": false
+    },
+    {
+      "source": "dodgy",
+      "code": "password",
+      "location": {
         "path": "app/__init__.py",
         "module": "home.runner.work.readinglist.readinglist.app.__init__",
         "function": null,
-        "line": 27,
+        "line": 31,
         "character": 0
       },
       "message": "Possible hardcoded password",
@@ -39,7 +52,7 @@
         "path": "app/__init__.py",
         "module": null,
         "function": null,
-        "line": 75,
+        "line": 137,
         "character": 5
       },
       "message": "'app.models.ReadingStatus' imported but unused",
@@ -52,7 +65,7 @@
         "path": "app/__init__.py",
         "module": null,
         "function": null,
-        "line": 109,
+        "line": 171,
         "character": 9
       },
       "message": "'app.routes' imported but unused",
@@ -95,6 +108,19 @@
         "character": 1
       },
       "message": "'app.helpers.buildinfo.check_and_generate_build_info' imported but unused",
+      "isFixable": false
+    },
+    {
+      "source": "pyflakes",
+      "code": "F401",
+      "location": {
+        "path": "app/forms.py",
+        "module": null,
+        "function": null,
+        "line": 4,
+        "character": 1
+      },
+      "message": "'wtforms.validators.URL' imported but unused",
       "isFixable": false
     },
     {
