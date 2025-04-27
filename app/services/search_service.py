@@ -33,16 +33,7 @@ def search_by_categories(categories, status_filter: str = None,
 
     query = _add_user_status_and_feedback_joins(query)
 
-    query = _add_status_and_feedback_filters(query, status_filter, feedback_filter)
-
-    query = query.filter(Book.tags.any(Tag.name.in_(tag_filter))) if tag_filter else query
-
-    # execute the query
-    bks = query.all()
-    for book in bks:
-        make_transient(book)
-    db.session.expire_all()
-    return bks
+    return _finish_building_query_and_execute(feedback_filter, query, status_filter, tag_filter)
 
 
 def search_by_author(author: str, status_filter: str,
@@ -51,7 +42,8 @@ def search_by_author(author: str, status_filter: str,
     return _search_by_attribute("author", author, status_filter, feedback_filter, tag_filter)
 
 
-def search_by_title(title, status_filter: str, feedback_filter: str, tag_filter: list[str]) -> list[Book]:
+def search_by_title(title, status_filter: str, feedback_filter: str,
+                    tag_filter: list[str]) -> list[Book]:
     """Search for books by title."""
     return _search_by_attribute("title", title, status_filter, feedback_filter, tag_filter)
 
@@ -92,17 +84,18 @@ def _search_by_attribute(attribute: str, value: str, status_filter: str = None,
         # Perform a case-insensitive partial match (using ilike)
         query = query.filter(getattr(Book, attribute).ilike(f"%{value}%"))
 
-    query = _add_status_and_feedback_filters(query, status_filter, feedback_filter)
+    return _finish_building_query_and_execute(feedback_filter, query, status_filter, tag_filter)
 
+
+def _finish_building_query_and_execute(feedback_filter, query, status_filter, tag_filter):
+    query = _add_status_and_feedback_filters(query, status_filter, feedback_filter)
     # Add the tag filter if provided
     query = query.filter(Book.tags.any(Tag.name.in_(tag_filter))) if tag_filter else query
-
     # execute the query
     books = query.all()
     for book in books:
         make_transient(book)
     db.session.expire_all()  # expire all books to prevent stale data from being returned
-
     return books
 
 
