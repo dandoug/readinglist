@@ -82,9 +82,11 @@ def read_build_info() -> dict:
     :raises AssertionError: If the build information file does not exist.
     :raises AssertionError: If the parsed data is not a dictionary.
     """
-    assert BUILD_INFO_FILE.exists()
+    if not BUILD_INFO_FILE.exists():
+        raise AssertionError(f"Build information file does not exist: {BUILD_INFO_FILE}")
     build_info = json.loads(BUILD_INFO_FILE.read_text())
-    assert isinstance(build_info, dict)
+    if not isinstance(build_info, dict):
+        raise AssertionError("Build information must be a dictionary")
     return build_info
 
 
@@ -108,7 +110,7 @@ def write_empty_build_info():
         "build_date": "",
         "commit_date": "",
     }
-    # Write to build-info.json file
+    # Write to the build-info.json file
     with open(BUILD_INFO_FILE, 'w', encoding='utf-8') as f:
         json.dump(build_info, f, indent=4)
 
@@ -173,7 +175,7 @@ def _generate_build_info(repo: Repo = None):
             "commit_date": "",
         }
 
-    # Write to build-info.json file
+    # Write to the build-info.json file
     with open(BUILD_INFO_FILE, 'w', encoding='utf-8') as f:
         json.dump(build_info, f, indent=4)
     logging.debug("Generated %s successfully.", BUILD_INFO_FILE)

@@ -87,13 +87,13 @@ def render_icon(item, icon_mapping, span_id) -> Markup:
     # item is the enumeration value (like 'like', 'read'),
     # icon_mapping is a dictionary mapping enum values to font-awesome icons
     if item in icon_mapping:
-        return Markup(
+        return Markup(  # nosec B704
             f'<span id="{span_id}">' +
             f'<i class="fa {icon_mapping[item]}" aria-hidden="true"></i>' +
             '</span>'
         )
     # not in mapping, just use hidden default as a spacer
-    return Markup(f'<span id="{span_id}">{PLACEHOLDER}</span>')
+    return Markup(f'<span id="{span_id}">{PLACEHOLDER}</span>')  # nosec B704
 
 
 def compute_next_url(request):

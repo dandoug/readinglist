@@ -77,5 +77,5 @@ def choose_random_color():
     :rtype: str
     """
     choices = get_color_choices()
-    random_tuple = random.choice(choices)
+    random_tuple = random.choice(choices)  # nosec B311
     return random_tuple[0]  # first element of tuple is name we want

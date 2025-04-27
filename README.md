@@ -1,5 +1,6 @@
 ### Development metrics 
-![Pylint Score](https://img.shields.io/endpoint?style=for-the-badge&url=https://docs.booklist.media/reports/pylint.json)&nbsp;&nbsp;&nbsp;![Test Line Coverage](https://img.shields.io/endpoint?style=for-the-badge&url=https://docs.booklist.media/reports/coverage.json)
+![Pylint Score](https://img.shields.io/endpoint?style=for-the-badge&url=https://docs.booklist.media/reports/pylint.json)&nbsp;&nbsp;&nbsp;![Test Line Coverage](https://img.shields.io/endpoint?style=for-the-badge&url=https://docs.booklist.media/reports/coverage.json)&nbsp;&nbsp;&nbsp;![Bandit Severe Hits](https://img.shields.io/endpoint?style=for-the-badge&url=https://docs.booklist.media/reports/bandit.json)
+![Radon Cyclomatic Complexity](https://img.shields.io/endpoint?style=for-the-badge&url=https://docs.booklist.media/reports/radon_cc.json)&nbsp;&nbsp;&nbsp;![Radon LOC](https://img.shields.io/endpoint?style=for-the-badge&url=https://docs.booklist.media/reports/radon_loc.json)&nbsp;&nbsp;&nbsp;![Prospector Message ratio](https://img.shields.io/endpoint?style=for-the-badge&url=https://docs.booklist.media/reports/prospector_msg_count.json)
 
 # Reading List 
 
