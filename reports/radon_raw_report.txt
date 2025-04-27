@@ -11,53 +11,53 @@ run.py
         (C % S): 25%
         (C + M % L): 60%
 app/routes.py
-    LOC: 683
-    LLOC: 298
-    SLOC: 297
-    Comments: 44
-    Single comments: 32
-    Multi: 233
-    Blank: 121
+    LOC: 709
+    LLOC: 308
+    SLOC: 308
+    Comments: 46
+    Single comments: 33
+    Multi: 243
+    Blank: 125
     - Comment Stats
         (C % L): 6%
         (C % S): 15%
         (C + M % L): 41%
 app/config.py
-    LOC: 171
-    LLOC: 83
-    SLOC: 89
-    Comments: 27
+    LOC: 183
+    LLOC: 94
+    SLOC: 100
+    Comments: 32
     Single comments: 21
     Multi: 23
-    Blank: 38
+    Blank: 39
     - Comment Stats
-        (C % L): 16%
-        (C % S): 30%
-        (C + M % L): 29%
+        (C % L): 17%
+        (C % S): 32%
+        (C + M % L): 30%
 app/forms.py
-    LOC: 149
-    LLOC: 36
-    SLOC: 114
+    LOC: 152
+    LLOC: 37
+    SLOC: 116
     Comments: 16
     Single comments: 15
     Multi: 3
-    Blank: 17
+    Blank: 18
     - Comment Stats
         (C % L): 11%
         (C % S): 14%
-        (C + M % L): 13%
+        (C + M % L): 12%
 app/__init__.py
-    LOC: 140
-    LLOC: 70
-    SLOC: 77
-    Comments: 39
-    Single comments: 18
+    LOC: 197
+    LLOC: 79
+    SLOC: 123
+    Comments: 51
+    Single comments: 20
     Multi: 15
-    Blank: 30
+    Blank: 39
     - Comment Stats
-        (C % L): 28%
-        (C % S): 51%
-        (C + M % L): 39%
+        (C % L): 26%
+        (C % S): 41%
+        (C + M % L): 34%
 app/models/tags.py
     LOC: 97
     LLOC: 36
@@ -131,9 +131,9 @@ app/security/secure_index_view.py
         (C % S): 17%
         (C + M % L): 39%
 app/security/routes.py
-    LOC: 162
-    LLOC: 63
-    SLOC: 56
+    LOC: 163
+    LLOC: 64
+    SLOC: 57
     Comments: 12
     Single comments: 8
     Multi: 66
@@ -167,17 +167,17 @@ app/security/models.py
         (C % S): 8%
         (C + M % L): 57%
 app/security/tag_views.py
-    LOC: 197
-    LLOC: 83
-    SLOC: 87
+    LOC: 210
+    LLOC: 87
+    SLOC: 98
     Comments: 18
     Single comments: 12
     Multi: 61
-    Blank: 37
+    Blank: 39
     - Comment Stats
         (C % L): 9%
-        (C % S): 21%
-        (C + M % L): 40%
+        (C % S): 18%
+        (C + M % L): 38%
 app/security/__init__.py
     LOC: 13
     LLOC: 7
@@ -215,21 +215,21 @@ app/services/category_service.py
         (C % S): 5%
         (C + M % L): 47%
 app/services/tag_service.py
-    LOC: 158
-    LLOC: 49
-    SLOC: 51
-    Comments: 5
-    Single comments: 5
+    LOC: 173
+    LLOC: 56
+    SLOC: 58
+    Comments: 8
+    Single comments: 8
     Multi: 77
-    Blank: 25
+    Blank: 30
     - Comment Stats
-        (C % L): 3%
-        (C % S): 10%
-        (C + M % L): 52%
+        (C % L): 5%
+        (C % S): 14%
+        (C + M % L): 49%
 app/services/about_service.py
-    LOC: 170
+    LOC: 171
     LLOC: 84
-    SLOC: 94
+    SLOC: 95
     Comments: 10
     Single comments: 9
     Multi: 39
@@ -239,29 +239,29 @@ app/services/about_service.py
         (C % S): 11%
         (C + M % L): 29%
 app/services/book_service.py
-    LOC: 371
-    LLOC: 131
-    SLOC: 169
-    Comments: 26
+    LOC: 372
+    LLOC: 132
+    SLOC: 170
+    Comments: 30
     Single comments: 26
     Multi: 131
     Blank: 45
     - Comment Stats
-        (C % L): 7%
-        (C % S): 15%
-        (C + M % L): 42%
+        (C % L): 8%
+        (C % S): 18%
+        (C + M % L): 43%
 app/services/asin_data_service.py
-    LOC: 95
-    LLOC: 42
-    SLOC: 53
+    LOC: 97
+    LLOC: 43
+    SLOC: 54
     Comments: 9
     Single comments: 7
     Multi: 27
-    Blank: 8
+    Blank: 9
     - Comment Stats
         (C % L): 9%
         (C % S): 17%
-        (C + M % L): 38%
+        (C + M % L): 37%
 app/services/__init__.py
     LOC: 27
     LLOC: 8
@@ -275,17 +275,17 @@ app/services/__init__.py
         (C % S): 0%
         (C + M % L): 26%
 app/helpers/utilities.py
-    LOC: 145
-    LLOC: 29
-    SLOC: 55
-    Comments: 6
-    Single comments: 4
-    Multi: 66
-    Blank: 20
+    LOC: 178
+    LLOC: 42
+    SLOC: 71
+    Comments: 10
+    Single comments: 5
+    Multi: 76
+    Blank: 26
     - Comment Stats
-        (C % L): 4%
-        (C % S): 11%
-        (C + M % L): 50%
+        (C % L): 6%
+        (C % S): 14%
+        (C + M % L): 48%
 app/helpers/buildinfo.py
     LOC: 223
     LLOC: 102
@@ -311,17 +311,29 @@ app/helpers/tag_colors.py
         (C % S): 6%
         (C + M % L): 37%
 app/helpers/globals.py
-    LOC: 48
-    LLOC: 20
-    SLOC: 13
-    Comments: 4
-    Single comments: 3
-    Multi: 23
-    Blank: 9
+    LOC: 91
+    LLOC: 47
+    SLOC: 37
+    Comments: 8
+    Single comments: 5
+    Multi: 33
+    Blank: 16
     - Comment Stats
-        (C % L): 8%
-        (C % S): 31%
-        (C + M % L): 56%
+        (C % L): 9%
+        (C % S): 22%
+        (C + M % L): 45%
+app/helpers/validators.py
+    LOC: 62
+    LLOC: 25
+    SLOC: 32
+    Comments: 4
+    Single comments: 4
+    Multi: 16
+    Blank: 10
+    - Comment Stats
+        (C % L): 6%
+        (C % S): 12%
+        (C + M % L): 32%
 app/helpers/__init__.py
     LOC: 26
     LLOC: 5
@@ -335,14 +347,14 @@ app/helpers/__init__.py
         (C % S): 67%
         (C + M % L): 73%
 ** Total **
-    LOC: 3819
-    LLOC: 1502
-    SLOC: 1730
-    Comments: 320
-    Single comments: 236
-    Multi: 1201
-    Blank: 652
+    LOC: 4088
+    LLOC: 1612
+    SLOC: 1894
+    Comments: 358
+    Single comments: 249
+    Multi: 1247
+    Blank: 698
     - Comment Stats
-        (C % L): 8%
-        (C % S): 18%
-        (C + M % L): 40%
+        (C % L): 9%
+        (C % S): 19%
+        (C + M % L): 39%
