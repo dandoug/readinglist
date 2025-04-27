@@ -1,10 +1,12 @@
 """
-This module defines models and relationships for managing user-created tags and their
-associations with books.
+This module defines models and relationships for managing user-created tags and
+their associations with books.
 
 Classes:
-    - Tag: A user-created tag with a name and an owner and a color, containing multiple associated books.
-    - TagBook: A many-to-many relationship between tags and books ensuring unique associations.
+    - Tag: A user-created tag with a name and an owner and a color,
+            containing multiple associated books.
+    - TagBook: A many-to-many relationship between tags and books ensuring
+            unique associations.
 
 Relationships:
     - A user owns multiple tags.
@@ -48,8 +50,8 @@ class Tag(db.Model):
 
     # Many-to-many relationship with books
     books: Mapped[list['TagBook']] = relationship('TagBook',
-                                                   back_populates='tag',
-                                                   cascade='all, delete-orphan')
+                                                  back_populates='tag',
+                                                  cascade='all, delete-orphan')
 
     def __repr__(self) -> str:
         return (

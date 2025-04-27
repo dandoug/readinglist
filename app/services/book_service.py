@@ -1,9 +1,13 @@
+"""
+Services for working with books
+"""
+# pylint: disable=raise-missing-from
 from sqlalchemy import update, delete
 from sqlalchemy.exc import IntegrityError, InvalidRequestError
 from sqlalchemy.orm import noload, joinedload
 
 from app import db
-from ..forms import BookForm
+from app.forms import BookForm
 from app.models import Book, Feedback, ReadingStatus, FeedbackEnum, ReadingStatusEnum
 
 
@@ -62,7 +66,6 @@ def get_book_by_id(book_id, user_id=None, load_status=False, load_feedback=False
     # If no ReadingStatus or Feedback records exist, the book will still be returned,
     # but relationships will be empty lists.
     return query.filter_by(id=book_id).first()
-
 
 
 def add_new_book(book_form: BookForm) -> Book:
@@ -274,21 +277,11 @@ def set_book_status(book_id: int, status: str, user_id: int) -> dict:
 
 def set_book_feedback(book_id: int, fb: str, user_id: int) -> dict:
     """
-    Updates or removes feedback for a specific book and user. If a feedback entry exists for the given user
-    and book, it will be updated based on the provided feedback value. If the feedback is marked as "none",
-    the existing feedback will be removed. If no feedback exists, a new entry will be created. Finally,
-    the updated book details are fetched and returned.
-
-    :param book_id: Identifier of the book for which the feedback is being set
-    :type book_id: int
-    :param fb: Feedback string provided by the user, set to "none" to delete feedback
-    :type fb: str
-    :param user_id: Identifier of the user providing the feedback
-    :type user_id: int
-    :return: A dictionary containing updated details of the book along with status and feedback data
-    :rtype: dict
+    Updates or removes feedback for a specific book and user. If a feedback entry exists for
+    the given user and book, it will be updated based on the provided feedback value. If the
+    feedback is marked as "none", the existing feedback will be removed. If no feedback exists,
+    a new entry will be created. Finally, the updated book details are fetched and returned.
     """
-    
     # Check if feedback already exists for this user_id and book_id
     existing_feedback = db.session.query(
         Feedback.id,
@@ -353,7 +346,7 @@ def book_to_dict_with_status_and_feedback(book, user_id):
     book_dict = book.to_dict()
     if user_id:
         if book.feedbacks is not None and book.feedbacks != []:
-            #  Assume it's a list with one thing in it, grab first Feedback and get feedback
+            #  Assume it's a list with one thing in it, grab the first Feedback and get feedback
             book_dict['feedback'] = book.feedbacks[0].feedback.value
         elif book.feedbacks is None:
             #  Know nothing, query feedback then
@@ -361,11 +354,11 @@ def book_to_dict_with_status_and_feedback(book, user_id):
             if fb:
                 book_dict['feedback'] = fb.value
         else:
-            # Empty list, then... i.e. no feedback.  Set to None
+            # Empty list, then, no feedback.  Set to None
             book_dict['feedback'] = 'none'
 
         if book.reading_statuses is not None and book.reading_statuses != []:
-            #  Assume it's a list with one thing in it, grab first Reading_Status and get status
+            #  Assume it's a list with one thing in it, get the first Reading_Status and get status
             book_dict['status'] = book.reading_statuses[0].status.value
         elif book.reading_statuses is None:
             #  Know noting, query db
@@ -373,6 +366,6 @@ def book_to_dict_with_status_and_feedback(book, user_id):
             if status:
                 book_dict['status'] = status.value
         else:
-            # Empty list, then... i.e. no status.  Set to None
+            # Empty list, then no status.  Set to None
             book_dict['status'] = 'none'
     return book_dict

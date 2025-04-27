@@ -23,4 +23,5 @@ __all__ = ["add_new_book", "update_book", "del_book", "get_book_by_id", "get_boo
            "search_by_categories", "search_by_author", "search_by_title",
            "fetch_product_details", "get_category_bs_tree", "id_to_fullpath",
            "build_about_info", "find_tag_for_user", "get_tags_for_user", "get_or_create_tag",
-           "tag_book", "get_tags_and_colors", "remove_tag_from_book", "get_tags_for_user_with_colors"]
+           "tag_book", "get_tags_and_colors", "remove_tag_from_book",
+           "get_tags_for_user_with_colors"]
