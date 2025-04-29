@@ -1,6 +1,8 @@
 """
 Validators
 """
+import re
+
 import requests
 from wtforms.validators import URL, ValidationError
 
@@ -32,9 +34,6 @@ class ValidImageUrl(URL):
                                       f"content type: {content_type}")
         except requests.RequestException as e:
             raise ValidationError(f"{self.message}: {field.data}") from e
-
-import re
-from wtforms.validators import URL, ValidationError
 
 
 class ValidAmazonLink(URL):

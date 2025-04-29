@@ -17,23 +17,23 @@
     <div class="col-auto">
         <a href="{{ url_for('index') }}">
         <img src="{{ url_for('static', filename='images/booksearch.png') }}"
-             alt="Book Search Logo" class="img-fluid" style="width: 100px;">
+             alt="Book Search Logo" class="img-fluid logo-img">
         </a>
     </div>
     <!-- Heading -->
-    <div class="col d-flex align-items-center" style="transform: translateY(-20%);">
-        <h1 class="mb-0" style="line-height: 1;">Search Results</h1>
+    <div class="col d-flex align-items-center header-offset" >
+        <h1 class="mb-0 single-line">Search Results</h1>
     </div>
     <!-- Login/Logout Button -->
-    <div class="col-auto text-end d-flex flex-column align-items-end" style="transform: translateY(-20%);">
+    <div class="col-auto text-end d-flex flex-column align-items-end header-offset" >
         {% if current_user.is_authenticated %}
-            <p class="mb-1 text-muted small" style="line-height: 1;">{{ current_user.email }}</p>
+            <p class="mb-1 text-muted small single-line">{{ current_user.email }}</p>
             <div class="d-flex">
                 <a href="{{ url_for('admin.index') }}" class="btn btn-sm btn-primary mr-2">Admin</a>
                 <a href="{{ url_for('security.logout', next=request.full_path) }}" class="btn btn-sm btn-secondary">Logout</a>
             </div>
         {% else %}
-            <p class="mb-1 text-muted small" style="line-height: 1;">&nbsp;</p>
+            <p class="mb-1 text-muted small single-line">&nbsp;</p>
             <a href="{{ url_for('security.login') }}" class="btn btn-sm btn-info">Login</a>
         {% endif %}
     </div>
@@ -53,10 +53,10 @@
         <!-- Buttons -->    
         <div class="col-auto text-end">
             {% if books %}
-            <button id="download-btn" type="button" class="btn btn-sm btn-secondary" style="cursor: pointer;" data-sort-column="" data-sort-order="">Download</button>
+            <button id="download-btn" type="button" class="btn btn-sm btn-secondary clickable" data-sort-column="" data-sort-order="">Download</button>
             {% endif %}
             {% if current_user.is_authenticated and current_user.has_role('editor') %}
-            <button id="add-book-btn" type="button" class="btn btn-sm btn-info" style="cursor: pointer;">Add a book</button>
+            <button id="add-book-btn" type="button" class="btn btn-sm btn-info clickable">Add a book</button>
             {% endif %}
             <button id="new-search-btn" type="button" class="btn btn-sm btn-primary">New search</button>
         </div>
@@ -68,19 +68,19 @@
             <table class="table table-striped table-bordered table-hover">
                 <thead class="bg-info text-dark">
                     <tr>
-                        <th style="width: 60%;" class="align-middle sortable-header" scope="col" data-column="title" data-order="asc">
+                        <th class="align-middle sortable-header w-60" scope="col" data-column="title" data-order="asc">
                             <div class="sortable-header-content">
                             <span class="header-text">Title</span>
                             <span class="sort-arrow">-</span>
                             </div>
                         </th>
-                        <th style="width: 30%;" class="align-middle sortable-header" scope="col" data-column="author" data-order="asc">
+                        <th class="align-middle sortable-header w-30" scope="col" data-column="author" data-order="asc">
                             <div class="sortable-header-content">
                             <span class="header-text">Author</span>
                             <span class="sort-arrow">-</span>
                             </div>
                         </th>
-                        <th style="width: 10%;"  class="align-middle sortable-header" scope="col" data-column="rating" data-order="asc">
+                        <th  class="align-middle sortable-header w-10" scope="col" data-column="rating" data-order="asc">
                             <div class="sortable-header-content">
                             <span class="header-text">Rating</span>
                             <span class="sort-arrow">-</span>
@@ -91,7 +91,7 @@
                 <tbody>
                     {% for book in books %}
                     <tr class="align-middle" data-id="{{ book.id }}">
-                        <td style="padding: 5px">
+                        <td class="book-cell">
                             <div class="container">
                                 <div class="row">
                                     <div class="col-1 d-flex align-items-center"><a
@@ -153,10 +153,10 @@
                 <h5 class="modal-title" id="bookDetailsModalLabel">Book Details</h5>
                 <span class="text-end">
                     {% if current_user.is_authenticated and  current_user.has_role('admin') %}
-                      <button id="delete-book-btn" type="button" class="btn btn-sm btn-danger" style="cursor: pointer;">Delete book</button>
+                      <button id="delete-book-btn" type="button" class="btn btn-sm btn-danger clickable">Delete book</button>
                     {% endif %}                
                     {% if current_user.is_authenticated and current_user.has_role('editor') %}
-                      <button id="edit-book-btn" type="button" class="btn btn-sm btn-info" style="cursor: pointer;">Edit book</button>
+                      <button id="edit-book-btn" type="button" class="btn btn-sm btn-info clickable">Edit book</button>
                     {% endif %}
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span>&times;</span>
@@ -208,7 +208,7 @@
                 <p><strong>Author:</strong> <span id="modal-author"></span></p>
                 <p><strong>Description:</strong> <span id="modal-description"></span></p>
                 <p><strong>Rating:</strong> <span id="modal-rating"></span></p>
-                <p><strong>Book Cover:</strong> <br><img id="modal-image" src="" alt="Book Cover" style="max-width: 100%; height: auto;"/></p>
+                <p><strong>Book Cover:</strong> <br><img id="modal-image" src="" alt="Book Cover" class="modal-book-cover"/></p>
                 <p><strong>Categories:</strong> <span id="modal-categories-flat"></span></p>
                 <p><strong>Pages:</strong> <span id="modal-pages"></span></p>
                 <p><strong>ISBN (10):</strong> <span id="modal-isbn10"></span></p>
@@ -228,7 +228,7 @@
 <!-- Scripts -->
 {% block scripts %}
 {{ super() }}
-<script>
+<script nonce="{{ csp_nonce() }}">
 
     document.addEventListener('DOMContentLoaded', function () {
         // Get the "Add a book" button element by its ID

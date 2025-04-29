@@ -19,6 +19,7 @@ from flask_mailman import Mail
 from flask_security import SQLAlchemyUserDatastore, Security, hash_password
 from flask_sqlalchemy import SQLAlchemy
 from flask_assets import Bundle, Environment
+from flask_talisman import Talisman
 
 from app.config import configure_app_logging, PROJECT_ROOT
 from app.helpers import register_globals
@@ -30,7 +31,8 @@ INITIAL_USER_EMAIL    = "admin@example.com"
 db = SQLAlchemy()
 user_datastore = None  # pylint: disable=invalid-name
 admin = None  # pylint: disable=invalid-name
-cache = None  # pylint: disable=invalid-name`
+cache = None  # pylint: disable=invalid-name
+talisman = None  # pylint: disable=invalid-name
 
 
 # pylint: disable=too-many-locals
@@ -52,6 +54,52 @@ def create_app():
 
     # Set up logging for the environment
     configure_app_logging(env)
+
+    # Set up Talisman
+    csp = {
+        'default-src': "'self'",
+        'script-src': "'self' https://beacon.helpscout.net https://cdnjs.cloudflare.com " +
+                      "https://cdn.jsdelivr.net https://beacon-v2.helpscout.net",
+        'style-src': "'self' 'unsafe-inline' " +
+                     "https://cdnjs.cloudflare.com https://cdn.jsdelivr.net " +
+                     "https://fonts.googleapis.com",
+        'style-src-elem': "'self' 'unsafe-inline' https://cdnjs.cloudflare.com " +
+                     "https://cdn.jsdelivr.net https://fonts.googleapis.com",
+        'style-src-attr': "'self'",
+        'font-src': "'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com",
+        'img-src': "'self' data: https://beacon.helpscout.net https://m.media-amazon.com " +
+                   "*",  # allow images from anywhere, support book cover images
+        'connect-src': "'self' https://beacon-v2.helpscout.net " +
+                       "https://d3hb14vkzrxvla.cloudfront.net " +
+                       "https://beaconapi.helpscout.net",
+    }
+    global talisman  # pylint: disable=global-statement
+    talisman = Talisman(
+        app,
+        force_https=True,  # be sure to add --cert=adhoc to start up options for dev/test
+
+        frame_options='DENY',
+        frame_options_allow_from='None',
+
+        strict_transport_security=False,  # defer https://github.com/dandoug/readinglist/issues/61
+        strict_transport_security_include_subdomains=False,
+
+        content_security_policy=csp,
+        content_security_policy_report_only=False,  # switch to True to get reports but not blocked
+        content_security_policy_report_uri='/csp-report',
+        content_security_policy_nonce_in=['script-src', 'style-src'],
+
+        referrer_policy='origin-when-cross-origin',  # used to return to add the book launch page
+
+        session_cookie_secure=True,
+        session_cookie_http_only=True,
+
+        force_file_save=True,
+
+        feature_policy={
+            'geolocation': '\'none\''
+        }
+    )
 
     # Set up email handling using Flask-Mailman using context info
     mail = Mail(app)

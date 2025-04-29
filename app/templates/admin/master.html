@@ -1,6 +1,28 @@
 {% extends admin_base_template %}
 
 {% block head_css %}
-    {{ super() }}
+        <link href="{{ admin_static.url(filename='bootstrap/bootstrap4/swatch/{swatch}/bootstrap.min.css'.format(swatch=config.get('FLASK_ADMIN_SWATCH', 'default')), v='4.2.1') }}"
+              rel="stylesheet">
+        {% if config.get('FLASK_ADMIN_SWATCH', 'default') == 'default' %}
+        <link href="{{ admin_static.url(filename='bootstrap/bootstrap4/css/bootstrap.min.css', v='4.2.1') }}" rel="stylesheet">
+        {% endif %}
+        <link href="{{ admin_static.url(filename='admin/css/bootstrap4/admin.css', v='1.1.1') }}" rel="stylesheet">
+        <link href="{{ admin_static.url(filename='bootstrap/bootstrap4/css/font-awesome.min.css', v='4.7.0') }}" rel="stylesheet">
+        {% if admin_view.extra_css %}
+          {% for css_url in admin_view.extra_css %}
+            <link href="{{ css_url }}" rel="stylesheet">
+          {% endfor %}
+        {% endif %}
+        <style nonce="{{ csp_nonce() }}">
+            .hide {
+                display: none;
+            }
+        </style>
     <link href="{{ url_for('static', filename='gen/css/badge-color.css') }}" rel="stylesheet"/>
+    <link href="{{ url_for('static', filename='css/booklist.css') }}" rel="stylesheet"/>
+{% endblock %}
+
+{% block head_tail %}
+    {{ super() }}
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
 {% endblock %}

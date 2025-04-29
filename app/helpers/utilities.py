@@ -9,7 +9,7 @@ import bleach
 from flask import url_for
 from markupsafe import Markup
 
-PLACEHOLDER = '<span style="display: inline-block; width: 14px; height: 14px; margin: 0;"></span>'
+PLACEHOLDER = '<span class="placeholder-icon"></span>'
 
 
 _SEARCH_TEMPLATES = {
