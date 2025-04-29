@@ -61,6 +61,7 @@ class RoleModelView(SecureModelView):
     """
     column_list = ['name', 'description']
     form_columns = ['name', 'description', 'users']
+    list_template = 'admin_model_list.html'
 
 
 def register_admin_views(db: SQLAlchemy, admin: Admin):

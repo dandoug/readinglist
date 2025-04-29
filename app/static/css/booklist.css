@@ -40,3 +40,55 @@
     object-fit: contain;
     margin-right: 10px;
 }
+
+.logo-img {
+    width: 100px;
+}
+.header-offset {
+    transform: translateY(-20%);
+}
+.single-line {
+    line-height: 1;
+}
+.clickable {
+    cursor: pointer;
+}
+.btn-fixed-height {
+    height: 32px;
+}
+.w-60 {
+    width: 60% !important;
+}
+.w-30 {
+    width: 30% !important;
+}
+.w-10 {
+    width: 10% !important;
+}
+
+.book-cell {
+    padding: 5px;
+}
+
+.modal-book-cover {
+    max-width: 100%;
+    height: auto;
+}
+.placeholder-icon {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    margin: 0;
+}
+.hidden-form {
+    display: none;
+}
+.label-red {
+    color: red
+}
+.checkbox-label {
+    display: block;
+    margin-bottom: 0
+}
+
+

@@ -169,6 +169,7 @@ class UserTagModelView(ModelView):
     can_delete = True  # Allow deleting lists
     edit_template = 'tag_edit.html'
     create_template = 'tag_create.html'
+    list_template = 'admin_model_list.html'
 
     def on_form_prefill(self, form, _id):
         if hasattr(form, 'color'):

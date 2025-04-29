@@ -1,0 +1,15 @@
+{% extends 'admin/model/list.html' %}
+
+
+{% block tail %}
+    {{ super() }}
+    <script nonce="{{ csp_nonce() }}">
+      document.querySelectorAll('[data-delete-confirm]').forEach(button => {
+        button.addEventListener('click', function(e) {
+          if (!faHelpers.safeConfirm('Are you sure you want to delete this record?')) {
+            e.preventDefault();
+          }
+        });
+      });
+    </script>
+{% endblock %}

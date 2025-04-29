@@ -17,22 +17,22 @@
     <!-- Logo -->
     <div class="col-auto">
         <img src="{{ url_for('static', filename='images/booksearch.png') }}"
-             alt="Book Search Logo" class="img-fluid" style="width: 100px;">
+             alt="Book Search Logo" class="img-fluid logo-img">
     </div>
     <!-- Heading -->
-    <div class="col d-flex align-items-center" style="transform: translateY(-20%);">
-        <h1 class="mb-0" style="line-height: 1;">Book Search</h1>
+    <div class="col d-flex align-items-center header-offset" >
+        <h1 class="mb-0 single-line">Book Search</h1>
     </div>
     <!-- Login/Logout Button -->
-    <div class="col-auto text-end d-flex flex-column align-items-end" style="transform: translateY(-20%);">
+    <div class="col-auto text-end d-flex flex-column align-items-end header-offset" >
         {% if current_user.is_authenticated %}
-            <p class="mb-1 text-muted small" style="line-height: 1;">{{ current_user.email }}</p>
+            <p class="mb-1 text-muted small single-line">{{ current_user.email }}</p>
             <div class="d-flex">
                 <a href="{{ url_for('admin.index') }}" class="btn btn-sm btn-primary mr-2">Admin</a>
                 <a href="{{ url_for('security.logout', next=request.full_path) }}" class="btn btn-sm btn-secondary">Logout</a>
             </div>
         {% else %}
-            <p class="mb-1 text-muted small" style="line-height: 1;">&nbsp;</p>
+            <p class="mb-1 text-muted small single-line">&nbsp;</p>
             <a href="{{ url_for('security.login') }}" class="btn btn-sm btn-info">Login</a>
         {% endif %}
     </div>
@@ -56,7 +56,7 @@
 
             <!-- Tab at the far right -->
             {% if current_user.is_authenticated and current_user.has_role('editor') %}
-            <li class="nav-item ml-auto" id="add-book-tab" style="cursor: pointer;">
+            <li class="nav-item ml-auto clickable" id="add-book-tab">
                 <a class="nav-link" id="add-book-tab-link" data-toggle="tab" role="tab" aria-controls="add-book" aria-selected="false">Add a book</a>
             </li>
             {% endif %}
@@ -177,7 +177,7 @@
 <!-- Scripts -->
 {% block scripts %}
 {{ super() }}
-<script>
+<script nonce="{{ csp_nonce() }}">
     document.addEventListener('DOMContentLoaded', function () {
         // Get the "Add a book" button element by its ID
         const addBookTab = document.getElementById('add-book-tab');

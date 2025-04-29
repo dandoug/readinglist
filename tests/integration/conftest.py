@@ -123,7 +123,7 @@ def flask_app(db_connection, smtp_connection):
     app = create_app()
 
     # The app created a user with email=app.INITIAL_USER_EMAIL that
-    # has admin role.  For testing purposes, we add `editor` role to
+    # has the admin role.  For testing purposes, we add the `editor` role to
     # that user here, too
     with app.app_context():
         from app import user_datastore, INITIAL_USER_EMAIL, db

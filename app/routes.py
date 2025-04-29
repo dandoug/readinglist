@@ -437,7 +437,8 @@ def get_tags():
     if error:
         return error, status
 
-    return jsonify({'success': True, 'tags': get_tags_and_colors(book_id=book.id, user_id=current_user.id)})
+    return jsonify({'success': True, 'tags':
+        get_tags_and_colors(book_id=book.id, user_id=current_user.id)})
 
 
 @app.route('/get_user_tags', methods=['GET'])
@@ -446,7 +447,8 @@ def get_user_tags():
     """
     Handles the GET request to retrieve tags and their associated colors for a user.
     """
-    return jsonify({'success': True, 'tags': get_tags_for_user_with_colors(user_id=current_user.id)})
+    return jsonify({'success': True, 'tags':
+        get_tags_for_user_with_colors(user_id=current_user.id)})
 
 
 @app.route('/remove_tag', methods=['POST'])
@@ -485,6 +487,26 @@ def remove_tag():
     # perform the removal and return the new set of tags
     new_set_of_tags = remove_tag_from_book(tag_id=tag.id, book_id=book.id, user_id=user_id)
     return jsonify({'success': True, 'tags': new_set_of_tags})
+
+
+@app.route('/csp-report', methods=['POST'])
+def csp_report():
+    """
+    Handles Content Security Policy (CSP) violation reports sent via POST requests.
+
+    This function acts as the endpoint for handling and logging CSP violation
+    reports. When a violation is detected by the browser, it sends a report to
+    this endpoint. The function retrieves the report in JSON format from the
+    request body and logs it using the application's logging framework. It
+    returns an HTTP 204 response indicating successful handling of the report.
+
+    :returns: An empty response body with HTTP status code 204 to indicate no
+              content is returned.
+    """
+    report = request.get_json(force=True)
+    # Log the report to your preferred logging system
+    app.logger.warning(f"CSP Violation: {report}")
+    return '', 204  # No content response
 
 
 def _check_for_required_tag_and_book(req, tag_create=False) -> (Tag, Book, Response, int):
@@ -580,7 +602,8 @@ def _perform_search_base_on_args(req: Request):
     elif categories:
         # Decode encoded categories to full path strings before searching
         bks = search_by_categories(
-            [id_to_fullpath(category) for category in categories], status_filter, feedback_filter, tag_filter)
+            [id_to_fullpath(category) for category in categories], status_filter,
+            feedback_filter, tag_filter)
     else:
         return None
 
