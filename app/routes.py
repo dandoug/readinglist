@@ -412,12 +412,15 @@ def add_tag():
     exists for the user, associates it with the given book, and returns the updated list
     of tags associated with the book.
     """
-    tag, book, error, status = _check_for_required_tag_and_book(request, tag_create=True)
-    if error:
-        return error, status
+    try:
+        tag, book, error, status = _check_for_required_tag_and_book(request, tag_create=True)
+        if error:
+            return error, status
 
-    new_set_of_tags = tag_book(book_id=book.id, tag_id=tag.id, user_id=current_user.id)
-    return jsonify({'success': True, 'tags': new_set_of_tags})
+        new_set_of_tags = tag_book(book_id=book.id, tag_id=tag.id, user_id=current_user.id)
+        return jsonify({'success': True, 'tags': new_set_of_tags})
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
 
 
 @app.route('/get_tags', methods=['GET'])

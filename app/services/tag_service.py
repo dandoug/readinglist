@@ -1,6 +1,10 @@
 """
  Database service routines associated with tags.
 """
+import re
+
+import bleach
+
 from app import db
 from app.helpers.tag_colors import choose_random_color
 from app.models import Tag, TagBook
@@ -33,6 +37,17 @@ def get_or_create_tag(user_id, tag_name) -> Tag:
     :param tag_name:
     :return:
     """
+    # First, sanitize the tag name to remove any HTML
+    tag_name = bleach.clean(tag_name, tags=[], strip=True)
+
+    # Then apply other validations
+    if not tag_name or len(tag_name) > 32:
+        raise ValueError("Tag name must be between 1 and 32 characters")
+
+    # Validate tag name - allow only alphanumeric characters, hyphens, and spaces
+    if not tag_name or not re.match(r'^[a-zA-Z0-9\s\-]+$', tag_name):
+        raise ValueError("Tag names can only contain letters, numbers, spaces, and hyphens")
+
     tag_name = tag_name.lower()
     tag = db.session.query(Tag).filter(Tag.owner_id == user_id, Tag.name == tag_name).first()
     if tag:

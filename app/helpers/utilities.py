@@ -5,6 +5,7 @@ values to icons, and handling request referrer URLs.
 """
 from urllib.parse import quote_plus, urlparse
 
+import bleach
 from flask import url_for
 from markupsafe import Markup
 
@@ -143,3 +144,35 @@ def parse_url(url):
         "query": parsed.query,
         "full": url
     }
+
+
+def sanitize(content):
+    """
+    Strip all HTML content from the input string.
+
+    :param content: The content to sanitize
+    :return: Plain text with all HTML tags removed
+    """
+    if content is None or not isinstance(content, str):
+        return content
+
+    # Strip all HTML tags by setting allowed_tags to an empty list
+    return bleach.clean(
+        content,
+        tags=[],  # No HTML tags allowed
+        attributes={},  # No attributes allowed
+        strip=True  # Strip all disallowed tags (which is all tags)
+    )
+
+
+def sanitize_categories_flat(categories: str):
+    """
+    Clean the component pieces of a falt categories string.
+    :param categories:
+    :return:
+    """
+    cat_strings = categories.split(' > ')
+    sanitize_list = []
+    for cat in cat_strings:
+        sanitize_list.append(sanitize(cat))
+    return ' > '.join(sanitize_list)
