@@ -3,6 +3,8 @@ from wtforms import StringField, IntegerField, TextAreaField, URLField, HiddenFi
 from wtforms.fields.numeric import DecimalField
 from wtforms.validators import DataRequired, Optional, Length, NumberRange, URL
 
+from app.helpers.validators import ValidImageUrl, ValidAmazonLink
+
 
 class BookForm(FlaskForm):
     # ID field (Optional)
@@ -44,7 +46,7 @@ class BookForm(FlaskForm):
         ]
     )
 
-    # Rating (Optional but must be between 1 and 5 if provided)
+    # Rating (Optional but must be between 0 and 5 if provided)
     rating = DecimalField(
         "Rating",
         places=1,
@@ -60,7 +62,7 @@ class BookForm(FlaskForm):
         "Cover Image URL",
         validators=[
             Optional(),
-            URL(message="Must be a valid URL.")
+            ValidImageUrl(message="Must be a valid image URL.")
         ]
     )
 
@@ -69,7 +71,7 @@ class BookForm(FlaskForm):
         "Amazon URL",
         validators=[
             Optional(),
-            URL(message="Must be a valid URL.")
+            ValidAmazonLink()
         ]
     )
 
@@ -78,7 +80,8 @@ class BookForm(FlaskForm):
         "Categories",
         validators=[
             DataRequired(message="The category string is required."),
-            Length(max=255, message="The category string is ' > ' separated and cannot exceed 255 characters.")
+            Length(max=255,
+                   message="The category string is ' > ' separated and cannot exceed 255 chars.")
         ]
     )
 

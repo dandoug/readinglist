@@ -104,7 +104,7 @@
             });
 
             // Add tag event (send to backend)
-            tagify.on('add', function(e){
+            tagify.on('add', function (e) {
                 if (suppressTagEvents) return; // Prevent loop
                 var tag = e.detail.data.value;
                 fetch('/add_tag', {
@@ -112,18 +112,36 @@
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({tag: tag, book_id: book_id})
                 })
-                .then(res => res.json())
-                .then(data => {
-                    suppressTagEvents = true;
-                    tagify.removeAllTags();
-                    tagify.addTags(data.tags); // data.tags is the new complete array
-                    suppressTagEvents = false;
-                    update_book_tags(book_id, data.tags); // update display in book results
-                });
+                    .then(res => {
+                        if (!res.ok) {
+                            if (res.status === 400) {
+                                return res.json().then(data => {
+                                    const errorMsg = data.error || 'Unable to add tag';
+                                    tagify.removeTags(tag);
+                                    alert(errorMsg);
+                                    throw new Error(errorMsg);
+                                });
+                            }
+                            tagify.removeTags(tag);
+                            alert('Unable to add tag');
+                            throw new Error('Failed to add tag');
+                        }
+                        return res.json();
+                    })
+                    .then(data => {
+                        suppressTagEvents = true;
+                        tagify.removeAllTags();
+                        tagify.addTags(data.tags); // data.tags is the new complete array
+                        suppressTagEvents = false;
+                        update_book_tags(book_id, data.tags); // update display in book results
+                    })
+                    .catch(err => {
+                        console.error('Error adding tag:', err);
+                    });
             });
 
             // Remove tag event (send to backend)
-            tagify.on('remove', function(e){
+            tagify.on('remove', function (e) {
                 if (suppressTagEvents) return; // Prevent loop
                 var tag = e.detail.data.value;
                 fetch('/remove_tag', {

@@ -8,6 +8,7 @@ from sqlalchemy.orm import noload, joinedload
 
 from app import db
 from app.forms import BookForm
+from app.helpers.utilities import sanitize, sanitize_categories_flat
 from app.models import Book, Feedback, ReadingStatus, FeedbackEnum, ReadingStatusEnum
 
 
@@ -89,19 +90,19 @@ def add_new_book(book_form: BookForm) -> Book:
     try:
         # Create and add the new book
         new_book = Book(
-            author=book_form.author.data,
-            title=book_form.title.data,
-            asin=book_form.asin.data,
-            link=book_form.link.data,
-            image=book_form.image.data,
-            categories_flat=book_form.categories_flat.data,
-            book_description=book_form.book_description.data,
+            author=sanitize(book_form.author.data),
+            title=sanitize(book_form.title.data),
+            asin=sanitize(book_form.asin.data),
+            link=book_form.link.data,  # form validator checked this
+            image=book_form.image.data,  # form validator checked this
+            categories_flat=sanitize_categories_flat(book_form.categories_flat.data),
+            book_description=sanitize(book_form.book_description.data),
             rating=book_form.rating.data or 0.0,
-            isbn_13=book_form.isbn_13.data,
-            isbn_10=book_form.isbn_10.data,
-            hardcover=book_form.hardcover.data,
-            bestsellers_rank_flat=book_form.bestsellers_rank_flat.data,
-            specifications_flat=book_form.specifications_flat.data,
+            isbn_13=sanitize(book_form.isbn_13.data),
+            isbn_10=sanitize(book_form.isbn_10.data),
+            hardcover=sanitize(book_form.hardcover.data),
+            bestsellers_rank_flat=sanitize(book_form.bestsellers_rank_flat.data),
+            specifications_flat=sanitize(book_form.specifications_flat.data),
         )
         db.session.add(new_book)
         db.session.commit()
@@ -135,19 +136,19 @@ def update_book(book_form: BookForm) -> Book:
     try:
         book = get_book_by_id(book_form.id.data)
         # Update the new book
-        book.author = book_form.author.data
-        book.title = book_form.title.data
-        book.asin = book_form.asin.data
-        book.link = book_form.link.data
-        book.image = book_form.image.data
-        book.categories_flat = book_form.categories_flat.data
-        book.book_description = book_form.book_description.data
+        book.author = sanitize(book_form.author.data)
+        book.title = sanitize(book_form.title.data)
+        book.asin = sanitize(book_form.asin.data)
+        book.link = book_form.link.data  # handled in the form validator
+        book.image = book_form.image.data  # handled in the form validator
+        book.categories_flat = sanitize_categories_flat(book_form.categories_flat.data)
+        book.book_description = sanitize(book_form.book_description.data)
         book.rating = book_form.rating.data or 0.0
-        book.isbn_13 = book_form.isbn_13.data
-        book.isbn_10 = book_form.isbn_10.data
-        book.hardcover = book_form.hardcover.data
-        book.bestsellers_rank_flat = book_form.bestsellers_rank_flat.data
-        book.specifications_flat = book_form.specifications_flat.data
+        book.isbn_13 = sanitize(book_form.isbn_13.data)
+        book.isbn_10 = sanitize(book_form.isbn_10.data)
+        book.hardcover = sanitize(book_form.hardcover.data)
+        book.bestsellers_rank_flat = sanitize(book_form.bestsellers_rank_flat.data)
+        book.specifications_flat = sanitize(book_form.specifications_flat.data)
 
         # Update the book in the database
         db.session.commit()

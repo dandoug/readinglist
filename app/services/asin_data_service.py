@@ -10,6 +10,8 @@ to function.
 import requests
 from flask import current_app
 
+from app.helpers.utilities import sanitize, sanitize_categories_flat
+
 
 # Fetch the product details from the ASIN Data API
 def fetch_product_details(asin):
@@ -70,26 +72,26 @@ def fetch_product_details(asin):
             return_value = {}
             for attribute in attributes:
                 if product.get(attribute):
-                    return_value[attribute] = product[attribute]
+                    return_value[attribute] = sanitize(product[attribute])
             # Special processing attributes
             if product.get('authors'):
-                return_value['author'] = product['authors'][0]['name']
+                return_value['author'] = sanitize(product['authors'][0]['name'])
             if product.get('categories'):
                 cat_list = [c['name'] for c in product['categories'] if 'name' in c]
-                return_value['categories_flat'] = ' > '.join(cat_list)
+                return_value['categories_flat'] = sanitize_categories_flat(' > '.join(cat_list))
             if product.get('main_image'):
                 return_value['image'] = product['main_image']['link']
             if product.get('specifications'):
                 specs = product['specifications']
                 hardcover_str = next((s['value'] for s in specs if s['name'] == 'Hardcover'), None)
                 if hardcover_str:
-                    return_value['hardcover'] = hardcover_str
+                    return_value['hardcover'] = sanitize(hardcover_str)
                 isbn_10_str = next((s['value'] for s in specs if s['name'] == 'ISBN-10'), None)
                 if isbn_10_str:
-                    return_value['isbn_10'] = isbn_10_str
+                    return_value['isbn_10'] = sanitize(isbn_10_str)
                 isbn_13_str = next((s['value'] for s in specs if s['name'] == 'ISBN-13'), None)
                 if isbn_13_str:
-                    return_value['isbn_13'] = isbn_13_str
+                    return_value['isbn_13'] = sanitize(isbn_13_str)
 
             return return_value
     return {}  # empty if errors

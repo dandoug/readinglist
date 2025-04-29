@@ -22,6 +22,7 @@ from markupsafe import Markup
 from sqlalchemy import func
 from wtforms.fields.choices import SelectField
 from wtforms.widgets import html_params
+from wtforms.validators import Length, Regexp
 
 
 from app.helpers.tag_colors import get_color_choices
@@ -148,7 +149,15 @@ class UserTagModelView(ModelView):
         'color': {
             'choices': get_color_choices(),  # Dynamically provide choices
             'widget': BootstrapSelectWidget()  # Use the custom widget for badge-pill rendering
+        },
+        'name': {
+            'validators': [
+                Length(max=32, message='Tag name must be 32 characters or less'),
+                Regexp(r'^[a-zA-Z0-9\s\-]+$',
+                       message='Tag name can only contain letters, numbers, spaces, and hyphens')
+            ]
         }
+
     }
     column_formatters = {
         'color': _color_list_formatter
@@ -189,9 +198,12 @@ class UserTagModelView(ModelView):
 
     def on_model_change(self, form, model, is_created):
         """
-        Ensure that the owner of the list is always the current user.
-        This avoids users tampering with the owner field.
+        Ensure that the owner of the list is always the current user and
+        convert the tag name to lowercase.
         """
+        if model.name:
+            model.name = model.name.lower()
+
         if is_created:
             model.owner_id = current_user.id
         super().on_model_change(form, model, is_created)
