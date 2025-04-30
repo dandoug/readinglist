@@ -33,6 +33,9 @@ load_dotenv(str(dotenv_path))
 class Config:
     """Base configuration with default settings."""
     SECRET_KEY = os.getenv("SECRET_KEY", "default-secret-key")
+    WTF_CSRF_ENABLED = True
+    WTF_CSRF_SECRET_KEY = SECRET_KEY
+    WTF_CSRF_TIME_LIMIT = 3600  # CSRF token expiration in seconds
 
     RDS_HOSTNAME = os.getenv("RDS_HOSTNAME")
     RDS_PORT     = os.getenv("RDS_PORT", "3306")
@@ -60,10 +63,15 @@ class Config:
     ASIN_DATA_API_URL = os.environ.get("ASIN_DATA_API_URL", 'https://api.asindataapi.com/request')
 
     # have session and remember cookie be samesite (flask/flask_login)
-    REMEMBER_COOKIE_SAMESITE = "strict"
-    SESSION_COOKIE_SAMESITE = "strict"
+    REMEMBER_COOKIE_SAMESITE = "Lax"
+    SESSION_COOKIE_SAMESITE = "Lax"
     SESSION_COOKIE_HTTPONLY = True
     REMEMBER_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SECURE = True  # Ensures cookies are sent only over HTTPS
+    REMEMBER_COOKIE_SECURE = True  # For "remember me" functionality
+
+    PERMANENT_SESSION_LIFETIME = 3600  # 1 hour
+    SECURITY_TOKEN_MAX_AGE = 3600  # 1 hour for security tokens
 
     SECURITY_USERNAME_ENABLE = False  # keep it simple, just email
     SECURITY_USE_REGISTER_V2 = True
@@ -117,6 +125,10 @@ class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = (f"mysql+pymysql://{Config.RDS_USERNAME}:" +
                                f"{quote_plus(str(Config.RDS_PASSWORD))}@{Config.RDS_HOSTNAME}:" +
                                f"{Config.RDS_PORT}/{Config.RDS_DB_NAME}")
+    cookie_domain = os.getenv("COOKIE_DOMAIN")
+    if cookie_domain:
+        REMEMBER_COOKIE_DOMAIN = cookie_domain
+        SESSION_COOKIE_DOMAIN = cookie_domain
 
 
 class TestingConfig(Config):

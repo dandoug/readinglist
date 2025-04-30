@@ -106,7 +106,8 @@ def _installed_libs() -> list[dict[str, str]]:
 def _get_safe_environment_variables():
     # List of environment variables to expose
     allowed_env_vars = ["FLASK_ENV", "RDS_HOSTNAME", "RDS_PORT", "RDS_DB_NAME",
-                        "MAIL_SERVER", "MAIL_PORT", "SECURITY_EMAIL_SENDER"]
+                        "MAIL_SERVER", "MAIL_PORT", "SECURITY_EMAIL_SENDER",
+                        "COOKIE_DOMAIN", "MAIL_USE_TLS"]
 
     # Filter and return only the allowed variables
     return {key: os.environ.get(key) for key in allowed_env_vars if key in os.environ}
