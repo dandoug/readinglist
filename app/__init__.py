@@ -20,6 +20,7 @@ from flask_security import SQLAlchemyUserDatastore, Security, hash_password
 from flask_sqlalchemy import SQLAlchemy
 from flask_assets import Bundle, Environment
 from flask_talisman import Talisman
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 from app.config import configure_app_logging, PROJECT_ROOT
 from app.helpers import register_globals
@@ -35,7 +36,7 @@ cache = None  # pylint: disable=invalid-name
 talisman = None  # pylint: disable=invalid-name
 
 
-# pylint: disable=too-many-locals
+# pylint: disable=too-many-locals,too-many-statements
 def create_app():
     """
     Creates and configures the Flask application instance. This function is
@@ -99,6 +100,14 @@ def create_app():
         feature_policy={
             'geolocation': '\'none\''
         }
+    )
+
+    # handle being behind a reverse proxy, like in AWS Elastic Beanstalk
+    app.wsgi_app = ProxyFix(
+        app.wsgi_app,
+        x_proto=1,  # Number of values to trust for X-Forwarded-Proto
+        x_for=1,  # Number of values to trust for X-Forwarded-For
+        x_host=1  # Number of values to trust for X-Forwarded-Host
     )
 
     # Set up email handling using Flask-Mailman using context info

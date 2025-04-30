@@ -3,8 +3,13 @@ This module is used to register global error handlers, context processors, and v
 for a Flask application. It ensures that custom error handling, utility functions, and 
 global variables (like `current_user`) are available to all templates and views.
 """
-from flask import jsonify
+import time
+
+from flask import jsonify, session, request
+from flask.sessions import NullSession
 from flask_login import current_user
+
+THIRTY_MINUTES_IN_SECONDS = 1800
 
 
 def register_globals(app):
@@ -46,3 +51,41 @@ def register_globals(app):
         """
         # Access the global Jinja environment, including in macros
         app.jinja_env.globals.update(current_user=current_user)
+
+    @app.before_request
+    def before_request():
+        """
+        Implement sliding sessions
+        """
+        if session and not isinstance(session, NullSession):
+            session.permanent = True  # Use a permanent session with the configured timeout
+            session.modified = True  # Update session timestamp on each request
+
+    @app.before_request
+    def check_session_timeout():
+        """
+        Implement activity timeout
+        """
+        if not session or isinstance(session, NullSession):
+            return
+
+        current_time = time.time()
+        if 'last_activity' in session:
+            # If inactive for more than 30 minutes, clear the session
+            if current_time - session['last_activity'] > THIRTY_MINUTES_IN_SECONDS:
+                session.clear()
+        session['last_activity'] = current_time
+
+    @app.before_request
+    def check_ip_binding():
+        """
+        Bind session to an IP address
+        :return:
+        """
+        if not session or isinstance(session, NullSession):
+            return
+
+        if 'user_ip' in session and session['user_ip'] != request.remote_addr:
+            # IP address has changed, potential session hijacking
+            session.clear()
+        session['user_ip'] = request.remote_addr
