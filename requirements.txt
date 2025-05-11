@@ -8,7 +8,7 @@ bcrypt==4.3.0
 beautifulsoup4==4.13.3
 bleach==6.2.0
 blinker==1.9.0
-boto3==1.37.16
+boto3==1.38.13
 botocore==1.37.16
 bs4==0.0.2
 cachelib==0.13.0
@@ -19,7 +19,7 @@ click==8.1.8
 colorama==0.4.6
 coverage==7.8.0
 cryptography==44.0.2
-dill==0.3.9
+dill==0.4.0
 distro==1.9.0
 dnspython==2.7.0
 docker==7.1.0
@@ -51,7 +51,7 @@ isort==6.0.1
 itsdangerous==2.2.0
 Jinja2==3.1.6
 jmespath==1.0.1
-jsonschema==3.2.0
+jsonschema==4.23.0
 libsass==0.23.0
 mando==0.7.1
 markdown-it-py==3.0.0
@@ -72,7 +72,7 @@ pydevd==3.3.0
 pydocstyle==6.3.0
 pyflakes==3.3.2
 Pygments==2.19.1
-pylint==3.3.6
+pylint==3.3.7
 pylint-celery==0.3
 pylint-django==2.6.1
 pylint-plugin-utils==0.8.2
@@ -109,6 +109,6 @@ urllib3==2.3.0
 visitor==0.1.3
 webassets==2.0
 webencodings==0.5.1
-websocket-client==0.59.0
+websocket-client==1.8.0
 Werkzeug==3.1.3
 WTForms==3.1.2
