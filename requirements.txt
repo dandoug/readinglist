@@ -88,7 +88,7 @@ pytest==8.3.5
 pytest-cov==6.1.0
 pytest-mock==3.14.0
 python-dateutil==2.9.0.post0
-python-dotenv==0.21.1
+python-dotenv==1.1.0
 PyYAML==6.0
 radon==6.0.1
 readchar==4.2.1
