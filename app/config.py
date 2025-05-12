@@ -83,7 +83,7 @@ class Config:
     SECURITY_CONFIRMABLE = True
     SECURITY_RECOVERABLE = True
     SECURITY_PASSWORD_HISTORY = 5
-    SECURITY_RESET_PASSWORD_WITHIN = '1 hours'
+    SECURITY_RESET_PASSWORD_WITHIN = '1 hours'  # nosec B105, noqa: dodgy:password
 
     FLASK_ADMIN_SWATCH = "sandstone"
 
