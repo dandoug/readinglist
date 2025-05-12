@@ -27,8 +27,9 @@ from flask_security.forms import build_form_from_request
 from flask_security.registerable import register_user, register_existing
 from flask_security.utils import view_commit, get_post_register_redirect, config_value as cv
 from flask_sqlalchemy import SQLAlchemy
-from app.security.models import SecureModelView, User, Role
 
+from app.limiter import limiter
+from app.security.models import SecureModelView, User, Role
 
 registration_bp = Blueprint('registration', __name__)
 
@@ -117,20 +118,21 @@ class RoleBasedMenuLink(MenuLink):
             return False
         if not self.roles:  # If no roles specified, allow access
             return True
-        # Check if user has any of the required roles
+        # Check if the user has any of the required roles
         return any(role.name in self.roles for role in current_user.roles)
 
 
 @registration_bp.route('/register', methods=['GET', 'POST'])
 @login_required  # Ensure only logged-in users can access
 @roles_required('admin')  # Restrict to users with the 'admin' role
+@limiter.limit("1 per second")
 def custom_register():
     """
     Handles user registration functionality.
 
     This function is associated with the '/register' endpoint and allows users with
     the 'admin' role to register new users. It supports both GET and POST methods.
-    The function utilizes a form generated based on the request. On successful form
+    The function uses a form generated based on the request. On successful form
     submission via POST, a new user is registered, and the system redirects to a
     post-registration URL. In the case of a GET request or a failure to validate the
     form, the registration template is rendered for further input.

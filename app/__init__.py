@@ -7,23 +7,25 @@ db connections. It handles user authentication, admin interface setup, and asset
 the application. The module provides a create_app() factory function that returns a fully 
 configured Flask application instance ready for deployment.
 """
-import os
 import logging
+import os
 from datetime import datetime, timezone
 
 from flask import Flask
 from flask_admin import Admin
+from flask_assets import Bundle, Environment
 from flask_caching import Cache
+from flask_limiter.util import get_remote_address
 from flask_login import user_logged_out
 from flask_mailman import Mail
 from flask_security import SQLAlchemyUserDatastore, Security, hash_password
 from flask_sqlalchemy import SQLAlchemy
-from flask_assets import Bundle, Environment
 from flask_talisman import Talisman
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from app.config import configure_app_logging, PROJECT_ROOT
 from app.helpers import register_globals
+from app.limiter import limiter, add_limits_to_views
 
 # Initial admin user.  Only create if db contains no admins
 INITIAL_USER_PASSWORD = "example1"  # nosec B105, noqa: dodgy:password
@@ -110,6 +112,9 @@ def create_app():
         x_host=1  # Number of values to trust for X-Forwarded-Host
     )
 
+    # Bind limiter to app
+    limiter.init_app(app)
+
     # Set up email handling using Flask-Mailman using context info
     mail = Mail(app)
 
@@ -173,6 +178,14 @@ def create_app():
 
     from app.helpers import render_icon  # pylint: disable=import-outside-toplevel
     app.jinja_env.filters['render_icon'] = render_icon
+
+    # Set route-specific limits we don't control directly not that they have all been defined
+    add_limits_to_views(app)
+    # Add limits specifically to the Flask-Login `/login` route
+    limiter.limit("10 per minute", key_func=get_remote_address)(app.view_functions["security.login"])
+    # Apply rate limiting to all routes in Flask-Admin and other security roles
+    limiter.limit("30 per minute", key_func=get_remote_address)(app.blueprints["admin"])
+    limiter.limit("30 per minute", key_func=get_remote_address)(app.blueprints["security"])
 
     # Define your SCSS file bundle
     output_dir = PROJECT_ROOT / "app" / "static" / "gen" / "css"

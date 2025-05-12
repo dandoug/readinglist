@@ -82,8 +82,12 @@ class Config:
 
     SECURITY_CONFIRMABLE = True
     SECURITY_RECOVERABLE = True
+    SECURITY_PASSWORD_HISTORY = 5
+    SECURITY_RESET_PASSWORD_WITHIN = '1 hours'  # nosec B105, noqa: dodgy:password
 
     FLASK_ADMIN_SWATCH = "sandstone"
+
+    RATELIMIT_ENABLED = True
 
     # Logging configuration - override in specific environments
     LOGGING_LEVEL = logging.INFO  # Default logging level
@@ -136,6 +140,7 @@ class TestingConfig(Config):
     TESTING = True
     DEBUG = True
     LOGGING_LEVEL = logging.WARNING
+    RATELIMIT_ENABLED = False  # Disable rate-limiting in testing
     SERVER_NAME = '0.0.0.0:8000'
     SQLALCHEMY_DATABASE_URI = (f"mysql+pymysql://{Config.RDS_USERNAME}:" +
                                f"{quote_plus(str(Config.RDS_PASSWORD))}@{Config.RDS_HOSTNAME}:" +

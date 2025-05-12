@@ -19,6 +19,7 @@ click==8.1.8
 colorama==0.4.6
 coverage==7.8.0
 cryptography==44.0.2
+Deprecated==1.2.18
 dill==0.3.9
 distro==1.9.0
 dnspython==2.7.0
@@ -35,6 +36,7 @@ Flask==3.1.0
 Flask-Admin==1.6.1
 Flask-Assets==2.1.0
 Flask-Caching==2.3.1
+Flask-Limiter==3.12
 Flask-Login==0.6.3
 Flask-Mailman==1.1.1
 Flask-Principal==0.4.0
@@ -53,11 +55,13 @@ Jinja2==3.1.6
 jmespath==1.0.1
 jsonschema==3.2.0
 libsass==0.23.0
+limits==5.1.0
 mando==0.7.1
 markdown-it-py==3.0.0
 MarkupSafe==3.0.2
 mccabe==0.7.0
 mdurl==0.1.2
+ordered-set==4.1.0
 packaging==24.2
 paramiko==3.5.1
 passlib==1.7.4
@@ -90,7 +94,7 @@ radon==6.0.1
 readchar==4.2.1
 requests==2.32.3
 requirements-detector==1.3.2
-rich==14.0.0
+rich==13.9.4
 s3transfer==0.12.0
 semver==3.0.4
 setoptconf-tmp==0.3.1
@@ -111,4 +115,5 @@ webassets==2.0
 webencodings==0.5.1
 websocket-client==0.59.0
 Werkzeug==3.1.3
+wrapt==1.17.2
 WTForms==3.1.2
