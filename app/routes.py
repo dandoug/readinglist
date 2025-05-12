@@ -11,6 +11,9 @@ from flask import (current_app as app, render_template, request, jsonify,
                    flash, redirect, url_for, make_response, Request, Response)
 from flask_security import roles_required, current_user, auth_required
 
+from app.forms import BookForm
+from app.helpers import PLACEHOLDER, build_library_search_urls, compute_next_url
+from app.limiter import limiter
 from app.models import Tag, Book
 from app.services import (fetch_product_details, build_about_info, search_by_categories, get_book_by_id,
                           search_by_author, get_tags_for_user, get_or_create_tag,
@@ -18,8 +21,6 @@ from app.services import (fetch_product_details, build_about_info, search_by_cat
                           get_tags_for_user_with_colors, search_by_title, add_new_book,
                           book_to_dict_with_status_and_feedback, set_book_status, set_book_feedback,
                           update_book, del_book, get_category_bs_tree, id_to_fullpath)
-from app.helpers import PLACEHOLDER, build_library_search_urls, compute_next_url
-from app.forms import BookForm
 
 
 @app.route('/')
@@ -43,6 +44,7 @@ def index():
 
 @app.route('/about')
 @roles_required('admin')
+@limiter.limit("1 per second")
 def about():
     """
     Handles the rendering of the 'About' page for administrators.
@@ -150,6 +152,7 @@ def download():
 
 @app.route('/add_book', methods=["GET", "POST"])
 @roles_required('editor')
+@limiter.limit("1 per second")
 def add_book():
     """
     Handles the addition of a new book to the database. This function provides an interface
@@ -188,6 +191,7 @@ def add_book():
 
 @app.route('/edit_book', methods=["GET", "POST"])
 @roles_required('editor')
+@limiter.limit("1 per second")
 def edit_book():
     """
     Handles the functionality for editing a book. This function is accessible only
@@ -249,6 +253,7 @@ def edit_book():
 
 @app.route('/fill_by_asin', methods=["GET"])
 @roles_required('editor')
+@limiter.limit("1 per second")
 def fill_by_asin():
     """
     Handles a GET request to fetch and return product details by ASIN (Amazon Standard
@@ -282,6 +287,7 @@ def fill_by_asin():
 
 @app.route('/delete_book', methods=["POST"])
 @roles_required('admin')
+@limiter.limit("1 per second")
 def delete_book():
     """
     Deletes a book with a given identifier. This function ensures that necessary
@@ -315,6 +321,7 @@ def delete_book():
 
 @app.route('/change_status', methods=["POST"])
 @auth_required()
+@limiter.limit("1 per second")
 def change_status():
     """
     Handles updating the status of a book for the authenticated user. This endpoint
@@ -354,6 +361,7 @@ def change_status():
 
 @app.route('/change_feedback', methods=["POST"])
 @auth_required()
+@limiter.limit("1 per second")
 def change_feedback():
     """
     Handles the change of feedback for a specific book. This function validates the
@@ -389,6 +397,7 @@ def change_feedback():
 
 @app.route('/autocomplete_tags')
 @auth_required()
+@limiter.exempt
 def autocomplete_tags():
     """
     Provides an endpoint to fetch tag suggestions based on a query for the
@@ -403,6 +412,7 @@ def autocomplete_tags():
 
 @app.route('/add_tag', methods=['POST'])
 @auth_required()
+@limiter.limit("1 per second")
 def add_tag():
     """
     Handles the addition of a tag to a book for the current user. The function expects
@@ -437,8 +447,8 @@ def get_tags():
     if error:
         return error, status
 
-    return jsonify({'success': True, 'tags':
-        get_tags_and_colors(book_id=book.id, user_id=current_user.id)})
+    return jsonify({'success': True,
+                    'tags': get_tags_and_colors(book_id=book.id, user_id=current_user.id)})
 
 
 @app.route('/get_user_tags', methods=['GET'])
@@ -447,12 +457,13 @@ def get_user_tags():
     """
     Handles the GET request to retrieve tags and their associated colors for a user.
     """
-    return jsonify({'success': True, 'tags':
-        get_tags_for_user_with_colors(user_id=current_user.id)})
+    return jsonify({'success': True,
+                    'tags': get_tags_for_user_with_colors(user_id=current_user.id)})
 
 
 @app.route('/remove_tag', methods=['POST'])
 @auth_required()
+@limiter.limit("1 per second")
 def remove_tag():
     """
     Handles the removal of a tag associated with a book for an authenticated user.
@@ -490,6 +501,7 @@ def remove_tag():
 
 
 @app.route('/csp-report', methods=['POST'])
+@limiter.limit("10 per second")
 def csp_report():
     """
     Handles Content Security Policy (CSP) violation reports sent via POST requests.
@@ -660,9 +672,9 @@ def _make_csv_response(bks):
         "Specifications"
     ])
     for bk in bks:
-        tags = bk.tags;
+        tags = bk.tags
         if tags:
-            tag_str = ', '.join(map(lambda t: t.tag.name.lower().replace(' ','-'), tags))
+            tag_str = ', '.join(map(lambda t: t.tag.name.lower().replace(' ', '-'), tags))
         else:
             tag_str = ''
         writer.writerow([
