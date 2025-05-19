@@ -76,7 +76,7 @@ pydevd==3.3.0
 pydocstyle==6.3.0
 pyflakes==3.3.2
 Pygments==2.19.1
-pylint==3.3.6
+pylint==3.3.7
 pylint-celery==0.3
 pylint-django==2.6.1
 pylint-plugin-utils==0.8.2
