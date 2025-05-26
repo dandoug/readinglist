@@ -82,7 +82,7 @@ pylint-django==2.6.1
 pylint-plugin-utils==0.8.2
 PyMySQL==1.1.1
 PyNaCl==1.5.0
-pyOpenSSL==25.0.0
+pyOpenSSL==25.1.0
 pyrsistent==0.20.0
 pytest==8.3.5
 pytest-cov==6.1.0
@@ -94,7 +94,7 @@ radon==6.0.1
 readchar==4.2.1
 requests==2.32.3
 requirements-detector==1.3.2
-rich==14.0.0
+rich==13.9.4
 s3transfer==0.12.0
 semver==3.0.4
 setoptconf-tmp==0.3.1
