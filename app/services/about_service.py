@@ -91,12 +91,15 @@ def _installed_libs() -> list[dict[str, str]]:
         name = dist.metadata["Name"]
         version = dist.version
         lib_key = (name.lower(), version)
+        # noinspection PyProtectedMember
+        path = dist._path  # pylint: disable=protected-access
         if lib_key not in seen:
             seen.add(lib_key)
             libs.append({
                 "name": name,
                 "version": version,
-                "homepage": dist.metadata["Home-Page"] if "Home-Page" in dist.metadata else "N/A"
+                "homepage": dist.metadata["Home-Page"] if "Home-Page" in dist.metadata else "N/A",
+                "path": path,
             })
     # sort the list of libs by name, using case-insensitive ordering
     libs = sorted(libs, key=lambda x: x["name"].lower())
