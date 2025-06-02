@@ -62,14 +62,14 @@ MarkupSafe==3.0.2
 mccabe==0.7.0
 mdurl==0.1.2
 ordered-set==4.1.0
-packaging==24.2
+packaging==25.0
 paramiko==3.5.1
 passlib==1.7.4
 pbr==6.1.1
 pep8-naming==0.10.0
-platformdirs==4.3.7
+platformdirs==4.3.8
 pluggy==1.6.0
-prospector==1.16.1
+prospector==1.17.1
 pycodestyle==2.13.0
 pycparser==2.22
 pydevd==3.3.0
@@ -86,7 +86,7 @@ pyOpenSSL==25.1.0
 pyrsistent==0.20.0
 pytest==8.3.5
 pytest-cov==6.1.0
-pytest-mock==3.14.0
+pytest-mock==3.14.1
 python-dateutil==2.9.0.post0
 python-dotenv==1.1.0
 PyYAML==6.0.1
@@ -102,7 +102,7 @@ six==1.17.0
 smmap==5.0.2
 snowballstemmer==2.2.0
 soupsieve==2.6
-SQLAlchemy==2.0.39
+SQLAlchemy==2.0.41
 SQLAlchemy-Utils==0.41.2
 stevedore==5.4.1
 texttable==1.7.0
