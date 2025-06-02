@@ -67,7 +67,7 @@ paramiko==3.5.1
 passlib==1.7.4
 pbr==6.1.1
 pep8-naming==0.10.0
-platformdirs==4.3.7
+platformdirs==4.3.8
 pluggy==1.6.0
 prospector==1.16.1
 pycodestyle==2.13.0
