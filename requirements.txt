@@ -94,7 +94,7 @@ radon==6.0.1
 readchar==4.2.1
 requests==2.32.3
 requirements-detector==1.3.2
-rich==13.9.4
+rich==14.0.0
 s3transfer==0.13.0
 semver==3.0.4
 setoptconf-tmp==0.3.1
