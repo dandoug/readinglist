@@ -1,5 +1,5 @@
 antlr4-python3-runtime==4.13.2
-argon2-cffi==23.1.0
+argon2-cffi==25.1.0
 argon2-cffi-bindings==21.2.0
 astroid==3.3.10
 attrs==25.3.0
@@ -8,8 +8,8 @@ bcrypt==4.3.0
 beautifulsoup4==4.13.3
 bleach==6.2.0
 blinker==1.9.0
-boto3==1.38.23
-botocore==1.38.23
+boto3==1.38.32
+botocore==1.38.32
 bs4==0.0.2
 cachelib==0.13.0
 certifi==2025.4.26
@@ -53,7 +53,8 @@ isort==6.0.1
 itsdangerous==2.2.0
 Jinja2==3.1.6
 jmespath==1.0.1
-jsonschema==3.2.0
+jsonschema==4.24.0
+jsonschema-specifications==2025.4.1
 libsass==0.23.0
 limits==5.1.0
 mando==0.7.1
@@ -84,7 +85,7 @@ PyMySQL==1.1.1
 PyNaCl==1.5.0
 pyOpenSSL==25.1.0
 pyrsistent==0.20.0
-pytest==8.3.5
+pytest==8.4.0
 pytest-cov==6.1.0
 pytest-mock==3.14.1
 python-dateutil==2.9.0.post0
@@ -92,9 +93,11 @@ python-dotenv==1.1.0
 PyYAML==6.0.1
 radon==6.0.1
 readchar==4.2.1
-requests==2.32.3
+referencing==0.36.2
+requests==2.32.4
 requirements-detector==1.3.2
 rich==13.9.4
+rpds-py==0.25.1
 s3transfer==0.13.0
 semver==3.0.4
 setoptconf-tmp==0.3.1
