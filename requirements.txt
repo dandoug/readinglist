@@ -103,7 +103,7 @@ semver==3.0.4
 setoptconf-tmp==0.3.1
 six==1.17.0
 smmap==5.0.2
-snowballstemmer==2.2.0
+snowballstemmer==3.0.1
 soupsieve==2.7
 SQLAlchemy==2.0.41
 SQLAlchemy-Utils==0.41.2
