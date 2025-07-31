@@ -9,7 +9,7 @@ beautifulsoup4==4.13.4
 bleach==6.2.0
 blinker==1.9.0
 boto3==1.39.14
-botocore==1.39.3
+botocore==1.39.14
 bs4==0.0.2
 cachelib==0.13.0
 certifi==2025.6.15
@@ -67,15 +67,15 @@ packaging==25.0
 paramiko==3.5.1
 passlib==1.7.4
 pbr==6.1.1
-pep8-naming==0.15.0
+pep8-naming==0.10.0
 platformdirs==4.3.8
 pluggy==1.6.0
 prospector==1.17.2
-pycodestyle==2.13.0
+pycodestyle==2.14.0
 pycparser==2.22
 pydevd==3.3.0
 pydocstyle==6.3.0
-pyflakes==3.3.2
+pyflakes==3.4.0
 Pygments==2.19.1
 pylint==3.3.7
 pylint-celery==0.3
