@@ -1,7 +1,7 @@
 antlr4-python3-runtime==4.13.2
 argon2-cffi==25.1.0
 argon2-cffi-bindings==21.2.0
-astroid==3.3.10
+astroid==3.3.11
 attrs==25.3.0
 bandit==1.8.6
 bcrypt==4.3.0
@@ -12,7 +12,7 @@ boto3==1.39.14
 botocore==1.39.14
 bs4==0.0.2
 cachelib==0.13.0
-certifi==2025.6.15
+certifi==2025.8.3
 cffi==1.17.1
 charset-normalizer==3.4.2
 click==8.1.8
@@ -98,14 +98,14 @@ requests==2.32.4
 requirements-detector==1.4.0
 rich==13.9.4
 rpds-py==0.25.1
-s3transfer==0.13.0
+s3transfer==0.13.1
 semver==3.0.4
 setoptconf-tmp==0.3.1
 six==1.17.0
 smmap==5.0.2
 snowballstemmer==3.0.1
 soupsieve==2.7
-SQLAlchemy==2.0.41
+SQLAlchemy==2.0.42
 SQLAlchemy-Utils==0.41.2
 stevedore==5.4.1
 texttable==1.7.0
