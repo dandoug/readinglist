@@ -18,7 +18,7 @@ charset-normalizer==3.4.2
 click==8.1.8
 colorama==0.4.6
 coverage==7.9.1
-cryptography==45.0.5
+cryptography==45.0.6
 Deprecated==1.2.18
 dill==0.4.0
 distro==1.9.0
