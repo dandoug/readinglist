@@ -110,7 +110,7 @@ SQLAlchemy-Utils==0.41.2
 stevedore==5.4.1
 texttable==1.7.0
 toml==0.10.2
-tomlkit==0.13.2
+tomlkit==0.13.3
 typing_extensions==4.14.1
 urllib3==2.5.0
 visitor==0.1.3
