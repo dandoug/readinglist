@@ -105,7 +105,7 @@ six==1.17.0
 smmap==5.0.2
 snowballstemmer==3.0.1
 soupsieve==2.7
-SQLAlchemy==2.0.42
+SQLAlchemy==2.0.43
 SQLAlchemy-Utils==0.41.2
 stevedore==5.4.1
 texttable==1.7.0
