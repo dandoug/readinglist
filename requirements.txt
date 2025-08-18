@@ -57,7 +57,7 @@ jsonschema==4.25.0
 jsonschema-specifications==2025.4.1
 libsass==0.23.0
 limits==5.1.0
-mando==0.7.1
+mando==0.8.2
 markdown-it-py==3.0.0
 MarkupSafe==3.0.2
 mccabe==0.7.0
