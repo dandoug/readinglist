@@ -5,7 +5,7 @@ astroid==3.3.11
 attrs==25.3.0
 bandit==1.8.6
 bcrypt==4.3.0
-beautifulsoup4==4.13.4
+beautifulsoup4==4.13.5
 bleach==6.2.0
 blinker==1.9.0
 boto3==1.39.14
@@ -29,7 +29,7 @@ docopt==0.6.2
 dodgy==0.2.1
 dominate==2.9.1
 dulwich==0.23.2
-email_validator==2.2.0
+email-validator==2.3.0
 flake8==7.3.0
 flake8-polyfill==1.0.2
 Flask==3.1.1
@@ -46,6 +46,7 @@ flask-talisman==1.1.0
 Flask-WTF==1.2.2
 gitdb==4.0.12
 GitPython==3.1.45
+greenlet==3.2.3
 idna==3.10
 importlib_resources==6.5.2
 iniconfig==2.1.0
@@ -89,7 +90,7 @@ pytest==8.4.1
 pytest-cov==6.2.1
 pytest-mock==3.14.1
 python-dateutil==2.9.0.post0
-python-dotenv==1.1.0
+python-dotenv==1.1.1
 PyYAML==6.0.2
 radon==6.0.1
 readchar==4.2.1
@@ -104,14 +105,14 @@ setoptconf-tmp==0.3.1
 six==1.17.0
 smmap==5.0.2
 snowballstemmer==3.0.1
-soupsieve==2.7
+soupsieve==2.8
 SQLAlchemy==2.0.43
 SQLAlchemy-Utils==0.41.2
 stevedore==5.4.1
 texttable==1.7.0
 toml==0.10.2
 tomlkit==0.13.3
-typing_extensions==4.14.1
+typing_extensions==4.15.0
 urllib3==2.5.0
 visitor==0.1.3
 webassets==2.0
