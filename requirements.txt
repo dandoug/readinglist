@@ -29,7 +29,7 @@ docopt==0.6.2
 dodgy==0.2.1
 dominate==2.9.1
 dulwich==0.23.2
-email_validator==2.2.0
+email_validator==2.3.0
 flake8==7.3.0
 flake8-polyfill==1.0.2
 Flask==3.1.1
