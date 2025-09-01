@@ -6,13 +6,15 @@ services:
       MYSQL_USER: test_user
       MYSQL_PASSWORD: test_password
       MYSQL_DATABASE: test_readinglist # Updated database name
+      MYSQL_INITDB_SKIP_TZINFO: "1"  # Skip tzdata import to remove warnings and speed first init
     ports:
       - "13306:3306" # Map container's 3306 to host's 13306
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-u", "test_user", "-p", "test_password"]
+      test: [ "CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u$$MYSQL_USER -p$$MYSQL_PASSWORD || exit 1" ]
       interval: 5s
       timeout: 5s
-      retries: 10
+      retries: 50
+      start_period: 30s
 
   mail:
     image: inbucket/inbucket:latest

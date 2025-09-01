@@ -29,10 +29,11 @@ def docker_compose():
     compose_file = INTEGRATION_DIR / "docker-compose.yml"
 
     try:
-        # Start services
-        subprocess.run(["docker", "compose", "-f", str(compose_file), "up", "-d"], check=True)
-        # Give services time to initialize
-        time.sleep(10)
+        # Start services and wait for health checks to pass
+        subprocess.run(
+            ["docker", "compose", "-f", str(compose_file), "up", "-d", "--wait", "--wait-timeout", "300"],
+            check=True
+        )
         yield
     finally:
         # Tear down services
@@ -48,24 +49,50 @@ def db_connection(docker_compose):
         DB_HOST = "host.docker.internal"
     else:
         DB_HOST = os.getenv("RDS_HOSTNAME")
-    for _ in range(10):  # Retry multiple times if DB isn't ready
+
+    DB_PORT = int(os.getenv("RDS_PORT", "13306"))
+
+    # Retry with exponential backoff up to a deadline (default 120s)
+    deadline_seconds = int(os.getenv("DB_CONNECT_DEADLINE_SECONDS", "90"))
+    per_attempt_timeout = int(os.getenv("DB_CONNECT_TIMEOUT_SECONDS", "3"))
+    backoff_sequence = [0.5, 1, 2, 3, 5, 8, 13, 21, 34]  # seconds
+
+    start = time.monotonic()
+    last_err = None
+
+    for delay in backoff_sequence + [5] * 50:  # keep trying with 5s after sequence until deadline
         try:
+            print(f"Connecting to database at {DB_HOST}:{DB_PORT}...")
             conn = pymysql.connect(
-                host=DB_HOST,  # Connecting to local Docker MySQL
-                port=13306,  # Updated to match the new port mapping
+                host=DB_HOST,
+                port=DB_PORT,
                 user="test_user",
                 password="test_password",
                 database="test_readinglist",
                 charset="utf8mb4",
                 cursorclass=pymysql.cursors.DictCursor,
+                connect_timeout=per_attempt_timeout,
             )
+            # Optional: simple sanity query to ensure server is fully ready
+            with conn.cursor() as cursor:
+                cursor.execute("SELECT 1")
+                cursor.fetchone()
+
             yield conn
             conn.close()
             break
-        except pymysql.err.OperationalError:
-            time.sleep(1)
+        except pymysql.err.OperationalError as e:
+            last_err = e
+            if time.monotonic() - start >= deadline_seconds:
+                break
+            print(f"Failed to connect to the database: {e}. Retrying in {delay}s...")
+            time.sleep(delay)
     else:
-        pytest.fail("Failed to connect to the database")
+        pass  # kept for structure; loop 'break' exits earlier
+
+    if last_err:
+        pytest.fail(f"Failed to connect to the database within {deadline_seconds}s: {last_err}")
+
 
 
 @pytest.fixture(scope="session")
