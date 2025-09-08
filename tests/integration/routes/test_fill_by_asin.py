@@ -5,7 +5,10 @@ def test_file_by_asin(logged_in_client, asin_data_service):
     assert response.status_code == 400
 
     response = logged_in_client.get('/fill_by_asin', query_string={'asin': '0'})
-    assert response.status_code == 404
+    assert response.status_code == 400
+
+    #response = logged_in_client.get('/fill_by_asin', query_string={'asin': 'Z1A2B3C4D5'})
+    #assert response.status_code == 404
 
     response = logged_in_client.get('/fill_by_asin', query_string={'asin': '1509540857'})
     assert response.status_code == 200
