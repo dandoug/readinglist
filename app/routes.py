@@ -278,6 +278,9 @@ def fill_by_asin():
     asin = request.args.get('asin')
     if not asin:
         return jsonify({"error": "Missing asin parameter"}), 400, None
+    # Validate ASIN format: must be exactly 10 alphanumeric characters
+    if len(asin) != 10 or not asin.isalnum():
+        return jsonify({"error": "Invalid asin parameter; must be 10 letters or digits"}), 400, None
 
     book_data = fetch_product_details(asin)
     if not book_data:

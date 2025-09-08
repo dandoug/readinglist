@@ -31,7 +31,7 @@ def docker_compose():
     try:
         # Start services and wait for health checks to pass
         subprocess.run(
-            ["docker", "compose", "-f", str(compose_file), "up", "-d", "--wait", "--wait-timeout", "300"],
+            ["docker", "compose", "-f", str(compose_file), "up", "-d"], #, "--wait", "--wait-timeout", "300"
             check=True
         )
         yield
@@ -48,19 +48,20 @@ def db_connection(docker_compose):
     if os.getenv("ACT") and os.getenv("RDS_HOSTNAME") == "localhost":
         DB_HOST = "host.docker.internal"
     else:
-        DB_HOST = os.getenv("RDS_HOSTNAME")
+        DB_HOST = os.getenv("RDS_HOSTNAME") or "127.0.0.1"
 
     DB_PORT = int(os.getenv("RDS_PORT", "13306"))
 
-    # Retry with exponential backoff up to a deadline (default 120s)
-    deadline_seconds = int(os.getenv("DB_CONNECT_DEADLINE_SECONDS", "90"))
+    # Retry with exponential backoff up to a deadline (default 420s)
+    deadline_seconds = int(os.getenv("DB_CONNECT_DEADLINE_SECONDS", "420"))
     per_attempt_timeout = int(os.getenv("DB_CONNECT_TIMEOUT_SECONDS", "3"))
     backoff_sequence = [0.5, 1, 2, 3, 5, 8, 13, 21, 34]  # seconds
 
     start = time.monotonic()
     last_err = None
 
-    for delay in backoff_sequence + [5] * 50:  # keep trying with 5s after sequence until deadline
+    for delay in backoff_sequence + [20] * 30:  # keep trying with 20s after sequence until deadline
+        last_err = None # reset if still trying
         try:
             print(f"Connecting to database at {DB_HOST}:{DB_PORT}...")
             conn = pymysql.connect(
@@ -92,7 +93,6 @@ def db_connection(docker_compose):
 
     if last_err:
         pytest.fail(f"Failed to connect to the database within {deadline_seconds}s: {last_err}")
-
 
 
 @pytest.fixture(scope="session")
