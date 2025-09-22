@@ -74,7 +74,7 @@ pluggy==1.6.0
 prospector==1.17.2
 pycodestyle==2.14.0
 pycparser==2.22
-pydevd==3.3.0
+pydevd==3.4.1
 pydocstyle==6.3.0
 pyflakes==3.4.0
 Pygments==2.19.1
