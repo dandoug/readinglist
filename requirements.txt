@@ -17,7 +17,7 @@ cffi==1.17.1
 charset-normalizer==3.4.2
 click==8.1.8
 colorama==0.4.6
-coverage==7.9.1
+coverage==7.10.7
 cryptography==45.0.7
 Deprecated==1.2.18
 dill==0.4.0
