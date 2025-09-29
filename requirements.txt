@@ -77,7 +77,7 @@ pycparser==2.22
 pydevd==3.4.1
 pydocstyle==6.3.0
 pyflakes==3.4.0
-Pygments==2.19.1
+Pygments==2.19.2
 pylint==3.3.8
 pylint-celery==0.3
 pylint-django==2.6.1
