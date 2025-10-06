@@ -12,9 +12,9 @@ boto3==1.39.14
 botocore==1.39.17
 bs4==0.0.2
 cachelib==0.13.0
-certifi==2025.8.3
+certifi==2025.10.5
 cffi==1.17.1
-charset-normalizer==3.4.2
+charset-normalizer==3.4.3
 click==8.1.8
 colorama==0.4.6
 coverage==7.10.7
@@ -69,11 +69,11 @@ paramiko==3.5.1
 passlib==1.7.4
 pbr==6.1.1
 pep8-naming==0.10.0
-platformdirs==4.3.8
+platformdirs==4.4.0
 pluggy==1.6.0
 prospector==1.17.3
 pycodestyle==2.14.0
-pycparser==2.22
+pycparser==2.23
 pydevd==3.4.1
 pydocstyle==6.3.0
 pyflakes==3.4.0
@@ -98,7 +98,7 @@ referencing==0.36.2
 requests==2.32.5
 requirements-detector==1.4.0
 rich==13.9.4
-rpds-py==0.27.0
+rpds-py==0.27.1
 s3transfer==0.13.1
 semver==3.0.4
 setoptconf-tmp==0.3.1
