@@ -2,7 +2,7 @@ antlr4-python3-runtime==4.13.2
 argon2-cffi==25.1.0
 argon2-cffi-bindings==21.2.0
 astroid==3.3.11
-attrs==25.3.0
+attrs==25.4.0
 bandit==1.8.6
 bcrypt==4.3.0
 beautifulsoup4==4.13.5
@@ -47,7 +47,7 @@ Flask-WTF==1.2.2
 gitdb==4.0.12
 GitPython==3.1.45
 greenlet==3.2.3
-idna==3.10
+idna==3.11
 importlib_resources==6.5.2
 iniconfig==2.1.0
 isort==6.0.1
@@ -69,7 +69,7 @@ paramiko==3.5.1
 passlib==1.7.4
 pbr==6.1.1
 pep8-naming==0.10.0
-platformdirs==4.4.0
+platformdirs==4.5.0
 pluggy==1.6.0
 prospector==1.17.3
 pycodestyle==2.14.0
@@ -78,7 +78,7 @@ pydevd==3.4.1
 pydocstyle==6.3.0
 pyflakes==3.4.0
 Pygments==2.19.2
-pylint==3.3.8
+pylint==3.3.9
 pylint-celery==0.3
 pylint-django==2.6.1
 pylint-plugin-utils==0.9.0
@@ -106,7 +106,7 @@ six==1.17.0
 smmap==5.0.2
 snowballstemmer==3.0.1
 soupsieve==2.8
-SQLAlchemy==2.0.43
+SQLAlchemy==2.0.44
 SQLAlchemy-Utils==0.42.0
 stevedore==5.5.0
 texttable==1.7.0
