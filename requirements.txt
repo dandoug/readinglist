@@ -99,7 +99,7 @@ requests==2.32.5
 requirements-detector==1.4.0
 rich==13.9.4
 rpds-py==0.27.1
-s3transfer==0.13.1
+s3transfer==0.14.0
 semver==3.0.4
 setoptconf-tmp==0.3.1
 six==1.17.0
