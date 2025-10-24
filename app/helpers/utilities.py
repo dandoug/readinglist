@@ -15,7 +15,7 @@ PLACEHOLDER = '<span class="placeholder-icon"></span>'
 _SEARCH_TEMPLATES = {
     "Los Gatos Library":
         "https://losgatos.aspendiscovery.org/Search/Results?join=AND&bool0[]=AND&lookfor0[]=" +
-        "{title}&type0[]=Title&lookfor0[]={author}&type0[]=Author&submit=Find",
+        "{title}&type0[]=Title&lookfor1[]={author}&type1[]=Author&submit=Find",
     "Santa Clara Country Library":
         "https://sccl.bibliocommons.com/v2/search?custom_edit=false&query=(title%3A({title})" +
         "%20AND%20contributor%3A({author}))&searchType=bl&suppress=true",
