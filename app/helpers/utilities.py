@@ -36,6 +36,27 @@ _SEARCH_TEMPLATES = {
 }
 
 
+def _strip_subtitles(title: str) -> str:
+    """
+    Removes subtitles or additional information from a given title string.
+
+    This function takes a title string and removes parts following a colon (:) or parentheses (),
+    returning the cleaned main title.
+
+    Args:
+        title (str): The title string to clean.
+
+    Returns:
+        str: The main title without subtitles or additional information.
+    """
+    returned_title = title
+    if ':' in returned_title:
+        returned_title = returned_title.split(':')[0].strip()
+    if '(' in returned_title:
+        returned_title = returned_title.split('(')[0].strip()
+    return returned_title
+
+
 def build_library_search_urls(author, title) -> dict[str, str]:
     """
     Builds library search URLs using the given author and title.
@@ -54,7 +75,7 @@ def build_library_search_urls(author, title) -> dict[str, str]:
              embedded within them.
     :rtype: dict
     """
-    escaped_title = quote_plus(title, safe="")
+    escaped_title = quote_plus(_strip_subtitles(title), safe="")
     escaped_author = quote_plus(author, safe="")
     search_urls = {
         key: value.replace("{title}", escaped_title).replace("{author}", escaped_author)
