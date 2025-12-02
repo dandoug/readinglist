@@ -8,8 +8,8 @@ bcrypt==4.3.0
 beautifulsoup4==4.14.2
 bleach==6.3.0
 blinker==1.9.0
-boto3==1.41.2
-botocore==1.41.2
+boto3==1.42.0
+botocore==1.41.6
 bs4==0.0.2
 cachelib==0.13.0
 certifi==2025.11.12
@@ -17,7 +17,7 @@ cffi==1.17.1
 charset-normalizer==3.4.4
 click==8.3.1
 colorama==0.4.6
-coverage==7.11.3
+coverage==7.12.0
 cryptography==45.0.7
 Deprecated==1.3.1
 dill==0.4.0
@@ -100,7 +100,7 @@ requests==2.32.5
 requirements-detector==1.4.0
 rich==13.9.4
 rpds-py==0.29.0
-s3transfer==0.15.0
+s3transfer==0.16.0
 semver==3.0.4
 setoptconf-tmp==0.3.1
 six==1.17.0
@@ -109,7 +109,7 @@ snowballstemmer==3.0.1
 soupsieve==2.8
 SQLAlchemy==2.0.44
 SQLAlchemy-Utils==0.42.0
-stevedore==5.5.0
+stevedore==5.6.0
 texttable==1.7.0
 toml==0.10.2
 tomlkit==0.13.3
@@ -119,6 +119,6 @@ visitor==0.1.3
 webassets==2.0
 webencodings==0.5.1
 websocket-client==0.59.0
-Werkzeug==3.1.3
+Werkzeug==3.1.4
 wrapt==1.17.3
 WTForms==3.2.1
