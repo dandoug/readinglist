@@ -3,7 +3,7 @@ argon2-cffi==25.1.0
 argon2-cffi-bindings==21.2.0
 astroid==3.3.11
 attrs==25.4.0
-bandit==1.9.2
+bandit==1.9.3
 bcrypt==4.3.0
 beautifulsoup4==4.14.3
 bleach==6.3.0
